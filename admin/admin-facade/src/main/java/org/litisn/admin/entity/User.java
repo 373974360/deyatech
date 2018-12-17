@@ -1,13 +1,12 @@
 package org.litisn.admin.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.litisn.common.base.BaseEntity;
-import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import org.springframework.boot.jackson.JsonComponent;
+import org.litisn.common.base.BaseEntity;
 
 /**
  * <p>
@@ -73,6 +72,5 @@ public class User extends BaseEntity {
      */
     @TableField("dept_id")
     private String deptId;
-
 
 }

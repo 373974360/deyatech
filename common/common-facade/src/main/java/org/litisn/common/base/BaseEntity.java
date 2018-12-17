@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 import java.util.Date;
 
 /**
+ * 基础类
  * @author: litisn
  * @since: 2018-12-13 18:12
  */

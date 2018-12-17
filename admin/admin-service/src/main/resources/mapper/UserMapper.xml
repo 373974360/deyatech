@@ -2,24 +2,4 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.litisn.admin.mapper.UserMapper">
 
-    <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="org.litisn.admin.entity.User">
-        <result column="id_" property="id" />
-        <result column="version_" property="version" />
-        <result column="enable_" property="enable" />
-        <result column="remark_" property="remark" />
-        <result column="create_time" property="createTime" />
-        <result column="create_by" property="createBy" />
-        <result column="update_time" property="updateTime" />
-        <result column="update_by" property="updateBy" />
-        <result column="account_" property="account" />
-        <result column="password_" property="password" />
-        <result column="emp_no" property="empNo" />
-        <result column="phone_" property="phone" />
-        <result column="gender_" property="gender" />
-        <result column="name_" property="name" />
-        <result column="avatar_" property="avatar" />
-        <result column="dept_id" property="deptId" />
-    </resultMap>
-
 </mapper>

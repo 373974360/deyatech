@@ -48,7 +48,7 @@ public class CodeGenerator {
         gc.setAuthor("litisn");
         gc.setServiceName("Service");
         gc.setOpen(false);
-        gc.setBaseResultMap(true);
+//        gc.setBaseResultMap(true);
         mpg.setGlobalConfig(gc);
 
         // 数据源配置

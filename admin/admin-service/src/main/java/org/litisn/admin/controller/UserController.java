@@ -44,6 +44,13 @@ public class UserController extends BaseController {
         return RestResult.ok(updateById);
     }
 
+    @PostMapping("/delete")
+    public RestResult delete(User user){
+        log.info("删除用户信息");
+        boolean updateById = userService.removeById(user.getId());
+        return RestResult.ok(updateById);
+    }
+
     @GetMapping("/getAll")
     public RestResult getAll(){
         log.info("获取所有用户信息");
