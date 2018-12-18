@@ -15,10 +15,10 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- *  ${table.comment!}
+ * ${table.comment!}
  * </p>
  *
- * @Author ${author}
+ * @author ${author}
  * @since ${date}
  */
 <#if entityLombokModel>
@@ -41,10 +41,8 @@ public class ${entity} extends ${superEntityClass}<#if activeRecord><${entity}><
 <#elseif activeRecord>
 public class ${entity} extends Model<${entity}> {
 <#else>
-public class ${entity} implements Serializable {
+public class ${entity}{
 </#if>
-
-    private static final long serialVersionUID = 1L;
 <#-- ----------  BEGIN 字段循环遍历  ---------->
 <#list table.fields as field>
     <#if field.keyFlag>
@@ -52,13 +50,13 @@ public class ${entity} implements Serializable {
     </#if>
 
     <#if field.comment!?length gt 0>
-    <#if swagger2>
+        <#if swagger2>
     @ApiModelProperty(value = "${field.comment}")
-    <#else>
+        <#else>
     /**
-     * ${field.comment}
-     */
-    </#if>
+    * ${field.comment}
+    */
+        </#if>
     </#if>
     <#if field.keyFlag>
     <#-- 主键 -->
@@ -139,9 +137,9 @@ public class ${entity} implements Serializable {
         return "${entity}{" +
     <#list table.fields as field>
         <#if field_index==0>
-        "${field.propertyName}=" + ${field.propertyName} +
+            "${field.propertyName}=" + ${field.propertyName} +
         <#else>
-        ", ${field.propertyName}=" + ${field.propertyName} +
+            ", ${field.propertyName}=" + ${field.propertyName} +
         </#if>
     </#list>
         "}";

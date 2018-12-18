@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- *
  * @author: litisn
  * @since: 2018-12-13 17:52
  */
@@ -77,6 +76,7 @@ public class CodeGenerator {
         // 如果模板引擎是 freemarker
         String mapperTemplatePath = "/templates/mapper.xml.ftl";
         String entityTemplatePath = "/templates/entity.java.ftl";
+        String entityVoTemplatePath = "/templates/entityVo.java.ftl";
         String mapperJavaTemplatePath = "/templates/mapper.java.ftl";
         String serviceTemplatePath = "/templates/service.java.ftl";
         String serviceImplTemplatePath = "/templates/serviceImpl.java.ftl";
@@ -92,8 +92,18 @@ public class CodeGenerator {
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名
                 return projectPath + "/" + pc.getModuleName() + "/" + pc.getModuleName() + "-facade/"
-                        + "/src/main/java/" + pc.getParent().replaceAll("\\.","/") + "/" + pc.getEntity()
+                        + "/src/main/java/" + pc.getParent().replaceAll("\\.", "/") + "/" + pc.getEntity()
                         + "/" + tableInfo.getEntityName() + StringPool.DOT_JAVA;
+            }
+        });
+        // 自定义配置会被优先输出
+        focList.add(new FileOutConfig(entityVoTemplatePath) {
+            @Override
+            public String outputFile(TableInfo tableInfo) {
+                // 自定义输出文件名
+                return projectPath + "/" + pc.getModuleName() + "/" + pc.getModuleName() + "-facade/"
+                        + "/src/main/java/" + pc.getParent().replaceAll("\\.", "/") + "/vo/"
+                        + tableInfo.getEntityName().concat("Vo") + StringPool.DOT_JAVA;
             }
         });
         // 自定义配置会被优先输出
@@ -102,7 +112,7 @@ public class CodeGenerator {
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名
                 return projectPath + "/" + pc.getModuleName() + "/" + pc.getModuleName() + "-service/"
-                        + "/src/main/java/" + pc.getParent().replaceAll("\\.","/") + "/" + pc.getMapper()
+                        + "/src/main/java/" + pc.getParent().replaceAll("\\.", "/") + "/" + pc.getMapper()
                         + "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_JAVA;
             }
         });
@@ -122,7 +132,7 @@ public class CodeGenerator {
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名
                 return projectPath + "/" + pc.getModuleName() + "/" + pc.getModuleName() + "-service/"
-                        + "/src/main/java/" + pc.getParent().replaceAll("\\.","/") + "/" + pc.getService()
+                        + "/src/main/java/" + pc.getParent().replaceAll("\\.", "/") + "/" + pc.getService()
                         + "/" + tableInfo.getEntityName() + "Service" + StringPool.DOT_JAVA;
             }
         });
@@ -132,7 +142,7 @@ public class CodeGenerator {
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名
                 return projectPath + "/" + pc.getModuleName() + "/" + pc.getModuleName() + "-service/"
-                        + "/src/main/java/" + pc.getParent().replaceAll("\\.","/") + "/" + pc.getServiceImpl().replaceAll("\\.","/")
+                        + "/src/main/java/" + pc.getParent().replaceAll("\\.", "/") + "/" + pc.getServiceImpl().replaceAll("\\.", "/")
                         + "/" + tableInfo.getEntityName() + "ServiceImpl" + StringPool.DOT_JAVA;
             }
         });
@@ -142,7 +152,7 @@ public class CodeGenerator {
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名
                 return projectPath + "/" + pc.getModuleName() + "/" + pc.getModuleName() + "-service/"
-                        + "/src/main/java/" + pc.getParent().replaceAll("\\.","/") + "/" + pc.getController()
+                        + "/src/main/java/" + pc.getParent().replaceAll("\\.", "/") + "/" + pc.getController()
                         + "/" + tableInfo.getEntityName() + "Controller" + StringPool.DOT_JAVA;
             }
         });
