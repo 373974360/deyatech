@@ -1,9 +1,22 @@
 package ${package.Controller};
+<#assign lowerEntity = entity?uncap_first/>
+<#assign entityVo = entity + "Vo"/>
+<#assign lowerEntityVo = lowerEntity + "Vo"/>
 
 import ${package.Entity}.${entity};
-import ${package.Entity?replace("entity","vo")}.${entity}Vo;
+import ${package.Entity?replace("entity","vo")}.${entityVo};
 import ${package.Service}.${entity}Service;
-import org.litisn.common.entity.RestResult;
+import org.land.common.entity.RestResult;
+<#list table.fields as field>
+    <#if field.name = "parent_id">
+        <#assign isTree=true/>
+    </#if>
+</#list>
+<#if isTree??>
+import org.land.common.entity.CascaderResult;
+import org.land.common.utils.CascaderUtil;
+import java.util.List;
+</#if>
 import lombok.extern.slf4j.Slf4j;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -29,13 +42,13 @@ import ${superControllerClassPackage};
  * @author: ${author}
  * @since ${date}
  */
+@Slf4j
 <#if restControllerStyle>
 @RestController
 <#else>
 @Controller
 </#if>
-@RequestMapping("<#if package.ModuleName??>/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle??>${controllerMappingHyphen}<#else>${table.entityPath}</#if>")
-@Slf4j
+@RequestMapping("<#if package.ModuleName??>/${package.ModuleName}</#if>/${lowerEntity}")
 <#if kotlin>
 class ${table.controllerName}<#if superControllerClass??> : ${superControllerClass}()</#if>
 <#else>
@@ -45,44 +58,44 @@ public class ${table.controllerName} extends ${superControllerClass} {
 public class ${table.controllerName} {
 </#if>
     @Autowired
-    ${entity}Service ${entity?uncap_first}Service;
+    ${entity}Service ${lowerEntity}Service;
 
     /**
      * 单个保存或者更新${table.comment!}
      *
-     * @param ${entity?uncap_first}
+     * @param ${lowerEntity}
      * @return
      */
     @PostMapping("/saveOrUpdate")
-    public RestResult saveOrUpdate(${entity} ${entity?uncap_first}) {
-        log.info("保存或者更新${table.comment!}:s%", JSONUtil.toJsonStr(${entity?uncap_first}));
-        boolean result = ${entity?uncap_first}Service.saveOrUpdate(${entity?uncap_first});
+    public RestResult saveOrUpdate(${entity} ${lowerEntity}) {
+        log.info(String.format("保存或者更新${table.comment!}: %s ", JSONUtil.toJsonStr(${lowerEntity})));
+        boolean result = ${lowerEntity}Service.saveOrUpdate(${lowerEntity});
         return RestResult.ok(result);
     }
 
     /**
      * 批量保存或者更新${table.comment!}
      *
-     * @param ${entity?uncap_first}List
+     * @param ${lowerEntity}List
      * @return
      */
     @PostMapping("/saveOrUpdateBatch")
-    public RestResult saveOrUpdateBatch(Collection<${entity}> ${entity?uncap_first}List) {
-        log.info("批量保存或者更新${table.comment!}:s%", JSONUtil.toJsonStr(${entity?uncap_first}List));
-        boolean result = ${entity?uncap_first}Service.saveOrUpdateBatch(${entity?uncap_first}List);
+    public RestResult saveOrUpdateBatch(Collection<${entity}> ${lowerEntity}List) {
+        log.info(String.format("批量保存或者更新${table.comment!}: %s ", JSONUtil.toJsonStr(${lowerEntity}List)));
+        boolean result = ${lowerEntity}Service.saveOrUpdateBatch(${lowerEntity}List);
         return RestResult.ok(result);
     }
 
     /**
-     * 根据ID逻辑删除${table.comment!}
+     * 根据${entity}对象属性逻辑删除${table.comment!}
      *
-     * @param id
+     * @param ${lowerEntity}
      * @return
      */
-    @PostMapping("/removeById")
-    public RestResult removeById(Serializable id) {
-        log.info("根据id删除${table.comment!}:s%", id);
-        boolean result = ${entity?uncap_first}Service.removeById(id);
+    @PostMapping("/removeBy${entity}")
+    public RestResult removeBy${entity}(${entity} ${lowerEntity}) {
+        log.info(String.format("根据${entity}对象属性逻辑删除${table.comment!}: %s ", ${lowerEntity}));
+        boolean result = ${lowerEntity}Service.removeByBean(${lowerEntity});
         return RestResult.ok(result);
     }
 
@@ -95,51 +108,79 @@ public class ${table.controllerName} {
      */
     @PostMapping("/removeByIds")
     public RestResult removeByIds(Collection<Serializable> ids) {
-        log.info("根据id批量删除${table.comment!}:s%", JSONUtil.toJsonStr(ids));
-        boolean result = ${entity?uncap_first}Service.removeByIds(ids);
+        log.info(String.format("根据id批量删除${table.comment!}: %s ", JSONUtil.toJsonStr(ids)));
+        boolean result = ${lowerEntity}Service.removeByIds(ids);
         return RestResult.ok(result);
     }
 
     /**
      * 根据ID获取${table.comment!}
      *
-     * @param id
+     * @param ${lowerEntity}
      * @return
      */
-    @GetMapping("/getById")
-    public RestResult getById(Serializable id) {
-        ${entity} ${entity?uncap_first} = ${entity?uncap_first}Service.getById(id);
-        ${entity}Vo ${entity?uncap_first}Vo = ${entity?uncap_first}Service.setVoProperties(${entity?uncap_first});
-        log.info("根据id获取${table.comment!}：s%", JSONUtil.toJsonStr(${entity?uncap_first}Vo));
-        return RestResult.ok(${entity?uncap_first}Vo);
+    @GetMapping("/getBy${entity}")
+    public RestResult getBy${entity}(${entity} ${lowerEntity}) {
+        ${lowerEntity} = ${lowerEntity}Service.getByBean(${lowerEntity});
+        ${entityVo} ${lowerEntityVo} = ${lowerEntity}Service.setVoProperties(${lowerEntity});
+        log.info(String.format("根据id获取${table.comment!}：s%", JSONUtil.toJsonStr(${lowerEntityVo})));
+        return RestResult.ok(${lowerEntityVo});
     }
 
     /**
      * 根据${entity}对象属性检索所有${table.comment!}
      *
-     * @param ${entity?uncap_first}
+     * @param ${lowerEntity}
      * @return
      */
     @GetMapping("/listByBean")
-    public RestResult listByBean(${entity} ${entity?uncap_first}) {
-        Collection<${entity}> ${entity?uncap_first}s = ${entity?uncap_first}Service.listByBean(${entity?uncap_first});
-        Collection<${entity}Vo> ${entity?uncap_first}Vos = ${entity?uncap_first}Service.setVoProperties(${entity?uncap_first}s);
-        log.info("根据${entity}对象属性检索所有${table.comment!}:s%",JSONUtil.toJsonStr(${entity?uncap_first}Vos));
-        return RestResult.ok(${entity?uncap_first}Vos);
+    public RestResult listByBean(${entity} ${lowerEntity}) {
+        Collection<${entity}> ${lowerEntity}s = ${lowerEntity}Service.listByBean(${lowerEntity});
+        Collection<${entityVo}> ${lowerEntityVo}s = ${lowerEntity}Service.setVoProperties(${lowerEntity}s);
+        log.info(String.format("根据${entity}对象属性检索所有${table.comment!}: %s ",JSONUtil.toJsonStr(${lowerEntityVo}s)));
+        return RestResult.ok(${lowerEntityVo}s);
     }
 
     /**
      * 根据${entity}对象属性分页检索${table.comment!}
      *
-     * @param ${entity?uncap_first}
+     * @param ${lowerEntity}
      * @return
      */
     @GetMapping("/pageByBean")
-    public RestResult pageByBean(${entity} ${entity?uncap_first}) {
-        IPage ${entity?uncap_first}s = ${entity?uncap_first}Service.pageByBean(${entity?uncap_first});
-        ${entity?uncap_first}s.setRecords(${entity?uncap_first}Service.setVoProperties(${entity?uncap_first}s.getRecords()));
-        log.info("根据${entity}对象属性分页检索${table.comment!}:s%",JSONUtil.toJsonStr(${entity?uncap_first}s));
-        return RestResult.ok(${entity?uncap_first}s);
+    public RestResult pageByBean(${entity} ${lowerEntity}) {
+        IPage ${lowerEntity}s = ${lowerEntity}Service.pageByBean(${lowerEntity});
+        ${lowerEntity}s.setRecords(${lowerEntity}Service.setVoProperties(${lowerEntity}s.getRecords()));
+        log.info(String.format("根据${entity}对象属性分页检索${table.comment!}: %s ",JSONUtil.toJsonStr(${lowerEntity}s)));
+        return RestResult.ok(${lowerEntity}s);
     }
+
+    <#if isTree??>
+    /**
+     * 获取${table.comment!}的tree对象
+     *
+     * @return
+     */
+    @GetMapping("/getTree")
+    public RestResult get${entity}Tree() {
+        Collection<${entityVo}> ${lowerEntity}Tree = ${lowerEntity}Service.get${entity}Tree();
+        log.info(String.format("获取${table.comment!}的tree对象: %s ",JSONUtil.toJsonStr(${lowerEntity}Tree)));
+        return RestResult.ok(${lowerEntity}Tree);
+    }
+
+    /**
+     * 获取${table.comment!}的级联对象
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("/getCascader")
+    public RestResult getCascader(String id) {
+        Collection<${entityVo}> ${lowerEntityVo}s = ${lowerEntity}Service.get${entity}Tree();
+        List<CascaderResult> cascaderResults = CascaderUtil.getResult("Id", "Name","TreePosition", id, ${lowerEntityVo}s);
+        log.info(String.format("获取${table.comment!}的级联对象: %s ",JSONUtil.toJsonStr(cascaderResults)));
+        return RestResult.ok(cascaderResults);
+    }
+    </#if>
 }
 </#if>

@@ -1,4 +1,12 @@
 package ${package.Entity?replace("entity","vo")};
+<#assign lowerEntity = entity?uncap_first/>
+<#assign entityVo = entity + "Vo"/>
+<#assign lowerEntityVo = lowerEntity + "Vo"/>
+<#list table.fields as field>
+    <#if field.name = "parent_id">
+        <#assign isTree=true/>
+    </#if>
+</#list>
 
 import ${package.Entity}.${entity};
 <#if swagger2>
@@ -9,6 +17,9 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+</#if>
+<#if isTree??>
+import java.util.List;
 </#if>
 
 /**
@@ -31,6 +42,10 @@ import lombok.experimental.Accessors;
 <#if swagger2>
 @ApiModel(value="${entity}对象", description="${table.comment!}")
 </#if>
-public class ${entity}Vo extends ${entity} {
-
+public class ${entityVo} extends ${entity} {
+<#if isTree??>
+    private String label;
+    private List<${entityVo}> children;
+    private Integer level;
+</#if>
 }

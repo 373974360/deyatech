@@ -13,8 +13,8 @@
     </modules>
 
     <parent>
-        <groupId>org.litisn</groupId>
-        <artifactId>land</artifactId>
+        <groupId>org.land</groupId>
+        <artifactId>root</artifactId>
         <version>0.0.1</version>
     </parent>
 

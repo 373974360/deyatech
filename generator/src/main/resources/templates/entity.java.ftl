@@ -1,5 +1,8 @@
 package ${package.Entity};
 
+<#assign lowerEntity = entity?uncap_first/>
+<#assign entityVo = entity + "Vo"/>
+<#assign lowerEntityVo = lowerEntity + "Vo"/>
 <#list table.importPackages as pkg>
 import ${pkg};
 </#list>
@@ -12,7 +15,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 </#if>
-
+<#if (table.commonFields?size<8)>
+import java.util.Date;
+</#if>
 /**
  * <p>
  * ${table.comment!}
@@ -88,8 +93,51 @@ public class ${entity}{
     </#if>
     private ${field.propertyType} ${field.propertyName};
 </#list>
-<#------------  END 字段循环遍历  ---------->
 
+<#if (table.commonFields?size<8)>
+  /**
+    * 记录状态，0为禁用，1为启用，-1为已删除
+    */
+    @TableField(exist = false)
+    private Integer enable;
+
+    /**
+    * 备注
+    */
+    @TableField(exist = false)
+    private String remark;
+
+    /**
+    * 数据记录创建者
+    */
+    @TableField(exist = false)
+    private String createBy;
+
+    /**
+    * 数据记录创建时间
+    */
+    @TableField(exist = false)
+    private Date createTime;
+
+    /**
+    * 数据记录更新者
+    */
+    @TableField(exist = false)
+    private String updateBy;
+
+    /**
+    * 数据记录更新时间
+    */
+    @TableField(exist = false)
+    private Date updateTime;
+
+    /**
+    * 乐观锁字段
+    */
+    @TableField(exist = false)
+    private Integer version;
+</#if>
+<#------------  END 字段循环遍历  ---------->
 <#if !entityLombokModel>
     <#list table.fields as field>
         <#if field.propertyType == "boolean">
@@ -113,7 +161,6 @@ public class ${entity}{
     }
     </#list>
 </#if>
-
 <#if entityColumnConstant>
     <#list table.fields as field>
     public static final String ${field.name?upper_case} = "${field.name}";

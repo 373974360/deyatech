@@ -9,14 +9,14 @@
     <description>公共模块</description>
 
     <parent>
-        <groupId>org.litisn</groupId>
-        <artifactId>land</artifactId>
+        <groupId>org.land</groupId>
+        <artifactId>root</artifactId>
         <version>0.0.1</version>
     </parent>
 
     <dependencies>
         <dependency>
-            <groupId>org.litisn</groupId>
+            <groupId>org.land</groupId>
             <artifactId>common-facade</artifactId>
             <version>${land.version}</version>
         </dependency>

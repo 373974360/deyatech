@@ -11,7 +11,7 @@
 
     <parent>
         <artifactId>common</artifactId>
-        <groupId>org.litisn</groupId>
+        <groupId>org.land</groupId>
         <version>0.0.1</version>
     </parent>
 

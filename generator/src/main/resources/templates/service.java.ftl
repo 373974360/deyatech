@@ -1,10 +1,14 @@
 package ${package.Service};
+<#assign lowerEntity = entity?uncap_first/>
+<#assign entityVo = entity + "Vo"/>
+<#assign lowerEntityVo = lowerEntity + "Vo"/>
 
 import ${package.Entity}.${entity};
-import ${package.Entity?replace("entity","vo")}.${entity}Vo;
+import ${package.Entity?replace("entity","vo")}.${entityVo};
 import ${superServiceClassPackage};
 import java.util.Collection;
 import java.util.List;
+
 /**
  * <p>
  *  ${table.comment!} 服务类
@@ -17,21 +21,35 @@ import java.util.List;
 interface ${table.serviceName} : ${superServiceClass}<${entity}>
 <#else>
 public interface ${entity}${table.serviceName} extends ${superServiceClass}<${entity}> {
+<#list table.fields as field>
+    <#if field.name = "parent_id">
+        <#assign isTree=true/>
+    </#if>
+</#list>
+<#if isTree??>
+
+    /**
+     * 根据${entity}对象属性检索${table.comment!}的tree对象
+     *
+     * @return
+     */
+    Collection<${entityVo}> get${entity}Tree();
+</#if>
 
     /**
      * 单个将对象转换为vo${table.comment!}
      *
-     * @param ${entity?uncap_first}
+     * @param ${lowerEntity}
      * @return
      */
-    ${entity}Vo setVoProperties(${entity} ${entity?uncap_first});
+    ${entityVo} setVoProperties(${entity} ${lowerEntity});
 
     /**
      * 批量将对象转换为vo${table.comment!}
      *
-     * @param ${entity?uncap_first}s
+     * @param ${lowerEntity}s
      * @return
      */
-    List<${entity}Vo> setVoProperties(Collection ${entity?uncap_first}s);
+    List<${entityVo}> setVoProperties(Collection ${lowerEntity}s);
 }
 </#if>

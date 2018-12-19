@@ -10,14 +10,10 @@
     <description>认证中心</description>
 
     <parent>
-        <groupId>org.litisn</groupId>
-        <artifactId>land</artifactId>
+        <groupId>org.land</groupId>
+        <artifactId>root</artifactId>
         <version>0.0.1</version>
     </parent>
-
-    <properties>
-        <java.version>1.8</java.version>
-    </properties>
 
     <dependencies>
         <dependency>

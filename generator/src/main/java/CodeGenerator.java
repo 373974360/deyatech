@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * @author: litisn
+ * @author: lee.
  * @since: 2018-12-13 17:52
  */
 public class CodeGenerator {
@@ -44,7 +44,7 @@ public class CodeGenerator {
         GlobalConfig gc = new GlobalConfig();
         String projectPath = System.getProperty("user.dir");
 //        gc.setOutputDir(projectPath + "/generator/src/main/java");
-        gc.setAuthor("litisn");
+        gc.setAuthor("lee.");
         gc.setServiceName("Service");
         gc.setOpen(false);
 //        gc.setBaseResultMap(true);
@@ -62,7 +62,7 @@ public class CodeGenerator {
         // 包配置
         PackageConfig pc = new PackageConfig();
         pc.setModuleName(scanner("模块名"));
-        pc.setParent("org.litisn");
+        pc.setParent("org.land");
         mpg.setPackageInfo(pc);
 
         // 自定义配置
@@ -177,15 +177,16 @@ public class CodeGenerator {
         strategy.setSuperEntityColumns("id_", "enable_", "version_", "remark_", "create_by", "create_time", "update_by", "update_time");
         strategy.setEntityLombokModel(true);
         strategy.setRestControllerStyle(true);
-        strategy.setSuperEntityClass("org.litisn.common.base.BaseEntity");
-        strategy.setSuperMapperClass("org.litisn.common.base.BaseMapper");
-        strategy.setSuperServiceClass("org.litisn.common.base.BaseService");
-        strategy.setSuperServiceImplClass("org.litisn.common.base.BaseServiceImpl");
-        strategy.setSuperControllerClass("org.litisn.common.base.BaseController");
-        strategy.setInclude(scanner("表名"));
+        strategy.setSuperEntityClass("org.land.common.base.BaseEntity");
+        strategy.setSuperMapperClass("org.land.common.base.BaseMapper");
+        strategy.setSuperServiceClass("org.land.common.base.BaseService");
+        strategy.setSuperServiceImplClass("org.land.common.base.BaseServiceImpl");
+        strategy.setSuperControllerClass("org.land.common.base.BaseController");
+        strategy.setInclude(scanner("表名,多个用英文逗号分开").split(","));
         strategy.setControllerMappingHyphenStyle(true);
         strategy.setTablePrefix(pc.getModuleName() + "_");
         strategy.entityTableFieldAnnotationEnable(true);
+        strategy.setControllerMappingHyphenStyle(true);
         mpg.setStrategy(strategy);
         mpg.setTemplateEngine(new FreemarkerTemplateEngine());
         mpg.execute();

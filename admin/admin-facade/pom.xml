@@ -11,13 +11,13 @@
 
     <parent>
         <artifactId>admin</artifactId>
-        <groupId>org.litisn</groupId>
+        <groupId>org.land</groupId>
         <version>0.0.1</version>
     </parent>
 
     <dependencies>
         <dependency>
-            <groupId>org.litisn</groupId>
+            <groupId>org.land</groupId>
             <artifactId>common-facade</artifactId>
             <version>${land.version}</version>
         </dependency>

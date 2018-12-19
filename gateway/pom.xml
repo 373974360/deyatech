@@ -4,14 +4,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>gateway</artifactId>
-    <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
     <description>路由中心</description>
 
     <parent>
-        <groupId>org.litisn</groupId>
-        <artifactId>land</artifactId>
+        <groupId>org.land</groupId>
+        <artifactId>root</artifactId>
         <version>0.0.1</version>
     </parent>
 
