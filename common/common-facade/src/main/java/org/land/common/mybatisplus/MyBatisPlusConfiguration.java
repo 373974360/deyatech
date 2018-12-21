@@ -59,4 +59,13 @@ public class MyBatisPlusConfiguration {
     public PerformanceInterceptor performanceInterceptor() {
         return new PerformanceInterceptor();
     }
+
+    /**
+     * 自动填充字段类
+     * @return
+     */
+    @Bean
+    public MybatisPlusMetaObjectHandler mybatisPlusMetaObjectHandler(){
+        return new MybatisPlusMetaObjectHandler();
+    }
 }

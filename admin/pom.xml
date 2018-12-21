@@ -17,6 +17,7 @@
 
     <modules>
         <module>admin-facade</module>
+        <module>admin-feign</module>
         <module>admin-service</module>
     </modules>
 

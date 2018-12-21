@@ -1,10 +1,12 @@
 package org.land.common.mybatisplus;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.land.common.context.UserContextHelper;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -18,7 +20,6 @@ import java.util.Date;
  * @since: 2018-12-14 16:09
  */
 @Slf4j
-@Component
 public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {

@@ -114,7 +114,7 @@ public class ${table.controllerName} {
     }
 
     /**
-     * 根据ID获取${table.comment!}
+     * 根据${entity}对象属性获取${table.comment!}
      *
      * @param ${lowerEntity}
      * @return

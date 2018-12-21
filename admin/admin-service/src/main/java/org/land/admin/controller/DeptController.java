@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +25,7 @@ import org.land.common.base.BaseController;
  * 系统部门信息 前端控制器
  * </p>
  * @author: lee.
- * @since 2018-12-19
+ * @since 2018-12-21
  */
 @Slf4j
 @RestController
@@ -87,7 +88,7 @@ public class DeptController extends BaseController {
     }
 
     /**
-     * 根据ID获取系统部门信息
+     * 根据Dept对象属性获取系统部门信息
      *
      * @param dept
      * @return

@@ -21,7 +21,7 @@ import org.land.common.base.BaseController;
  * 系统数据字典索引信息 前端控制器
  * </p>
  * @author: lee.
- * @since 2018-12-19
+ * @since 2018-12-21
  */
 @Slf4j
 @RestController
@@ -84,7 +84,7 @@ public class LogsController extends BaseController {
     }
 
     /**
-     * 根据ID获取系统数据字典索引信息
+     * 根据Logs对象属性获取系统数据字典索引信息
      *
      * @param logs
      * @return

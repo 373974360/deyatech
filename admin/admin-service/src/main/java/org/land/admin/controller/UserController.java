@@ -1,6 +1,7 @@
 package org.land.admin.controller;
 
 import org.land.admin.entity.User;
+import org.land.admin.feign.UserFeign;
 import org.land.admin.vo.UserVo;
 import org.land.admin.service.UserService;
 import org.land.common.entity.RestResult;
@@ -21,12 +22,12 @@ import org.land.common.base.BaseController;
  * 系统用户信息 前端控制器
  * </p>
  * @author: lee.
- * @since 2018-12-19
+ * @since 2018-12-21
  */
 @Slf4j
 @RestController
 @RequestMapping("/admin/user")
-public class UserController extends BaseController {
+public class UserController extends BaseController implements UserFeign {
     @Autowired
     UserService userService;
 
@@ -84,11 +85,12 @@ public class UserController extends BaseController {
     }
 
     /**
-     * 根据ID获取系统用户信息
+     * 根据User对象属性获取系统用户信息
      *
      * @param user
      * @return
      */
+    @Override
     @GetMapping("/getByUser")
     public RestResult getByUser(User user) {
         user = userService.getByBean(user);

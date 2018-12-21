@@ -4,25 +4,31 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>common-facade</artifactId>
+    <artifactId>admin-feign</artifactId>
 
     <name>${project.artifactId}</name>
-    <description>公共模块的基础类</description>
+    <description>后台管理feign接口模块</description>
 
     <parent>
-        <artifactId>common</artifactId>
+        <artifactId>admin</artifactId>
         <groupId>org.land</groupId>
         <version>0.0.1</version>
     </parent>
 
     <dependencies>
         <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
+            <groupId>org.land</groupId>
+            <artifactId>common-facade</artifactId>
+            <version>${land.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
+            <groupId>org.land</groupId>
+            <artifactId>admin-facade</artifactId>
+            <version>${land.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

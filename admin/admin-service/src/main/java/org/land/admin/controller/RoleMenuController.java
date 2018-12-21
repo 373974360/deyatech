@@ -21,7 +21,7 @@ import org.land.common.base.BaseController;
  * 系统角色菜单关联信息 前端控制器
  * </p>
  * @author: lee.
- * @since 2018-12-19
+ * @since 2018-12-21
  */
 @Slf4j
 @RestController
@@ -84,7 +84,7 @@ public class RoleMenuController extends BaseController {
     }
 
     /**
-     * 根据ID获取系统角色菜单关联信息
+     * 根据RoleMenu对象属性获取系统角色菜单关联信息
      *
      * @param roleMenu
      * @return

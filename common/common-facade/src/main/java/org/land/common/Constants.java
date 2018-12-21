@@ -15,6 +15,36 @@ public interface Constants {
     String CONTEXT_KEY_USER_ID = "currentUserId";
 
     /**
+     * redis中token过期字符串
+     */
+    String TOKEN = "token";
+
+    /**
+     * 刷新token标记
+     */
+    String REFRESH_TOKEN = "refresh_token";
+
+    /**
+     * jwt加密信息中的用户Id
+     */
+    String JWT_KEY_ID = "id";
+
+    /**
+     * jwt加密信息中的唯一用户名
+     */
+    String JWT_KEY_UNIQUENAME = "uniqueName";
+
+    /**
+     * jwt加密信息中的名称
+     */
+    String JWT_KEY_NAME = "name";
+
+    /**
+     * 12位加密盐
+     */
+    Integer PASSWORD_ENCORDER_SALT = 12;
+
+    /**
      * get方法前缀
      */
     String METHOD_GET_PREX = "get";

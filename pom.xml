@@ -27,7 +27,6 @@
     </parent>
 
     <modules>
-        <module>authentication</module>
         <module>gateway</module>
         <module>admin</module>
         <module>common</module>
@@ -61,6 +60,12 @@
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>4.3.1</version>
+            </dependency>
+            <!-- jwt相关工具类 -->
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt</artifactId>
+                <version>0.9.1</version>
             </dependency>
             <!-- lombok -->
             <dependency>
