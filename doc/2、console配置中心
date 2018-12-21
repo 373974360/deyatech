@@ -1,0 +1,97 @@
+application配置：
+server:
+  port: 0
+logging:
+  level:
+    root: INFO
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_null
+mybatis-plus:
+  configuration:
+    auto-mapping-behavior: partial
+    auto-mapping-unknown-column-behavior: warning
+  global-config:
+    db-config:
+      logic-delete-value: -1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 1 # 逻辑未删除值(默认为 0)
+
+application,dev配置：
+logging:
+  level:
+    root: INFO
+    org.land: DEBUG
+# 数据库 相关设置
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.78.133:3306/land?characterEncoding=utf8&autoReConnect=true&useSSL=false
+    username: root
+    password: beizhi#2018
+    # hikari连接池的参数 相关设置
+    hikari:
+      # 定义获取连接的超时时间。最小250ms,默认30s
+      connectionTimeout: 10000
+      # 定义连接空闲时间。最小10s,默认10m
+      idleTimeout: 50000
+      # 定义最小的空闲连接数。推荐不设置。或与最大连接数一致；保持固定的连接数目
+      minimumIdle: 100
+      # 定义最大的连接数。默认10
+      maximumPoolSize: 100
+      # 定义连接的最大生命周期。推荐设置该属性。最小30s，默认30m
+      maxLifeTime: 600000
+      # 从连接池获取到连接后，进行检查的查询语句。推荐设置该属性。默认值为none
+      connectionTestQuery: select 1
+  redis:
+    database: 1
+    host: 192.168.78.133
+    port: 6379
+    password: beizhi!2018
+    timeout: 10000ms
+    lettuce:
+      pool:
+        max-active: 50
+        max-idle: 20
+
+gateway配置：
+server:
+  port: 8765
+spring:
+  cloud:
+    loadbalancer:
+      retry:
+        enabled: false
+    gateway:
+      routes:
+        #------------------------------------------------------------------------
+        - id: common
+          uri: lb://common-service
+          order: 10000
+          predicates:
+            - Path=/manage/common/**
+          filters:
+            - StripPrefix=2
+        #    - name: RequestRateLimiter
+        #      args:
+        #        redis-rate-limiter.replenishRate: 1  # 令牌桶的容积
+        #        redis-rate-limiter.burstCapacity: 30  # 流速 每秒
+        #        key-resolver: "#{@remoteAddrKeyResolver}" #SPEL表达式去的对应的bean
+        #------------------------------------------------------------------------
+        - id: admin
+          uri: lb://admin-service
+          order: 10000
+          predicates:
+            - Path=/manage/admin/**
+          filters:
+            - StripPrefix=1
+            #- UserTokenCheck
+
+gateway,dev配置
+jwt:
+  pubKeyPath: jwt/pub.key
+  priKeyPath: jwt/pri.key
+  tokenHeader: Land-Token
+  buffer: 180
+  xpire: 1800
