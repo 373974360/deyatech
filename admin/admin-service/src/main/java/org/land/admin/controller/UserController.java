@@ -1,33 +1,34 @@
 package org.land.admin.controller;
 
-import org.land.admin.entity.User;
-import org.land.admin.feign.UserFeign;
-import org.land.admin.vo.UserVo;
-import org.land.admin.service.UserService;
-import org.land.common.entity.RestResult;
-import lombok.extern.slf4j.Slf4j;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import lombok.extern.slf4j.Slf4j;
+import org.land.admin.entity.User;
+import org.land.admin.service.UserService;
+import org.land.admin.vo.UserVo;
+import org.land.common.base.BaseController;
+import org.land.common.entity.RestResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.io.Serializable;
 import java.util.Collection;
-import org.springframework.web.bind.annotation.RestController;
-import org.land.common.base.BaseController;
 
 /**
  * <p>
  * 系统用户信息 前端控制器
  * </p>
+ *
  * @author: lee.
  * @since 2018-12-21
  */
 @Slf4j
 @RestController
 @RequestMapping("/admin/user")
-public class UserController extends BaseController implements UserFeign {
+public class UserController extends BaseController {
     @Autowired
     UserService userService;
 
@@ -90,12 +91,11 @@ public class UserController extends BaseController implements UserFeign {
      * @param user
      * @return
      */
-    @Override
     @GetMapping("/getByUser")
     public RestResult getByUser(User user) {
         user = userService.getByBean(user);
         UserVo userVo = userService.setVoProperties(user);
-        log.info(String.format("根据id获取系统用户信息：s%", JSONUtil.toJsonStr(userVo)));
+        log.info(String.format("根据id获取系统用户信息：%s", JSONUtil.toJsonStr(userVo)));
         return RestResult.ok(userVo);
     }
 
@@ -109,7 +109,7 @@ public class UserController extends BaseController implements UserFeign {
     public RestResult listByBean(User user) {
         Collection<User> users = userService.listByBean(user);
         Collection<UserVo> userVos = userService.setVoProperties(users);
-        log.info(String.format("根据User对象属性检索所有系统用户信息: %s ",JSONUtil.toJsonStr(userVos)));
+        log.info(String.format("根据User对象属性检索所有系统用户信息: %s ", JSONUtil.toJsonStr(userVos)));
         return RestResult.ok(userVos);
     }
 
@@ -123,7 +123,7 @@ public class UserController extends BaseController implements UserFeign {
     public RestResult pageByBean(User user) {
         IPage users = userService.pageByBean(user);
         users.setRecords(userService.setVoProperties(users.getRecords()));
-        log.info(String.format("根据User对象属性分页检索系统用户信息: %s ",JSONUtil.toJsonStr(users)));
+        log.info(String.format("根据User对象属性分页检索系统用户信息: %s ", JSONUtil.toJsonStr(users)));
         return RestResult.ok(users);
     }
 

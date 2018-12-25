@@ -3,7 +3,6 @@ package org.land.gateway.controller;
 import org.land.common.base.BaseController;
 import org.land.common.entity.RestResult;
 import org.land.common.jwt.JwtRequest;
-import org.land.common.utils.AesUtil;
 import org.land.gateway.config.JwtConfig;
 import org.land.gateway.service.UserAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +42,9 @@ public class UserAuthController extends BaseController {
      */
     @GetMapping("/token")
     public RestResult creatToken(JwtRequest jwtInfo) throws Exception {
-        if (validateVerifyCode(jwtInfo.getVerifyCode(), jwtInfo.getRandom())) {
-            return userAuthService.login(AesUtil.aesDecrypt(jwtInfo.getAccount()), AesUtil.aesDecrypt(jwtInfo.getPassword()));
+        if (validateVerifyCode(redisTemplate, jwtInfo.getVerifyCode(), jwtInfo.getRandom())) {
+//            return userAuthService.login(AesUtil.aesDecrypt(jwtInfo.getAccount()), AesUtil.aesDecrypt(jwtInfo.getPassword()));
+            return userAuthService.login(jwtInfo.getAccount(), jwtInfo.getPassword());
         } else {
             return RestResult.build(200, "验证码不正确", false);
         }
@@ -66,24 +66,5 @@ public class UserAuthController extends BaseController {
     public RestResult invalid(ServerHttpRequest request) throws Exception {
         String token = request.getHeaders().getFirst(jwtConfig.getTokenHeader());
         return userAuthService.invalid(token);
-    }
-
-    /**
-     * 验证验证码
-     *
-     * @param verifyCode
-     * @return
-     */
-    public boolean validateVerifyCode(String verifyCode, String random) {
-        Object o = redisTemplate.opsForValue().get(random);
-        if (o == null) {
-            return false;
-        }
-        String s = o.toString();
-        if (verifyCode != null && verifyCode.equalsIgnoreCase(s)) {
-            redisTemplate.delete(random);
-            return true;
-        }
-        return false;
     }
 }

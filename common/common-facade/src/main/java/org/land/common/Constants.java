@@ -89,4 +89,9 @@ public interface Constants {
      */
     String DEFAULT_TREE_POSITION_SPLIT = "&";
 
+    /**
+     * 验证码前缀
+     */
+    String PREFIX_KEY_VERIFY_CODE = "verifyCode_";
+
 }

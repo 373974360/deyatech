@@ -1,24 +1,24 @@
 package org.land.admin.controller;
 
-import org.land.admin.entity.Dept;
-import org.land.admin.vo.DeptVo;
-import org.land.admin.service.DeptService;
-import org.land.common.entity.RestResult;
-import org.land.common.entity.CascaderResult;
-import org.land.common.utils.CascaderUtil;
-import java.util.List;
-import lombok.extern.slf4j.Slf4j;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import lombok.extern.slf4j.Slf4j;
+import org.land.admin.entity.Dept;
+import org.land.admin.service.DeptService;
+import org.land.admin.vo.DeptVo;
+import org.land.common.base.BaseController;
+import org.land.common.entity.CascaderResult;
+import org.land.common.entity.RestResult;
+import org.land.common.utils.CascaderUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.io.Serializable;
 import java.util.Collection;
-import org.springframework.web.bind.annotation.RestController;
-import org.land.common.base.BaseController;
+import java.util.List;
 
 /**
  * <p>

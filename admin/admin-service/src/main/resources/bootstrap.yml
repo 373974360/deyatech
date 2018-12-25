@@ -1,6 +1,6 @@
 spring:
   application:
-    name: admin-service
+    name: ${project.name}
   profiles:
     active: dev
   cloud:

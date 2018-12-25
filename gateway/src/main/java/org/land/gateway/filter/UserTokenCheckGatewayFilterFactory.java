@@ -3,8 +3,10 @@ package org.land.gateway.filter;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpStatus;
+import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.land.common.Constants;
+import org.land.common.entity.RestResult;
 import org.land.common.exception.BusinessException;
 import org.land.common.jwt.JwtInfo;
 import org.land.common.jwt.JwtUtil;
@@ -12,12 +14,15 @@ import org.land.gateway.config.JwtConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
 
 /**
  * <p>
@@ -41,9 +46,12 @@ public class UserTokenCheckGatewayFilterFactory extends AbstractGatewayFilterFac
     public GatewayFilter apply(Object config) {
         return (exchange, chain) -> {
             String userToken = getToken(exchange);
+            ServerHttpResponse response = exchange.getResponse();
             JwtInfo jwtInfo;
             if (StrUtil.isBlank(userToken)) {
-                throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "登录信息过期，请重新登录！");
+                RestResult restResult = RestResult.build(HttpStatus.HTTP_INTERNAL_ERROR, "登录信息过期，请重新登录！");
+                DataBuffer bodyDataBuffer = response.bufferFactory().wrap(JSONUtil.toJsonStr(restResult).getBytes());
+                return response.writeWith(Mono.just(bodyDataBuffer));
             } else {
                 jwtInfo = JwtUtil.getInfoFromToken(userToken, jwtConfig.getPubKeyPath());
                 Object invlideToken = redisTemplate.opsForValue().get(Constants.TOKEN.concat(jwtInfo.getId()));

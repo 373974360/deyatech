@@ -13,6 +13,7 @@ import reactor.core.publisher.Mono;
  * <p>
  * gateway模块微服务启动类
  * </p>
+ *
  * @author: lee.
  * @since 2018-12-21
  */
