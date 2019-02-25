@@ -40,20 +40,17 @@ public class ClassUtil {
         List returnClassList = new ArrayList<Class>();
         //判断是不是接口,不是接口不作处理
         if (c.isInterface()) {
-            try {
-                //获得当前包以及子包下的所有类
-                List<Class<?>> allClass = getClasses(packageName);
-                //判断是否是一个接口
-                for (int i = 0; i < allClass.size(); i++) {
-                    if (c.isAssignableFrom(allClass.get(i))) {
-                        if (!c.equals(allClass.get(i))) {
-                            returnClassList.add(allClass.get(i));
-                        }
+            //获得当前包以及子包下的所有类
+            List<Class<?>> allClass = getClasses(packageName);
+            //判断是否是一个接口
+            for (int i = 0; i < allClass.size(); i++) {
+                if (c.isAssignableFrom(allClass.get(i))) {
+                    if (!c.equals(allClass.get(i))) {
+                        returnClassList.add(allClass.get(i));
                     }
                 }
-            } catch (Exception e) {
-                // TODO: handle exception
             }
+
         }
         return returnClassList;
     }
@@ -63,7 +60,7 @@ public class ClassUtil {
      * @return List<Class>    包下所有类
      * @Description: 根据包名获得该包以及子包下的所有类不查找jar包中的
      */
-    private static List<Class<?>> getClasses(String packageName) throws ClassNotFoundException, IOException {
+    private static List<Class<?>> getClasses(String packageName) {
         //第一个class类的集合
         List<Class<?>> classes = new ArrayList<Class<?>>();
         //是否循环迭代
@@ -160,6 +157,7 @@ public class ClassUtil {
 
     /**
      * 以文件的形式来获取包下的所有Class
+     *
      * @param packageName
      * @param packagePath
      * @param recursive

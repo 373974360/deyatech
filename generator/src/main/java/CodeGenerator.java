@@ -185,7 +185,7 @@ public class CodeGenerator {
         strategy.setInclude(scanner("表名,多个用英文逗号分开").split(","));
         strategy.setControllerMappingHyphenStyle(true);
         strategy.setTablePrefix(pc.getModuleName() + "_");
-        strategy.entityTableFieldAnnotationEnable(true);
+        strategy.setEntityTableFieldAnnotationEnable(true);
         strategy.setControllerMappingHyphenStyle(true);
         mpg.setStrategy(strategy);
         mpg.setTemplateEngine(new FreemarkerTemplateEngine());

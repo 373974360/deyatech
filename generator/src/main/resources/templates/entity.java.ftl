@@ -59,8 +59,8 @@ public class ${entity}{
     @ApiModelProperty(value = "${field.comment}")
         <#else>
     /**
-    * ${field.comment}
-    */
+     * ${field.comment}
+     */
         </#if>
     </#if>
     <#if field.keyFlag>
@@ -95,45 +95,45 @@ public class ${entity}{
 </#list>
 
 <#if (table.commonFields?size<8)>
-  /**
-    * 记录状态，0为禁用，1为启用，-1为已删除
-    */
+    /**
+     * 记录状态，0为禁用，1为启用，-1为已删除
+     */
     @TableField(exist = false)
     private Integer enable;
 
     /**
-    * 备注
-    */
+     * 备注
+     */
     @TableField(exist = false)
     private String remark;
 
     /**
-    * 数据记录创建者
-    */
+     * 数据记录创建者
+     */
     @TableField(exist = false)
     private String createBy;
 
     /**
-    * 数据记录创建时间
-    */
+     * 数据记录创建时间
+     */
     @TableField(exist = false)
     private Date createTime;
 
     /**
-    * 数据记录更新者
-    */
+     * 数据记录更新者
+     */
     @TableField(exist = false)
     private String updateBy;
 
     /**
-    * 数据记录更新时间
-    */
+     * 数据记录更新时间
+     */
     @TableField(exist = false)
     private Date updateTime;
 
     /**
-    * 乐观锁字段
-    */
+     * 乐观锁字段
+     */
     @TableField(exist = false)
     private Integer version;
 </#if>
