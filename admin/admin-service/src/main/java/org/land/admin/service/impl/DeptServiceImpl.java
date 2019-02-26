@@ -1,18 +1,20 @@
 package org.land.admin.service.impl;
 
-import org.land.admin.entity.Dept;
-import org.land.admin.vo.DeptVo;
-import org.land.admin.mapper.DeptMapper;
-import org.land.admin.service.DeptService;
-import org.land.common.base.BaseServiceImpl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
-import org.land.common.Constants;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import org.land.admin.entity.Dept;
+import org.land.admin.mapper.DeptMapper;
+import org.land.admin.service.DeptService;
+import org.land.admin.vo.DeptVo;
+import org.land.common.Constants;
+import org.land.common.base.BaseServiceImpl;
 import org.springframework.stereotype.Service;
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.Collection;
+import java.util.List;
 
 /**
  * <p>
@@ -37,10 +39,10 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, Dept> implement
         if (CollectionUtil.isNotEmpty(deptVos)) {
             for (DeptVo deptVo : deptVos) {
                 deptVo.setLabel(deptVo.getName());
-                if(StrUtil.isNotBlank(deptVo.getTreePosition())){
+                if (StrUtil.isNotBlank(deptVo.getTreePosition())) {
                     String[] split = deptVo.getTreePosition().split(Constants.DEFAULT_TREE_POSITION_SPLIT);
                     deptVo.setLevel(split.length);
-                }else{
+                } else {
                     deptVo.setLevel(Constants.DEFAULT_ROOT_LEVEL);
                 }
                 if (ObjectUtil.equal(deptVo.getParentId(), Constants.DEFAULT_PARENT_ROOT)) {
@@ -69,7 +71,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, Dept> implement
      * @return
      */
     @Override
-    public DeptVo setVoProperties(Dept dept){
+    public DeptVo setVoProperties(Dept dept) {
         DeptVo deptVo = new DeptVo();
         BeanUtil.copyProperties(dept, deptVo);
         return deptVo;
@@ -82,7 +84,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, Dept> implement
      * @return
      */
     @Override
-    public List<DeptVo> setVoProperties(Collection depts){
+    public List<DeptVo> setVoProperties(Collection depts) {
         List<DeptVo> deptVos = CollectionUtil.newArrayList();
         if (CollectionUtil.isNotEmpty(depts)) {
             for (Object dept : depts) {
