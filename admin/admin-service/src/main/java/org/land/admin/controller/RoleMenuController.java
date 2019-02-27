@@ -4,6 +4,7 @@ import org.land.admin.entity.RoleMenu;
 import org.land.admin.vo.RoleMenuVo;
 import org.land.admin.service.RoleMenuService;
 import org.land.common.entity.RestResult;
+import cn.hutool.core.lang.Assert;
 import lombok.extern.slf4j.Slf4j;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -15,17 +16,21 @@ import java.io.Serializable;
 import java.util.Collection;
 import org.springframework.web.bind.annotation.RestController;
 import org.land.common.base.BaseController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * <p>
  * 系统角色菜单关联信息 前端控制器
  * </p>
  * @author: lee.
- * @since 2018-12-21
+ * @since 2019-02-27
  */
 @Slf4j
 @RestController
 @RequestMapping("/admin/roleMenu")
+@Api(tags = {"系统角色菜单关联信息接口"})
 public class RoleMenuController extends BaseController {
     @Autowired
     RoleMenuService roleMenuService;
@@ -37,7 +42,10 @@ public class RoleMenuController extends BaseController {
      * @return
      */
     @PostMapping("/saveOrUpdate")
-    public RestResult saveOrUpdate(RoleMenu roleMenu) {
+    @ApiOperation(value="单个保存或者更新系统角色菜单关联信息", notes="根据系统角色菜单关联信息对象保存或者更新系统角色菜单关联信息信息")
+    @ApiImplicitParam(name = "roleMenu", value = "系统角色菜单关联信息对象", required = true, dataType = "RoleMenu", paramType = "query")
+    public RestResult<Boolean> saveOrUpdate(RoleMenu roleMenu) {
+        Assert.notNull(roleMenu);
         log.info(String.format("保存或者更新系统角色菜单关联信息: %s ", JSONUtil.toJsonStr(roleMenu)));
         boolean result = roleMenuService.saveOrUpdate(roleMenu);
         return RestResult.ok(result);
@@ -50,7 +58,10 @@ public class RoleMenuController extends BaseController {
      * @return
      */
     @PostMapping("/saveOrUpdateBatch")
-    public RestResult saveOrUpdateBatch(Collection<RoleMenu> roleMenuList) {
+    @ApiOperation(value="批量保存或者更新系统角色菜单关联信息", notes="根据系统角色菜单关联信息对象集合批量保存或者更新系统角色菜单关联信息信息")
+    @ApiImplicitParam(name = "roleMenuList", value = "系统角色菜单关联信息对象集合", required = true, allowMultiple = true, dataType = "RoleMenu", paramType = "query")
+    public RestResult<Boolean> saveOrUpdateBatch(Collection<RoleMenu> roleMenuList) {
+        Assert.notNull(roleMenuList);
         log.info(String.format("批量保存或者更新系统角色菜单关联信息: %s ", JSONUtil.toJsonStr(roleMenuList)));
         boolean result = roleMenuService.saveOrUpdateBatch(roleMenuList);
         return RestResult.ok(result);
@@ -63,7 +74,10 @@ public class RoleMenuController extends BaseController {
      * @return
      */
     @PostMapping("/removeByRoleMenu")
-    public RestResult removeByRoleMenu(RoleMenu roleMenu) {
+    @ApiOperation(value="根据RoleMenu对象属性逻辑删除系统角色菜单关联信息", notes="根据系统角色菜单关联信息对象逻辑删除系统角色菜单关联信息信息")
+    @ApiImplicitParam(name = "roleMenu", value = "系统角色菜单关联信息对象", required = true, dataType = "RoleMenu", paramType = "query")
+    public RestResult<Boolean> removeByRoleMenu(RoleMenu roleMenu) {
+        Assert.notNull(roleMenu);
         log.info(String.format("根据RoleMenu对象属性逻辑删除系统角色菜单关联信息: %s ", roleMenu));
         boolean result = roleMenuService.removeByBean(roleMenu);
         return RestResult.ok(result);
@@ -77,7 +91,10 @@ public class RoleMenuController extends BaseController {
      * @return
      */
     @PostMapping("/removeByIds")
-    public RestResult removeByIds(Collection<Serializable> ids) {
+    @ApiOperation(value="根据ID批量逻辑删除系统角色菜单关联信息", notes="根据系统角色菜单关联信息对象ID批量逻辑删除系统角色菜单关联信息信息")
+    @ApiImplicitParam(name = "ids", value = "系统角色菜单关联信息对象ID集合", required = true, allowMultiple = true, dataType = "Serializable", paramType = "query")
+    public RestResult<Boolean> removeByIds(Collection<Serializable> ids) {
+        Assert.notNull(ids);
         log.info(String.format("根据id批量删除系统角色菜单关联信息: %s ", JSONUtil.toJsonStr(ids)));
         boolean result = roleMenuService.removeByIds(ids);
         return RestResult.ok(result);
@@ -90,7 +107,9 @@ public class RoleMenuController extends BaseController {
      * @return
      */
     @GetMapping("/getByRoleMenu")
-    public RestResult getByRoleMenu(RoleMenu roleMenu) {
+    @ApiOperation(value="根据RoleMenu对象属性获取系统角色菜单关联信息", notes="根据系统角色菜单关联信息对象属性获取系统角色菜单关联信息信息")
+    @ApiImplicitParam(name = "roleMenu", value = "系统角色菜单关联信息对象", required = false, dataType = "RoleMenu", paramType = "query")
+    public RestResult<RoleMenuVo> getByRoleMenu(RoleMenu roleMenu) {
         roleMenu = roleMenuService.getByBean(roleMenu);
         RoleMenuVo roleMenuVo = roleMenuService.setVoProperties(roleMenu);
         log.info(String.format("根据id获取系统角色菜单关联信息：s%", JSONUtil.toJsonStr(roleMenuVo)));
@@ -104,7 +123,9 @@ public class RoleMenuController extends BaseController {
      * @return
      */
     @GetMapping("/listByBean")
-    public RestResult listByBean(RoleMenu roleMenu) {
+    @ApiOperation(value="根据RoleMenu对象属性检索所有系统角色菜单关联信息", notes="根据RoleMenu对象属性检索所有系统角色菜单关联信息信息")
+    @ApiImplicitParam(name = "roleMenu", value = "系统角色菜单关联信息对象", required = false, dataType = "RoleMenu", paramType = "query")
+    public RestResult<Collection<RoleMenuVo>> listByBean(RoleMenu roleMenu) {
         Collection<RoleMenu> roleMenus = roleMenuService.listByBean(roleMenu);
         Collection<RoleMenuVo> roleMenuVos = roleMenuService.setVoProperties(roleMenus);
         log.info(String.format("根据RoleMenu对象属性检索所有系统角色菜单关联信息: %s ",JSONUtil.toJsonStr(roleMenuVos)));
@@ -118,8 +139,10 @@ public class RoleMenuController extends BaseController {
      * @return
      */
     @GetMapping("/pageByBean")
-    public RestResult pageByBean(RoleMenu roleMenu) {
-        IPage roleMenus = roleMenuService.pageByBean(roleMenu);
+    @ApiOperation(value="根据RoleMenu对象属性分页检索系统角色菜单关联信息", notes="根据RoleMenu对象属性分页检索系统角色菜单关联信息信息")
+    @ApiImplicitParam(name = "roleMenu", value = "系统角色菜单关联信息对象", required = false, dataType = "RoleMenu", paramType = "query")
+    public RestResult<IPage<RoleMenuVo>> pageByBean(RoleMenu roleMenu) {
+        IPage<RoleMenuVo> roleMenus = roleMenuService.pageByBean(roleMenu);
         roleMenus.setRecords(roleMenuService.setVoProperties(roleMenus.getRecords()));
         log.info(String.format("根据RoleMenu对象属性分页检索系统角色菜单关联信息: %s ",JSONUtil.toJsonStr(roleMenus)));
         return RestResult.ok(roleMenus);

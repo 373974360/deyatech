@@ -39,7 +39,7 @@ import java.util.Date;
 @TableName("${table.name}")
 </#if>
 <#if swagger2>
-@ApiModel(value="${entity}对象", description="${table.comment!}")
+@ApiModel(value="${table.comment!}对象", description="${table.comment!}" ,parent = BaseEntity.class)
 </#if>
 <#if superEntityClass??>
 public class ${entity} extends ${superEntityClass}<#if activeRecord><${entity}></#if> {
@@ -56,7 +56,11 @@ public class ${entity}{
 
     <#if field.comment!?length gt 0>
         <#if swagger2>
-    @ApiModelProperty(value = "${field.comment}")
+            <#if field.propertyType == "Integer" || field.propertyType == "Long">
+    @ApiModelProperty(value = "${field.comment}",dataType = "${field.propertyType}", example = "1")
+            <#else>
+    @ApiModelProperty(value = "${field.comment}",dataType = "${field.propertyType}")
+            </#if>
         <#else>
     /**
      * ${field.comment}
@@ -99,42 +103,49 @@ public class ${entity}{
      * 记录状态，0为禁用，1为启用，-1为已删除
      */
     @TableField(exist = false)
+    @ApiModelProperty(value = "记录状态", dataType = "Integer", notes = "0为禁用，1为启用，-1为已删除", example = "1")
     private Integer enable;
 
     /**
      * 备注
      */
     @TableField(exist = false)
+    @ApiModelProperty(value = "备注", dataType = "String")
     private String remark;
 
     /**
      * 数据记录创建者
      */
     @TableField(exist = false)
+    @ApiModelProperty(value = "数据记录创建者", dataType = "String", hidden = true)
     private String createBy;
 
     /**
      * 数据记录创建时间
      */
     @TableField(exist = false)
+    @ApiModelProperty(value = "数据记录创建时间", dataType = "Date", hidden = true)
     private Date createTime;
 
     /**
      * 数据记录更新者
      */
     @TableField(exist = false)
+    @ApiModelProperty(value = "数据记录更新者", dataType = "String", hidden = true)
     private String updateBy;
 
     /**
      * 数据记录更新时间
      */
     @TableField(exist = false)
+    @ApiModelProperty(value = "数据记录更新时间", dataType = "Date", hidden = true)
     private Date updateTime;
 
     /**
      * 乐观锁字段
      */
     @TableField(exist = false)
+    @ApiModelProperty(value = "乐观锁字段", dataType = "Integer", hidden = true)
     private Integer version;
 </#if>
 <#------------  END 字段循环遍历  ---------->

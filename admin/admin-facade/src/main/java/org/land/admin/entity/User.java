@@ -3,6 +3,8 @@ package org.land.admin.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableField;
 import org.land.common.base.BaseEntity;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -12,53 +14,40 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author lee.
- * @since 2018-12-19
+ * @since 2019-02-27
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @TableName("admin_user")
+@ApiModel(value="系统用户信息对象", description="系统用户信息" ,parent = BaseEntity.class)
 public class User extends BaseEntity {
 
-    /**
-    * 部门编号
-    */
+    @ApiModelProperty(value = "部门编号",dataType = "String")
     @TableField("dept_id")
     private String deptId;
 
-    /**
-    * 姓名
-    */
+    @ApiModelProperty(value = "姓名",dataType = "String")
     @TableField("name_")
     private String name;
 
-    /**
-    * 性别(2:未知;1:男;0:女)
-    */
+    @ApiModelProperty(value = "性别(2:未知;1:男;0:女)",dataType = "Integer", example = "1")
     @TableField("gender_")
     private Integer gender;
 
-    /**
-    * 电话
-    */
+    @ApiModelProperty(value = "电话",dataType = "String")
     @TableField("phone_")
     private String phone;
 
-    /**
-    * 头像
-    */
+    @ApiModelProperty(value = "头像",dataType = "String")
     @TableField("avatar_")
     private String avatar;
 
-    /**
-    * 登陆帐户
-    */
+    @ApiModelProperty(value = "登陆帐户",dataType = "String")
     @TableField("account_")
     private String account;
 
-    /**
-    * 密码
-    */
+    @ApiModelProperty(value = "密码",dataType = "String")
     @TableField("password_")
     private String password;
 

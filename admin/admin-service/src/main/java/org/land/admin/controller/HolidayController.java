@@ -4,6 +4,7 @@ import org.land.admin.entity.Holiday;
 import org.land.admin.vo.HolidayVo;
 import org.land.admin.service.HolidayService;
 import org.land.common.entity.RestResult;
+import cn.hutool.core.lang.Assert;
 import lombok.extern.slf4j.Slf4j;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -15,113 +16,135 @@ import java.io.Serializable;
 import java.util.Collection;
 import org.springframework.web.bind.annotation.RestController;
 import org.land.common.base.BaseController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * <p>
- * 系统角色信息 前端控制器
+ * 系统节假日信息 前端控制器
  * </p>
  * @author: lee.
- * @since 2018-12-21
+ * @since 2019-02-27
  */
 @Slf4j
 @RestController
 @RequestMapping("/admin/holiday")
+@Api(tags = {"系统节假日信息接口"})
 public class HolidayController extends BaseController {
     @Autowired
     HolidayService holidayService;
 
     /**
-     * 单个保存或者更新系统角色信息
+     * 单个保存或者更新系统节假日信息
      *
      * @param holiday
      * @return
      */
     @PostMapping("/saveOrUpdate")
-    public RestResult saveOrUpdate(Holiday holiday) {
-        log.info(String.format("保存或者更新系统角色信息: %s ", JSONUtil.toJsonStr(holiday)));
+    @ApiOperation(value="单个保存或者更新系统节假日信息", notes="根据系统节假日信息对象保存或者更新系统节假日信息信息")
+    @ApiImplicitParam(name = "holiday", value = "系统节假日信息对象", required = true, dataType = "Holiday", paramType = "query")
+    public RestResult<Boolean> saveOrUpdate(Holiday holiday) {
+        Assert.notNull(holiday);
+        log.info(String.format("保存或者更新系统节假日信息: %s ", JSONUtil.toJsonStr(holiday)));
         boolean result = holidayService.saveOrUpdate(holiday);
         return RestResult.ok(result);
     }
 
     /**
-     * 批量保存或者更新系统角色信息
+     * 批量保存或者更新系统节假日信息
      *
      * @param holidayList
      * @return
      */
     @PostMapping("/saveOrUpdateBatch")
-    public RestResult saveOrUpdateBatch(Collection<Holiday> holidayList) {
-        log.info(String.format("批量保存或者更新系统角色信息: %s ", JSONUtil.toJsonStr(holidayList)));
+    @ApiOperation(value="批量保存或者更新系统节假日信息", notes="根据系统节假日信息对象集合批量保存或者更新系统节假日信息信息")
+    @ApiImplicitParam(name = "holidayList", value = "系统节假日信息对象集合", required = true, allowMultiple = true, dataType = "Holiday", paramType = "query")
+    public RestResult<Boolean> saveOrUpdateBatch(Collection<Holiday> holidayList) {
+        Assert.notNull(holidayList);
+        log.info(String.format("批量保存或者更新系统节假日信息: %s ", JSONUtil.toJsonStr(holidayList)));
         boolean result = holidayService.saveOrUpdateBatch(holidayList);
         return RestResult.ok(result);
     }
 
     /**
-     * 根据Holiday对象属性逻辑删除系统角色信息
+     * 根据Holiday对象属性逻辑删除系统节假日信息
      *
      * @param holiday
      * @return
      */
     @PostMapping("/removeByHoliday")
-    public RestResult removeByHoliday(Holiday holiday) {
-        log.info(String.format("根据Holiday对象属性逻辑删除系统角色信息: %s ", holiday));
+    @ApiOperation(value="根据Holiday对象属性逻辑删除系统节假日信息", notes="根据系统节假日信息对象逻辑删除系统节假日信息信息")
+    @ApiImplicitParam(name = "holiday", value = "系统节假日信息对象", required = true, dataType = "Holiday", paramType = "query")
+    public RestResult<Boolean> removeByHoliday(Holiday holiday) {
+        Assert.notNull(holiday);
+        log.info(String.format("根据Holiday对象属性逻辑删除系统节假日信息: %s ", holiday));
         boolean result = holidayService.removeByBean(holiday);
         return RestResult.ok(result);
     }
 
 
     /**
-     * 根据ID批量逻辑删除系统角色信息
+     * 根据ID批量逻辑删除系统节假日信息
      *
      * @param ids
      * @return
      */
     @PostMapping("/removeByIds")
-    public RestResult removeByIds(Collection<Serializable> ids) {
-        log.info(String.format("根据id批量删除系统角色信息: %s ", JSONUtil.toJsonStr(ids)));
+    @ApiOperation(value="根据ID批量逻辑删除系统节假日信息", notes="根据系统节假日信息对象ID批量逻辑删除系统节假日信息信息")
+    @ApiImplicitParam(name = "ids", value = "系统节假日信息对象ID集合", required = true, allowMultiple = true, dataType = "Serializable", paramType = "query")
+    public RestResult<Boolean> removeByIds(Collection<Serializable> ids) {
+        Assert.notNull(ids);
+        log.info(String.format("根据id批量删除系统节假日信息: %s ", JSONUtil.toJsonStr(ids)));
         boolean result = holidayService.removeByIds(ids);
         return RestResult.ok(result);
     }
 
     /**
-     * 根据Holiday对象属性获取系统角色信息
+     * 根据Holiday对象属性获取系统节假日信息
      *
      * @param holiday
      * @return
      */
     @GetMapping("/getByHoliday")
-    public RestResult getByHoliday(Holiday holiday) {
+    @ApiOperation(value="根据Holiday对象属性获取系统节假日信息", notes="根据系统节假日信息对象属性获取系统节假日信息信息")
+    @ApiImplicitParam(name = "holiday", value = "系统节假日信息对象", required = false, dataType = "Holiday", paramType = "query")
+    public RestResult<HolidayVo> getByHoliday(Holiday holiday) {
         holiday = holidayService.getByBean(holiday);
         HolidayVo holidayVo = holidayService.setVoProperties(holiday);
-        log.info(String.format("根据id获取系统角色信息：s%", JSONUtil.toJsonStr(holidayVo)));
+        log.info(String.format("根据id获取系统节假日信息：s%", JSONUtil.toJsonStr(holidayVo)));
         return RestResult.ok(holidayVo);
     }
 
     /**
-     * 根据Holiday对象属性检索所有系统角色信息
+     * 根据Holiday对象属性检索所有系统节假日信息
      *
      * @param holiday
      * @return
      */
     @GetMapping("/listByBean")
-    public RestResult listByBean(Holiday holiday) {
+    @ApiOperation(value="根据Holiday对象属性检索所有系统节假日信息", notes="根据Holiday对象属性检索所有系统节假日信息信息")
+    @ApiImplicitParam(name = "holiday", value = "系统节假日信息对象", required = false, dataType = "Holiday", paramType = "query")
+    public RestResult<Collection<HolidayVo>> listByBean(Holiday holiday) {
         Collection<Holiday> holidays = holidayService.listByBean(holiday);
         Collection<HolidayVo> holidayVos = holidayService.setVoProperties(holidays);
-        log.info(String.format("根据Holiday对象属性检索所有系统角色信息: %s ",JSONUtil.toJsonStr(holidayVos)));
+        log.info(String.format("根据Holiday对象属性检索所有系统节假日信息: %s ",JSONUtil.toJsonStr(holidayVos)));
         return RestResult.ok(holidayVos);
     }
 
     /**
-     * 根据Holiday对象属性分页检索系统角色信息
+     * 根据Holiday对象属性分页检索系统节假日信息
      *
      * @param holiday
      * @return
      */
     @GetMapping("/pageByBean")
-    public RestResult pageByBean(Holiday holiday) {
-        IPage holidays = holidayService.pageByBean(holiday);
+    @ApiOperation(value="根据Holiday对象属性分页检索系统节假日信息", notes="根据Holiday对象属性分页检索系统节假日信息信息")
+    @ApiImplicitParam(name = "holiday", value = "系统节假日信息对象", required = false, dataType = "Holiday", paramType = "query")
+    public RestResult<IPage<HolidayVo>> pageByBean(Holiday holiday) {
+        IPage<HolidayVo> holidays = holidayService.pageByBean(holiday);
         holidays.setRecords(holidayService.setVoProperties(holidays.getRecords()));
-        log.info(String.format("根据Holiday对象属性分页检索系统角色信息: %s ",JSONUtil.toJsonStr(holidays)));
+        log.info(String.format("根据Holiday对象属性分页检索系统节假日信息: %s ",JSONUtil.toJsonStr(holidays)));
         return RestResult.ok(holidays);
     }
 

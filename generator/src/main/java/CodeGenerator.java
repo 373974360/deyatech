@@ -43,20 +43,21 @@ public class CodeGenerator {
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
         String projectPath = System.getProperty("user.dir");
-//        gc.setOutputDir(projectPath + "/generator/src/main/java");
         gc.setAuthor("lee.");
         gc.setServiceName("Service");
         gc.setOpen(false);
-//        gc.setBaseResultMap(true);
+        gc.setBaseResultMap(true);
+        gc.setBaseColumnList(true);
+        gc.setSwagger2(true);
         mpg.setGlobalConfig(gc);
 
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
         dsc.setDriverName("com.mysql.cj.jdbc.Driver");
-        dsc.setUrl("jdbc:mysql://192.168.78.133:3306/land?useUnicode=true&useSSL=false&characterEncoding=utf8");
+        dsc.setUrl("jdbc:mysql://192.168.2.170:3306/deyatech?useUnicode=true&useSSL=false&characterEncoding=utf8");
         // dsc.setSchemaName("public");
         dsc.setUsername("root");
-        dsc.setPassword("beizhi#2018");
+        dsc.setPassword("dyt@88352636");
         mpg.setDataSource(dsc);
 
         // 包配置
@@ -183,7 +184,6 @@ public class CodeGenerator {
         strategy.setSuperServiceImplClass("org.land.common.base.BaseServiceImpl");
         strategy.setSuperControllerClass("org.land.common.base.BaseController");
         strategy.setInclude(scanner("表名,多个用英文逗号分开").split(","));
-        strategy.setControllerMappingHyphenStyle(true);
         strategy.setTablePrefix(pc.getModuleName() + "_");
         strategy.setEntityTableFieldAnnotationEnable(true);
         strategy.setControllerMappingHyphenStyle(true);

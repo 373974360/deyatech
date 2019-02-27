@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.land.common.entity.CascaderResult;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.List;
 @Slf4j
 public class CascaderUtil {
 
-    public static List<CascaderResult> getResult(String valuePropertyName, String labelPropertyName, String treePositionPropertyName, String disableId, Collection list) {
+    public static List<CascaderResult> getResult(String valuePropertyName, String labelPropertyName, String treePositionPropertyName, Serializable disableId, Collection list) {
         List<CascaderResult> cascaderResults = CollectionUtil.newArrayList();
         try {
             if (CollectionUtil.isNotEmpty(list)) {

@@ -1,8 +1,10 @@
 package org.land.common.entity;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+
 import java.io.Serializable;
 
 /**
@@ -14,9 +16,13 @@ import java.io.Serializable;
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
-public class FileUploadResult implements Serializable{
+public class FileUploadResult implements Serializable {
+    @ApiModelProperty(value = "状态")
     private String state = "";
+    @ApiModelProperty(value = "原始URL")
     private String original = "";
+    @ApiModelProperty(value = "文件名称")
     private String title = "";
+    @ApiModelProperty(value = "访问URL")
     private String url = "";
 }

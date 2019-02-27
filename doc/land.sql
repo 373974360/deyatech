@@ -107,7 +107,7 @@ CREATE TABLE `admin_holiday` (
   `update_time` datetime NOT NULL COMMENT '更新时间',
   `version_` int(3) NOT NULL DEFAULT '0' COMMENT '版本号',
   PRIMARY KEY (`id_`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统角色信息';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统节假日信息';
 
 -- ----------------------------
 -- Records of admin_holiday
@@ -134,7 +134,7 @@ CREATE TABLE `admin_logs` (
   `update_time` datetime NOT NULL COMMENT '更新时间',
   `version_` int(3) NOT NULL DEFAULT '0' COMMENT '版本号',
   PRIMARY KEY (`id_`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统数据字典索引信息';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统日志信息';
 
 -- ----------------------------
 -- Records of admin_logs
@@ -243,7 +243,7 @@ CREATE TABLE `admin_user_role` (
   `user_id` varchar(19) NOT NULL COMMENT '用户id',
   `role_id` varchar(19) NOT NULL COMMENT '角色id',
   PRIMARY KEY (`id_`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统数据字典索引信息';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统用户角色关联信息';
 
 -- ----------------------------
 -- Records of admin_user_role

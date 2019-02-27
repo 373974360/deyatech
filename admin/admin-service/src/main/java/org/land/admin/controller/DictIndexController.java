@@ -4,6 +4,7 @@ import org.land.admin.entity.DictIndex;
 import org.land.admin.vo.DictIndexVo;
 import org.land.admin.service.DictIndexService;
 import org.land.common.entity.RestResult;
+import cn.hutool.core.lang.Assert;
 import lombok.extern.slf4j.Slf4j;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -15,17 +16,21 @@ import java.io.Serializable;
 import java.util.Collection;
 import org.springframework.web.bind.annotation.RestController;
 import org.land.common.base.BaseController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * <p>
  * 系统数据字典索引信息 前端控制器
  * </p>
  * @author: lee.
- * @since 2018-12-21
+ * @since 2019-02-27
  */
 @Slf4j
 @RestController
 @RequestMapping("/admin/dictIndex")
+@Api(tags = {"系统数据字典索引信息接口"})
 public class DictIndexController extends BaseController {
     @Autowired
     DictIndexService dictIndexService;
@@ -37,7 +42,10 @@ public class DictIndexController extends BaseController {
      * @return
      */
     @PostMapping("/saveOrUpdate")
-    public RestResult saveOrUpdate(DictIndex dictIndex) {
+    @ApiOperation(value="单个保存或者更新系统数据字典索引信息", notes="根据系统数据字典索引信息对象保存或者更新系统数据字典索引信息信息")
+    @ApiImplicitParam(name = "dictIndex", value = "系统数据字典索引信息对象", required = true, dataType = "DictIndex", paramType = "query")
+    public RestResult<Boolean> saveOrUpdate(DictIndex dictIndex) {
+        Assert.notNull(dictIndex);
         log.info(String.format("保存或者更新系统数据字典索引信息: %s ", JSONUtil.toJsonStr(dictIndex)));
         boolean result = dictIndexService.saveOrUpdate(dictIndex);
         return RestResult.ok(result);
@@ -50,7 +58,10 @@ public class DictIndexController extends BaseController {
      * @return
      */
     @PostMapping("/saveOrUpdateBatch")
-    public RestResult saveOrUpdateBatch(Collection<DictIndex> dictIndexList) {
+    @ApiOperation(value="批量保存或者更新系统数据字典索引信息", notes="根据系统数据字典索引信息对象集合批量保存或者更新系统数据字典索引信息信息")
+    @ApiImplicitParam(name = "dictIndexList", value = "系统数据字典索引信息对象集合", required = true, allowMultiple = true, dataType = "DictIndex", paramType = "query")
+    public RestResult<Boolean> saveOrUpdateBatch(Collection<DictIndex> dictIndexList) {
+        Assert.notNull(dictIndexList);
         log.info(String.format("批量保存或者更新系统数据字典索引信息: %s ", JSONUtil.toJsonStr(dictIndexList)));
         boolean result = dictIndexService.saveOrUpdateBatch(dictIndexList);
         return RestResult.ok(result);
@@ -63,7 +74,10 @@ public class DictIndexController extends BaseController {
      * @return
      */
     @PostMapping("/removeByDictIndex")
-    public RestResult removeByDictIndex(DictIndex dictIndex) {
+    @ApiOperation(value="根据DictIndex对象属性逻辑删除系统数据字典索引信息", notes="根据系统数据字典索引信息对象逻辑删除系统数据字典索引信息信息")
+    @ApiImplicitParam(name = "dictIndex", value = "系统数据字典索引信息对象", required = true, dataType = "DictIndex", paramType = "query")
+    public RestResult<Boolean> removeByDictIndex(DictIndex dictIndex) {
+        Assert.notNull(dictIndex);
         log.info(String.format("根据DictIndex对象属性逻辑删除系统数据字典索引信息: %s ", dictIndex));
         boolean result = dictIndexService.removeByBean(dictIndex);
         return RestResult.ok(result);
@@ -77,7 +91,10 @@ public class DictIndexController extends BaseController {
      * @return
      */
     @PostMapping("/removeByIds")
-    public RestResult removeByIds(Collection<Serializable> ids) {
+    @ApiOperation(value="根据ID批量逻辑删除系统数据字典索引信息", notes="根据系统数据字典索引信息对象ID批量逻辑删除系统数据字典索引信息信息")
+    @ApiImplicitParam(name = "ids", value = "系统数据字典索引信息对象ID集合", required = true, allowMultiple = true, dataType = "Serializable", paramType = "query")
+    public RestResult<Boolean> removeByIds(Collection<Serializable> ids) {
+        Assert.notNull(ids);
         log.info(String.format("根据id批量删除系统数据字典索引信息: %s ", JSONUtil.toJsonStr(ids)));
         boolean result = dictIndexService.removeByIds(ids);
         return RestResult.ok(result);
@@ -90,7 +107,9 @@ public class DictIndexController extends BaseController {
      * @return
      */
     @GetMapping("/getByDictIndex")
-    public RestResult getByDictIndex(DictIndex dictIndex) {
+    @ApiOperation(value="根据DictIndex对象属性获取系统数据字典索引信息", notes="根据系统数据字典索引信息对象属性获取系统数据字典索引信息信息")
+    @ApiImplicitParam(name = "dictIndex", value = "系统数据字典索引信息对象", required = false, dataType = "DictIndex", paramType = "query")
+    public RestResult<DictIndexVo> getByDictIndex(DictIndex dictIndex) {
         dictIndex = dictIndexService.getByBean(dictIndex);
         DictIndexVo dictIndexVo = dictIndexService.setVoProperties(dictIndex);
         log.info(String.format("根据id获取系统数据字典索引信息：s%", JSONUtil.toJsonStr(dictIndexVo)));
@@ -104,7 +123,9 @@ public class DictIndexController extends BaseController {
      * @return
      */
     @GetMapping("/listByBean")
-    public RestResult listByBean(DictIndex dictIndex) {
+    @ApiOperation(value="根据DictIndex对象属性检索所有系统数据字典索引信息", notes="根据DictIndex对象属性检索所有系统数据字典索引信息信息")
+    @ApiImplicitParam(name = "dictIndex", value = "系统数据字典索引信息对象", required = false, dataType = "DictIndex", paramType = "query")
+    public RestResult<Collection<DictIndexVo>> listByBean(DictIndex dictIndex) {
         Collection<DictIndex> dictIndexs = dictIndexService.listByBean(dictIndex);
         Collection<DictIndexVo> dictIndexVos = dictIndexService.setVoProperties(dictIndexs);
         log.info(String.format("根据DictIndex对象属性检索所有系统数据字典索引信息: %s ",JSONUtil.toJsonStr(dictIndexVos)));
@@ -118,8 +139,10 @@ public class DictIndexController extends BaseController {
      * @return
      */
     @GetMapping("/pageByBean")
-    public RestResult pageByBean(DictIndex dictIndex) {
-        IPage dictIndexs = dictIndexService.pageByBean(dictIndex);
+    @ApiOperation(value="根据DictIndex对象属性分页检索系统数据字典索引信息", notes="根据DictIndex对象属性分页检索系统数据字典索引信息信息")
+    @ApiImplicitParam(name = "dictIndex", value = "系统数据字典索引信息对象", required = false, dataType = "DictIndex", paramType = "query")
+    public RestResult<IPage<DictIndexVo>> pageByBean(DictIndex dictIndex) {
+        IPage<DictIndexVo> dictIndexs = dictIndexService.pageByBean(dictIndex);
         dictIndexs.setRecords(dictIndexService.setVoProperties(dictIndexs.getRecords()));
         log.info(String.format("根据DictIndex对象属性分页检索系统数据字典索引信息: %s ",JSONUtil.toJsonStr(dictIndexs)));
         return RestResult.ok(dictIndexs);

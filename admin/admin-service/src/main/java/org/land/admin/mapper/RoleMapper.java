@@ -9,7 +9,7 @@ import org.land.common.base.BaseMapper;
  * </p>
  *
  * @Author lee.
- * @since 2018-12-19
+ * @since 2019-02-27
  */
 public interface RoleMapper extends BaseMapper<Role> {
 

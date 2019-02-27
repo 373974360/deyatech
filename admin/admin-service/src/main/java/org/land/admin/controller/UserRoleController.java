@@ -4,6 +4,7 @@ import org.land.admin.entity.UserRole;
 import org.land.admin.vo.UserRoleVo;
 import org.land.admin.service.UserRoleService;
 import org.land.common.entity.RestResult;
+import cn.hutool.core.lang.Assert;
 import lombok.extern.slf4j.Slf4j;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -15,113 +16,135 @@ import java.io.Serializable;
 import java.util.Collection;
 import org.springframework.web.bind.annotation.RestController;
 import org.land.common.base.BaseController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * <p>
- * 系统数据字典索引信息 前端控制器
+ * 系统用户角色关联信息 前端控制器
  * </p>
  * @author: lee.
- * @since 2018-12-21
+ * @since 2019-02-27
  */
 @Slf4j
 @RestController
 @RequestMapping("/admin/userRole")
+@Api(tags = {"系统用户角色关联信息接口"})
 public class UserRoleController extends BaseController {
     @Autowired
     UserRoleService userRoleService;
 
     /**
-     * 单个保存或者更新系统数据字典索引信息
+     * 单个保存或者更新系统用户角色关联信息
      *
      * @param userRole
      * @return
      */
     @PostMapping("/saveOrUpdate")
-    public RestResult saveOrUpdate(UserRole userRole) {
-        log.info(String.format("保存或者更新系统数据字典索引信息: %s ", JSONUtil.toJsonStr(userRole)));
+    @ApiOperation(value="单个保存或者更新系统用户角色关联信息", notes="根据系统用户角色关联信息对象保存或者更新系统用户角色关联信息信息")
+    @ApiImplicitParam(name = "userRole", value = "系统用户角色关联信息对象", required = true, dataType = "UserRole", paramType = "query")
+    public RestResult<Boolean> saveOrUpdate(UserRole userRole) {
+        Assert.notNull(userRole);
+        log.info(String.format("保存或者更新系统用户角色关联信息: %s ", JSONUtil.toJsonStr(userRole)));
         boolean result = userRoleService.saveOrUpdate(userRole);
         return RestResult.ok(result);
     }
 
     /**
-     * 批量保存或者更新系统数据字典索引信息
+     * 批量保存或者更新系统用户角色关联信息
      *
      * @param userRoleList
      * @return
      */
     @PostMapping("/saveOrUpdateBatch")
-    public RestResult saveOrUpdateBatch(Collection<UserRole> userRoleList) {
-        log.info(String.format("批量保存或者更新系统数据字典索引信息: %s ", JSONUtil.toJsonStr(userRoleList)));
+    @ApiOperation(value="批量保存或者更新系统用户角色关联信息", notes="根据系统用户角色关联信息对象集合批量保存或者更新系统用户角色关联信息信息")
+    @ApiImplicitParam(name = "userRoleList", value = "系统用户角色关联信息对象集合", required = true, allowMultiple = true, dataType = "UserRole", paramType = "query")
+    public RestResult<Boolean> saveOrUpdateBatch(Collection<UserRole> userRoleList) {
+        Assert.notNull(userRoleList);
+        log.info(String.format("批量保存或者更新系统用户角色关联信息: %s ", JSONUtil.toJsonStr(userRoleList)));
         boolean result = userRoleService.saveOrUpdateBatch(userRoleList);
         return RestResult.ok(result);
     }
 
     /**
-     * 根据UserRole对象属性逻辑删除系统数据字典索引信息
+     * 根据UserRole对象属性逻辑删除系统用户角色关联信息
      *
      * @param userRole
      * @return
      */
     @PostMapping("/removeByUserRole")
-    public RestResult removeByUserRole(UserRole userRole) {
-        log.info(String.format("根据UserRole对象属性逻辑删除系统数据字典索引信息: %s ", userRole));
+    @ApiOperation(value="根据UserRole对象属性逻辑删除系统用户角色关联信息", notes="根据系统用户角色关联信息对象逻辑删除系统用户角色关联信息信息")
+    @ApiImplicitParam(name = "userRole", value = "系统用户角色关联信息对象", required = true, dataType = "UserRole", paramType = "query")
+    public RestResult<Boolean> removeByUserRole(UserRole userRole) {
+        Assert.notNull(userRole);
+        log.info(String.format("根据UserRole对象属性逻辑删除系统用户角色关联信息: %s ", userRole));
         boolean result = userRoleService.removeByBean(userRole);
         return RestResult.ok(result);
     }
 
 
     /**
-     * 根据ID批量逻辑删除系统数据字典索引信息
+     * 根据ID批量逻辑删除系统用户角色关联信息
      *
      * @param ids
      * @return
      */
     @PostMapping("/removeByIds")
-    public RestResult removeByIds(Collection<Serializable> ids) {
-        log.info(String.format("根据id批量删除系统数据字典索引信息: %s ", JSONUtil.toJsonStr(ids)));
+    @ApiOperation(value="根据ID批量逻辑删除系统用户角色关联信息", notes="根据系统用户角色关联信息对象ID批量逻辑删除系统用户角色关联信息信息")
+    @ApiImplicitParam(name = "ids", value = "系统用户角色关联信息对象ID集合", required = true, allowMultiple = true, dataType = "Serializable", paramType = "query")
+    public RestResult<Boolean> removeByIds(Collection<Serializable> ids) {
+        Assert.notNull(ids);
+        log.info(String.format("根据id批量删除系统用户角色关联信息: %s ", JSONUtil.toJsonStr(ids)));
         boolean result = userRoleService.removeByIds(ids);
         return RestResult.ok(result);
     }
 
     /**
-     * 根据UserRole对象属性获取系统数据字典索引信息
+     * 根据UserRole对象属性获取系统用户角色关联信息
      *
      * @param userRole
      * @return
      */
     @GetMapping("/getByUserRole")
-    public RestResult getByUserRole(UserRole userRole) {
+    @ApiOperation(value="根据UserRole对象属性获取系统用户角色关联信息", notes="根据系统用户角色关联信息对象属性获取系统用户角色关联信息信息")
+    @ApiImplicitParam(name = "userRole", value = "系统用户角色关联信息对象", required = false, dataType = "UserRole", paramType = "query")
+    public RestResult<UserRoleVo> getByUserRole(UserRole userRole) {
         userRole = userRoleService.getByBean(userRole);
         UserRoleVo userRoleVo = userRoleService.setVoProperties(userRole);
-        log.info(String.format("根据id获取系统数据字典索引信息：s%", JSONUtil.toJsonStr(userRoleVo)));
+        log.info(String.format("根据id获取系统用户角色关联信息：s%", JSONUtil.toJsonStr(userRoleVo)));
         return RestResult.ok(userRoleVo);
     }
 
     /**
-     * 根据UserRole对象属性检索所有系统数据字典索引信息
+     * 根据UserRole对象属性检索所有系统用户角色关联信息
      *
      * @param userRole
      * @return
      */
     @GetMapping("/listByBean")
-    public RestResult listByBean(UserRole userRole) {
+    @ApiOperation(value="根据UserRole对象属性检索所有系统用户角色关联信息", notes="根据UserRole对象属性检索所有系统用户角色关联信息信息")
+    @ApiImplicitParam(name = "userRole", value = "系统用户角色关联信息对象", required = false, dataType = "UserRole", paramType = "query")
+    public RestResult<Collection<UserRoleVo>> listByBean(UserRole userRole) {
         Collection<UserRole> userRoles = userRoleService.listByBean(userRole);
         Collection<UserRoleVo> userRoleVos = userRoleService.setVoProperties(userRoles);
-        log.info(String.format("根据UserRole对象属性检索所有系统数据字典索引信息: %s ",JSONUtil.toJsonStr(userRoleVos)));
+        log.info(String.format("根据UserRole对象属性检索所有系统用户角色关联信息: %s ",JSONUtil.toJsonStr(userRoleVos)));
         return RestResult.ok(userRoleVos);
     }
 
     /**
-     * 根据UserRole对象属性分页检索系统数据字典索引信息
+     * 根据UserRole对象属性分页检索系统用户角色关联信息
      *
      * @param userRole
      * @return
      */
     @GetMapping("/pageByBean")
-    public RestResult pageByBean(UserRole userRole) {
-        IPage userRoles = userRoleService.pageByBean(userRole);
+    @ApiOperation(value="根据UserRole对象属性分页检索系统用户角色关联信息", notes="根据UserRole对象属性分页检索系统用户角色关联信息信息")
+    @ApiImplicitParam(name = "userRole", value = "系统用户角色关联信息对象", required = false, dataType = "UserRole", paramType = "query")
+    public RestResult<IPage<UserRoleVo>> pageByBean(UserRole userRole) {
+        IPage<UserRoleVo> userRoles = userRoleService.pageByBean(userRole);
         userRoles.setRecords(userRoleService.setVoProperties(userRoles.getRecords()));
-        log.info(String.format("根据UserRole对象属性分页检索系统数据字典索引信息: %s ",JSONUtil.toJsonStr(userRoles)));
+        log.info(String.format("根据UserRole对象属性分页检索系统用户角色关联信息: %s ",JSONUtil.toJsonStr(userRoles)));
         return RestResult.ok(userRoles);
     }
 

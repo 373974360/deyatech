@@ -3,57 +3,47 @@ package org.land.admin.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableField;
 import org.land.common.base.BaseEntity;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-
 /**
  * <p>
  * 系统部门信息
  * </p>
  *
  * @author lee.
- * @since 2018-12-19
+ * @since 2019-02-27
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @TableName("admin_dept")
+@ApiModel(value="系统部门信息对象", description="系统部门信息" ,parent = BaseEntity.class)
 public class Dept extends BaseEntity {
 
-    /**
-     * 部门名称
-     */
+    @ApiModelProperty(value = "部门名称",dataType = "String")
     @TableField("name_")
     private String name;
 
-    /**
-     * 部门名称简称
-     */
+    @ApiModelProperty(value = "部门名称简称",dataType = "String")
     @TableField("short_name")
     private String shortName;
 
-    /**
-     * 部门编码
-     */
+    @ApiModelProperty(value = "部门编码",dataType = "String")
     @TableField("dept_code")
     private String deptCode;
 
-    /**
-     * 上级部门编号
-     */
+    @ApiModelProperty(value = "上级部门编号",dataType = "String")
     @TableField("parent_id")
     private String parentId;
 
-    /**
-     * 树结构中的索引位置
-     */
+    @ApiModelProperty(value = "树结构中的索引位置",dataType = "String")
     @TableField("tree_position")
     private String treePosition;
 
-    /**
-     * 排序号
-     */
+    @ApiModelProperty(value = "排序号",dataType = "Integer", example = "1")
     @TableField("sort_no")
     private Integer sortNo;
 

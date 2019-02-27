@@ -3,6 +3,8 @@ package org.land.admin.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableField;
 import org.land.common.base.BaseEntity;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -12,41 +14,32 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author lee.
- * @since 2018-12-19
+ * @since 2019-02-27
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @TableName("admin_dict")
+@ApiModel(value="系统数据字典明细信息对象", description="系统数据字典明细信息" ,parent = BaseEntity.class)
 public class Dict extends BaseEntity {
 
-    /**
-    * 数据字典索引编号
-    */
+    @ApiModelProperty(value = "数据字典索引编号",dataType = "String")
     @TableField("index_id")
     private String indexId;
 
-    /**
-    * 英文代码
-    */
+    @ApiModelProperty(value = "英文代码",dataType = "String")
     @TableField("code_")
     private String code;
 
-    /**
-    * 文字说明
-    */
+    @ApiModelProperty(value = "文字说明",dataType = "String")
     @TableField("code_text")
     private String codeText;
 
-    /**
-    * 排序号
-    */
+    @ApiModelProperty(value = "排序号",dataType = "Integer", example = "1")
     @TableField("sort_no")
     private Integer sortNo;
 
-    /**
-    * 是否可编辑
-    */
+    @ApiModelProperty(value = "是否可编辑",dataType = "Integer", example = "1")
     @TableField("editable_")
     private Integer editable;
 

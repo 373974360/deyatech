@@ -5,7 +5,7 @@ spring:
     active: dev
   cloud:
     consul:
-      host: 47.96.11.207
+      host: 192.168.2.170
       port: 8500
       config:
         # enabled为true表示启用配置管理功能

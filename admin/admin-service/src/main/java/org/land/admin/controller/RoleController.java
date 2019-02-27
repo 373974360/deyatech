@@ -4,6 +4,7 @@ import org.land.admin.entity.Role;
 import org.land.admin.vo.RoleVo;
 import org.land.admin.service.RoleService;
 import org.land.common.entity.RestResult;
+import cn.hutool.core.lang.Assert;
 import lombok.extern.slf4j.Slf4j;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -15,17 +16,21 @@ import java.io.Serializable;
 import java.util.Collection;
 import org.springframework.web.bind.annotation.RestController;
 import org.land.common.base.BaseController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * <p>
  * 系统角色信息 前端控制器
  * </p>
  * @author: lee.
- * @since 2018-12-21
+ * @since 2019-02-27
  */
 @Slf4j
 @RestController
 @RequestMapping("/admin/role")
+@Api(tags = {"系统角色信息接口"})
 public class RoleController extends BaseController {
     @Autowired
     RoleService roleService;
@@ -37,7 +42,10 @@ public class RoleController extends BaseController {
      * @return
      */
     @PostMapping("/saveOrUpdate")
-    public RestResult saveOrUpdate(Role role) {
+    @ApiOperation(value="单个保存或者更新系统角色信息", notes="根据系统角色信息对象保存或者更新系统角色信息信息")
+    @ApiImplicitParam(name = "role", value = "系统角色信息对象", required = true, dataType = "Role", paramType = "query")
+    public RestResult<Boolean> saveOrUpdate(Role role) {
+        Assert.notNull(role);
         log.info(String.format("保存或者更新系统角色信息: %s ", JSONUtil.toJsonStr(role)));
         boolean result = roleService.saveOrUpdate(role);
         return RestResult.ok(result);
@@ -50,7 +58,10 @@ public class RoleController extends BaseController {
      * @return
      */
     @PostMapping("/saveOrUpdateBatch")
-    public RestResult saveOrUpdateBatch(Collection<Role> roleList) {
+    @ApiOperation(value="批量保存或者更新系统角色信息", notes="根据系统角色信息对象集合批量保存或者更新系统角色信息信息")
+    @ApiImplicitParam(name = "roleList", value = "系统角色信息对象集合", required = true, allowMultiple = true, dataType = "Role", paramType = "query")
+    public RestResult<Boolean> saveOrUpdateBatch(Collection<Role> roleList) {
+        Assert.notNull(roleList);
         log.info(String.format("批量保存或者更新系统角色信息: %s ", JSONUtil.toJsonStr(roleList)));
         boolean result = roleService.saveOrUpdateBatch(roleList);
         return RestResult.ok(result);
@@ -63,7 +74,10 @@ public class RoleController extends BaseController {
      * @return
      */
     @PostMapping("/removeByRole")
-    public RestResult removeByRole(Role role) {
+    @ApiOperation(value="根据Role对象属性逻辑删除系统角色信息", notes="根据系统角色信息对象逻辑删除系统角色信息信息")
+    @ApiImplicitParam(name = "role", value = "系统角色信息对象", required = true, dataType = "Role", paramType = "query")
+    public RestResult<Boolean> removeByRole(Role role) {
+        Assert.notNull(role);
         log.info(String.format("根据Role对象属性逻辑删除系统角色信息: %s ", role));
         boolean result = roleService.removeByBean(role);
         return RestResult.ok(result);
@@ -77,7 +91,10 @@ public class RoleController extends BaseController {
      * @return
      */
     @PostMapping("/removeByIds")
-    public RestResult removeByIds(Collection<Serializable> ids) {
+    @ApiOperation(value="根据ID批量逻辑删除系统角色信息", notes="根据系统角色信息对象ID批量逻辑删除系统角色信息信息")
+    @ApiImplicitParam(name = "ids", value = "系统角色信息对象ID集合", required = true, allowMultiple = true, dataType = "Serializable", paramType = "query")
+    public RestResult<Boolean> removeByIds(Collection<Serializable> ids) {
+        Assert.notNull(ids);
         log.info(String.format("根据id批量删除系统角色信息: %s ", JSONUtil.toJsonStr(ids)));
         boolean result = roleService.removeByIds(ids);
         return RestResult.ok(result);
@@ -90,7 +107,9 @@ public class RoleController extends BaseController {
      * @return
      */
     @GetMapping("/getByRole")
-    public RestResult getByRole(Role role) {
+    @ApiOperation(value="根据Role对象属性获取系统角色信息", notes="根据系统角色信息对象属性获取系统角色信息信息")
+    @ApiImplicitParam(name = "role", value = "系统角色信息对象", required = false, dataType = "Role", paramType = "query")
+    public RestResult<RoleVo> getByRole(Role role) {
         role = roleService.getByBean(role);
         RoleVo roleVo = roleService.setVoProperties(role);
         log.info(String.format("根据id获取系统角色信息：s%", JSONUtil.toJsonStr(roleVo)));
@@ -104,7 +123,9 @@ public class RoleController extends BaseController {
      * @return
      */
     @GetMapping("/listByBean")
-    public RestResult listByBean(Role role) {
+    @ApiOperation(value="根据Role对象属性检索所有系统角色信息", notes="根据Role对象属性检索所有系统角色信息信息")
+    @ApiImplicitParam(name = "role", value = "系统角色信息对象", required = false, dataType = "Role", paramType = "query")
+    public RestResult<Collection<RoleVo>> listByBean(Role role) {
         Collection<Role> roles = roleService.listByBean(role);
         Collection<RoleVo> roleVos = roleService.setVoProperties(roles);
         log.info(String.format("根据Role对象属性检索所有系统角色信息: %s ",JSONUtil.toJsonStr(roleVos)));
@@ -118,8 +139,10 @@ public class RoleController extends BaseController {
      * @return
      */
     @GetMapping("/pageByBean")
-    public RestResult pageByBean(Role role) {
-        IPage roles = roleService.pageByBean(role);
+    @ApiOperation(value="根据Role对象属性分页检索系统角色信息", notes="根据Role对象属性分页检索系统角色信息信息")
+    @ApiImplicitParam(name = "role", value = "系统角色信息对象", required = false, dataType = "Role", paramType = "query")
+    public RestResult<IPage<RoleVo>> pageByBean(Role role) {
+        IPage<RoleVo> roles = roleService.pageByBean(role);
         roles.setRecords(roleService.setVoProperties(roles.getRecords()));
         log.info(String.format("根据Role对象属性分页检索系统角色信息: %s ",JSONUtil.toJsonStr(roles)));
         return RestResult.ok(roles);

@@ -1,6 +1,8 @@
 package org.land.admin.vo;
 
 import org.land.admin.entity.User;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -11,10 +13,11 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author lee.
- * @since 2018-12-19
+ * @since 2019-02-27
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
+@ApiModel(value="系统用户信息扩展对象", description="系统用户信息扩展对象", parent = User.class)
 public class UserVo extends User {
 }

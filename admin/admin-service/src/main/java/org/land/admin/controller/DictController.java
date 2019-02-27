@@ -4,6 +4,7 @@ import org.land.admin.entity.Dict;
 import org.land.admin.vo.DictVo;
 import org.land.admin.service.DictService;
 import org.land.common.entity.RestResult;
+import cn.hutool.core.lang.Assert;
 import lombok.extern.slf4j.Slf4j;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -15,17 +16,21 @@ import java.io.Serializable;
 import java.util.Collection;
 import org.springframework.web.bind.annotation.RestController;
 import org.land.common.base.BaseController;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * <p>
  * 系统数据字典明细信息 前端控制器
  * </p>
  * @author: lee.
- * @since 2018-12-21
+ * @since 2019-02-27
  */
 @Slf4j
 @RestController
 @RequestMapping("/admin/dict")
+@Api(tags = {"系统数据字典明细信息接口"})
 public class DictController extends BaseController {
     @Autowired
     DictService dictService;
@@ -37,7 +42,10 @@ public class DictController extends BaseController {
      * @return
      */
     @PostMapping("/saveOrUpdate")
-    public RestResult saveOrUpdate(Dict dict) {
+    @ApiOperation(value="单个保存或者更新系统数据字典明细信息", notes="根据系统数据字典明细信息对象保存或者更新系统数据字典明细信息信息")
+    @ApiImplicitParam(name = "dict", value = "系统数据字典明细信息对象", required = true, dataType = "Dict", paramType = "query")
+    public RestResult<Boolean> saveOrUpdate(Dict dict) {
+        Assert.notNull(dict);
         log.info(String.format("保存或者更新系统数据字典明细信息: %s ", JSONUtil.toJsonStr(dict)));
         boolean result = dictService.saveOrUpdate(dict);
         return RestResult.ok(result);
@@ -50,7 +58,10 @@ public class DictController extends BaseController {
      * @return
      */
     @PostMapping("/saveOrUpdateBatch")
-    public RestResult saveOrUpdateBatch(Collection<Dict> dictList) {
+    @ApiOperation(value="批量保存或者更新系统数据字典明细信息", notes="根据系统数据字典明细信息对象集合批量保存或者更新系统数据字典明细信息信息")
+    @ApiImplicitParam(name = "dictList", value = "系统数据字典明细信息对象集合", required = true, allowMultiple = true, dataType = "Dict", paramType = "query")
+    public RestResult<Boolean> saveOrUpdateBatch(Collection<Dict> dictList) {
+        Assert.notNull(dictList);
         log.info(String.format("批量保存或者更新系统数据字典明细信息: %s ", JSONUtil.toJsonStr(dictList)));
         boolean result = dictService.saveOrUpdateBatch(dictList);
         return RestResult.ok(result);
@@ -63,7 +74,10 @@ public class DictController extends BaseController {
      * @return
      */
     @PostMapping("/removeByDict")
-    public RestResult removeByDict(Dict dict) {
+    @ApiOperation(value="根据Dict对象属性逻辑删除系统数据字典明细信息", notes="根据系统数据字典明细信息对象逻辑删除系统数据字典明细信息信息")
+    @ApiImplicitParam(name = "dict", value = "系统数据字典明细信息对象", required = true, dataType = "Dict", paramType = "query")
+    public RestResult<Boolean> removeByDict(Dict dict) {
+        Assert.notNull(dict);
         log.info(String.format("根据Dict对象属性逻辑删除系统数据字典明细信息: %s ", dict));
         boolean result = dictService.removeByBean(dict);
         return RestResult.ok(result);
@@ -77,7 +91,10 @@ public class DictController extends BaseController {
      * @return
      */
     @PostMapping("/removeByIds")
-    public RestResult removeByIds(Collection<Serializable> ids) {
+    @ApiOperation(value="根据ID批量逻辑删除系统数据字典明细信息", notes="根据系统数据字典明细信息对象ID批量逻辑删除系统数据字典明细信息信息")
+    @ApiImplicitParam(name = "ids", value = "系统数据字典明细信息对象ID集合", required = true, allowMultiple = true, dataType = "Serializable", paramType = "query")
+    public RestResult<Boolean> removeByIds(Collection<Serializable> ids) {
+        Assert.notNull(ids);
         log.info(String.format("根据id批量删除系统数据字典明细信息: %s ", JSONUtil.toJsonStr(ids)));
         boolean result = dictService.removeByIds(ids);
         return RestResult.ok(result);
@@ -90,7 +107,9 @@ public class DictController extends BaseController {
      * @return
      */
     @GetMapping("/getByDict")
-    public RestResult getByDict(Dict dict) {
+    @ApiOperation(value="根据Dict对象属性获取系统数据字典明细信息", notes="根据系统数据字典明细信息对象属性获取系统数据字典明细信息信息")
+    @ApiImplicitParam(name = "dict", value = "系统数据字典明细信息对象", required = false, dataType = "Dict", paramType = "query")
+    public RestResult<DictVo> getByDict(Dict dict) {
         dict = dictService.getByBean(dict);
         DictVo dictVo = dictService.setVoProperties(dict);
         log.info(String.format("根据id获取系统数据字典明细信息：s%", JSONUtil.toJsonStr(dictVo)));
@@ -104,7 +123,9 @@ public class DictController extends BaseController {
      * @return
      */
     @GetMapping("/listByBean")
-    public RestResult listByBean(Dict dict) {
+    @ApiOperation(value="根据Dict对象属性检索所有系统数据字典明细信息", notes="根据Dict对象属性检索所有系统数据字典明细信息信息")
+    @ApiImplicitParam(name = "dict", value = "系统数据字典明细信息对象", required = false, dataType = "Dict", paramType = "query")
+    public RestResult<Collection<DictVo>> listByBean(Dict dict) {
         Collection<Dict> dicts = dictService.listByBean(dict);
         Collection<DictVo> dictVos = dictService.setVoProperties(dicts);
         log.info(String.format("根据Dict对象属性检索所有系统数据字典明细信息: %s ",JSONUtil.toJsonStr(dictVos)));
@@ -118,8 +139,10 @@ public class DictController extends BaseController {
      * @return
      */
     @GetMapping("/pageByBean")
-    public RestResult pageByBean(Dict dict) {
-        IPage dicts = dictService.pageByBean(dict);
+    @ApiOperation(value="根据Dict对象属性分页检索系统数据字典明细信息", notes="根据Dict对象属性分页检索系统数据字典明细信息信息")
+    @ApiImplicitParam(name = "dict", value = "系统数据字典明细信息对象", required = false, dataType = "Dict", paramType = "query")
+    public RestResult<IPage<DictVo>> pageByBean(Dict dict) {
+        IPage<DictVo> dicts = dictService.pageByBean(dict);
         dicts.setRecords(dictService.setVoProperties(dicts.getRecords()));
         log.info(String.format("根据Dict对象属性分页检索系统数据字典明细信息: %s ",JSONUtil.toJsonStr(dicts)));
         return RestResult.ok(dicts);

@@ -34,7 +34,7 @@ import reactor.core.publisher.Mono;
  */
 @Slf4j
 @Component
-public class UserTokenCheckGatewayFilterFactory extends AbstractGatewayFilterFactory {
+public class UserTokenCheckFilter extends AbstractGatewayFilterFactory {
 
     @Autowired
     JwtConfig jwtConfig;

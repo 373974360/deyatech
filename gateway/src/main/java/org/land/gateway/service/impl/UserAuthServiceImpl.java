@@ -55,7 +55,7 @@ public class UserAuthServiceImpl implements UserAuthService {
     @Override
     public RestResult login(String account, String password) {
         RestResult<UserVo> result = userFeign.getByUser(new User().setAccount(account));
-        if (result != null && result.isOK()) {
+        if (result != null && result.isOk()) {
             UserVo userVo = result.getData();
             if (ObjectUtil.isNotNull(userVo)) {
                 if (encoder.matches(password, userVo.getPassword())) {

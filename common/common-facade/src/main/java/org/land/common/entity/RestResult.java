@@ -1,10 +1,13 @@
 package org.land.common.entity;
 
 import cn.hutool.http.HttpStatus;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.io.Serializable;
 
@@ -25,16 +28,19 @@ public class RestResult<T> implements Serializable {
     /**
      * Http响应状态码
      */
+    @ApiModelProperty(value = "响应状态码", example = "200，500")
     private Integer httpCode;
 
     /**
      * Http响应消息
      */
+    @ApiModelProperty(value = "返回的提示信息", example = "OK")
     private String msg;
 
     /**
      * Http响应数据
      */
+    @ApiModelProperty(value = "返回的具体数据")
     private T data;
 
     public static RestResult ok() {
@@ -57,7 +63,8 @@ public class RestResult<T> implements Serializable {
         return new RestResult(httpCode, msg, data);
     }
 
-    public boolean isOK() {
+    @ApiModelProperty(hidden = true)
+    public boolean isOk() {
         return this.httpCode == HttpStatus.HTTP_OK;
     }
 

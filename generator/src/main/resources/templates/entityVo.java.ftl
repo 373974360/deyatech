@@ -40,12 +40,17 @@ import java.util.List;
 @Accessors(chain = true)
 </#if>
 <#if swagger2>
-@ApiModel(value="${entity}对象", description="${table.comment!}")
+@ApiModel(value="${table.comment!}扩展对象", description="${table.comment!}扩展对象", parent = ${entity}.class)
 </#if>
 public class ${entityVo} extends ${entity} {
 <#if isTree??>
+    @ApiModelProperty(value = "树结构中显示的名称",dataType = "String")
     private String label;
+
+    @ApiModelProperty(value = "树结构中子节点对象集合",dataType = "List<${entityVo}>")
     private List<${entityVo}> children;
+
+    @ApiModelProperty(value = "树结构中的层级",dataType = "String")
     private Integer level;
 </#if>
 }

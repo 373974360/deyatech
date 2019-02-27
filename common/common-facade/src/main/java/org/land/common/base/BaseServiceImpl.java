@@ -6,8 +6,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.land.common.utils.ColumnUtil;
 import org.land.common.Constants;
+import org.land.common.utils.ColumnUtil;
 
 import java.util.Collection;
 import java.util.Map;
@@ -36,7 +36,7 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> exte
     }
 
     @Override
-    public IPage pageByBean(T entity) {
+    public IPage<T> pageByBean(T entity) {
         return super.page(getPageByBean(entity), getQueryWrapperByBean(entity));
     }
 
@@ -70,13 +70,12 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> exte
     private QueryWrapper<T> getQueryWrapperByBean(T entity) {
         Map<String, Object> map = ColumnUtil.objectToColumnMap(entity);
         QueryWrapper<T> queryWrapper = new QueryWrapper<T>().allEq(map, false);
-        if (StrUtil.isNotBlank(entity.getSortSql())) {
+        if (ObjectUtil.isNotNull(entity) && StrUtil.isNotBlank(entity.getSortSql())) {
             String sortSql = Constants.SORT_SQL_KEYWORD.concat(ColumnUtil.replacePropertyToColumn(entity.getSortSql(), entity));
             queryWrapper.last(sortSql);
         } else {
             queryWrapper.last(Constants.DEFAULT_SORT_STR);
         }
-
         return queryWrapper;
     }
 }

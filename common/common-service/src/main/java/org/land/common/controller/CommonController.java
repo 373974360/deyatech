@@ -8,6 +8,10 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpStatus;
 import cn.hutool.json.JSONUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.land.common.Constants;
 import org.land.common.base.BaseController;
@@ -47,6 +51,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @RestController
 @RequestMapping("/common")
+@Api(tags = {"通用服务接口"})
 public class CommonController extends BaseController {
 
     @Value("${uploadPath}")
@@ -61,6 +66,8 @@ public class CommonController extends BaseController {
      * @return CommonResult.ok()
      */
     @GetMapping("/getVerifyCode")
+    @ApiOperation(value="获取验证码图片", notes="根据随机数获取验证码图片")
+    @ApiImplicitParam(name = "random", value = "随机数", required = true, dataType = "String", paramType = "query")
     public void getVerifyCode(HttpServletResponse response, String random) throws IOException {
         response.setHeader("Pragma", "No-cache");
         response.setHeader("Cache-Control", "no-cache");
@@ -82,6 +89,11 @@ public class CommonController extends BaseController {
      * @return CommonResult.ok()
      */
     @GetMapping("/validateVerifyCode")
+    @ApiOperation(value="根据随机数验证验证码是否正确", notes="根据随机数验证验证码是否正确")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "verifyCode", value = "验证码", required = true, dataType = "String", paramType = "query"),
+        @ApiImplicitParam(name = "random", value = "随机数", required = true, dataType = "String", paramType = "query")
+    })
     public RestResult validateVerifyCode(String verifyCode, String random) {
         if (validateVerifyCode(redisTemplate, verifyCode, random)) {
             return RestResult.ok(true);
@@ -94,15 +106,12 @@ public class CommonController extends BaseController {
      * 类型,状态,各个枚举类型的javascript对象
      */
     @GetMapping(value = {"/enumsjs"}, produces = "application/json; charset=utf-8")
+    @ApiOperation(value="获取系统枚举类型的javascript对象", notes="获取系统枚举类型的javascript对象")
     public String enumJS() {
         return "ENUMS = " + JSONUtil.toJsonStr(enums().getData());
     }
 
-    /**
-     * 类型,状态,各个枚举类型的javascript对象
-     */
-    @GetMapping(value = {"/enums"}, produces = "application/json; charset=utf-8")
-    public RestResult enums() {
+    private RestResult enums() {
         EnumsResult[] result = null;
         try {
             List<Class> allClassByInterface = ClassUtil.getAllClassByInterface(IEnums.class, "org.land.common.enums");
@@ -134,19 +143,21 @@ public class CommonController extends BaseController {
     /**
      * 上传文件
      *
-     * @param uploadFile
+     * @param file
      * @return UeditorResult
      */
     @GetMapping("/upload")
-    public RestResult uploadFile(@RequestParam("file") MultipartFile uploadFile) {
+    @ApiOperation(value="上传文件", notes="上传文件")
+    @ApiImplicitParam(name = "file", value = "验证码", required = true, dataType = "MultipartFile", paramType = "query")
+    public RestResult uploadFile(@RequestParam("file") MultipartFile file) {
         FileUploadResult result = new FileUploadResult();
         //判断图片是否为空
-        if (uploadFile.isEmpty()) {
+        if (file.isEmpty()) {
             log.error("上传的文件是空文件");
             return RestResult.build(HttpStatus.HTTP_INTERNAL_ERROR, "上传的文件是空文件");
         }
         try {
-            String originalFilename = uploadFile.getOriginalFilename();
+            String originalFilename = file.getOriginalFilename();
             int index = originalFilename.lastIndexOf(".");
             //获取文件扩展名
             String ext_Name;
@@ -158,7 +169,7 @@ public class CommonController extends BaseController {
             }
             String fileName = DateUtil.format(new Date(), DatePattern.PURE_DATETIME_FORMAT) + RandomUtil.randomNumbers(4) + ext_Name;
             //调用文件处理类FileUtil，处理文件，将文件写入指定位置
-            uploadFile(uploadFile.getBytes(), uploadPath, fileName);
+            uploadFile(file.getBytes(), uploadPath, fileName);
             String url = fileName;
             if (StrUtil.isNotBlank(url)) {
                 //转存文件

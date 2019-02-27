@@ -1,5 +1,6 @@
 package org.land.common.entity;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -19,6 +20,9 @@ import java.util.Map;
 @NoArgsConstructor
 public class EnumsResult implements Serializable {
 
+    @ApiModelProperty(value = "名称")
     private String name;
+
+    @ApiModelProperty(value = "值")
     private List<Map<String,Object>> value;
 }
