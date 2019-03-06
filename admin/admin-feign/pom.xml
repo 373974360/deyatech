@@ -11,18 +11,18 @@
 
     <parent>
         <artifactId>admin</artifactId>
-        <groupId>org.land</groupId>
+        <groupId>com.deyatech</groupId>
         <version>0.0.1</version>
     </parent>
 
     <dependencies>
         <dependency>
-            <groupId>org.land</groupId>
+            <groupId>com.deyatech</groupId>
             <artifactId>common-facade</artifactId>
             <version>${land.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.land</groupId>
+            <groupId>com.deyatech</groupId>
             <artifactId>admin-facade</artifactId>
             <version>${land.version}</version>
         </dependency>

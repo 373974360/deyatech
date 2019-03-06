@@ -11,7 +11,7 @@
 
     <parent>
         <artifactId>common</artifactId>
-        <groupId>org.land</groupId>
+        <groupId>com.deyatech</groupId>
         <version>0.0.1</version>
     </parent>
 

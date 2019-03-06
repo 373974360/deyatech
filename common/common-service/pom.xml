@@ -9,14 +9,14 @@
     <description>一些通用的服务模块</description>
 
     <parent>
-        <groupId>org.land</groupId>
+        <groupId>com.deyatech</groupId>
         <artifactId>common</artifactId>
         <version>0.0.1</version>
     </parent>
 
     <dependencies>
         <dependency>
-            <groupId>org.land</groupId>
+            <groupId>com.deyatech</groupId>
             <artifactId>admin-feign</artifactId>
             <version>${land.version}</version>
         </dependency>

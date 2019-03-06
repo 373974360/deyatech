@@ -5,7 +5,7 @@ package ${package.Service};
 
 import ${package.Entity}.${entity};
 import ${package.Entity?replace("entity","vo")}.${entityVo};
-import ${superServiceClassPackage};
+import com.deyatech.common.base.BaseService;
 import java.util.Collection;
 import java.util.List;
 
@@ -31,9 +31,10 @@ public interface ${entity}${table.serviceName} extends ${superServiceClass}<${en
     /**
      * 根据${entity}对象属性检索${table.comment!}的tree对象
      *
+     * @param ${lowerEntity}
      * @return
      */
-    Collection<${entityVo}> get${entity}Tree();
+    Collection<${entityVo}> get${entity}Tree(${entity} ${lowerEntity});
 </#if>
 
     /**

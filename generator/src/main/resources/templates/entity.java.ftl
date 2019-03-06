@@ -3,9 +3,9 @@ package ${package.Entity};
 <#assign lowerEntity = entity?uncap_first/>
 <#assign entityVo = entity + "Vo"/>
 <#assign lowerEntityVo = lowerEntity + "Vo"/>
-<#list table.importPackages as pkg>
-import ${pkg};
-</#list>
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.deyatech.common.base.BaseEntity;
 <#if swagger2>
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

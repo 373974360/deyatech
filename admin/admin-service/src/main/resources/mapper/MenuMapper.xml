@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.land.admin.mapper.MenuMapper">
+<mapper namespace="com.deyatech.admin.mapper.MenuMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="org.land.admin.entity.Menu">
+    <resultMap id="BaseResultMap" type="com.deyatech.admin.entity.Menu">
         <result column="id_" property="id" />
         <result column="remark_" property="remark" />
         <result column="enable_" property="enable" />
@@ -16,8 +16,8 @@
         <result column="type_" property="type" />
         <result column="parent_id" property="parentId" />
         <result column="tree_position" property="treePosition" />
-        <result column="iconcls_" property="iconcls" />
-        <result column="request_" property="request" />
+        <result column="icon_" property="icon" />
+        <result column="path_" property="path" />
         <result column="sort_no" property="sortNo" />
         <result column="permission_" property="permission" />
     </resultMap>
@@ -32,7 +32,7 @@
         update_by,
         update_time,
         version_,
-        name_, type_, parent_id, tree_position, iconcls_, request_, sort_no, permission_
+        name_, type_, parent_id, tree_position, icon_, path_, sort_no, permission_
     </sql>
 
 </mapper>

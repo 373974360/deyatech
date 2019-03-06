@@ -24,7 +24,7 @@ application,dev配置：
 logging:
   level:
     root: INFO
-    org.land: DEBUG
+    com.deyatech: DEBUG
 # 数据库 相关设置
 spring:
   datasource:

@@ -54,7 +54,7 @@ public class CodeGenerator {
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
         dsc.setDriverName("com.mysql.cj.jdbc.Driver");
-        dsc.setUrl("jdbc:mysql://192.168.2.170:3306/deyatech?useUnicode=true&useSSL=false&characterEncoding=utf8");
+        dsc.setUrl("jdbc:mysql://dev.mysql.deyatong.com:3306/deyatech?useUnicode=true&useSSL=false&characterEncoding=utf8");
         // dsc.setSchemaName("public");
         dsc.setUsername("root");
         dsc.setPassword("dyt@88352636");
@@ -63,7 +63,7 @@ public class CodeGenerator {
         // 包配置
         PackageConfig pc = new PackageConfig();
         pc.setModuleName(scanner("模块名"));
-        pc.setParent("org.land");
+        pc.setParent("com.deyatech");
         mpg.setPackageInfo(pc);
 
         // 自定义配置
@@ -82,8 +82,8 @@ public class CodeGenerator {
         String serviceTemplatePath = "/templates/service.java.ftl";
         String serviceImplTemplatePath = "/templates/serviceImpl.java.ftl";
         String controllerTemplatePath = "/templates/controller.java.ftl";
-        // 如果模板引擎是 velocity
-        // String mapperTemplatePath = "/templates/mapper.xml.vm";
+        String vueApiTemplatePath = "/templates/vue-api.ftl";
+        String vueViewTemplatePath = "/templates/vue.ftl";
 
         // 自定义输出配置
         List<FileOutConfig> focList = new ArrayList<>();
@@ -157,6 +157,24 @@ public class CodeGenerator {
                         + "/" + tableInfo.getEntityName() + "Controller" + StringPool.DOT_JAVA;
             }
         });
+        // 自定义配置会被优先输出
+        focList.add(new FileOutConfig(vueApiTemplatePath) {
+            @Override
+            public String outputFile(TableInfo tableInfo) {
+                // 自定义输出文件名
+                return "D:/workspace/webstorm/deyatech-ui/src/api" + "/" + pc.getModuleName() +
+                        "/" + StringUtils.firstCharToLower(tableInfo.getEntityName()) + ".js";
+            }
+        });
+        // 自定义配置会被优先输出
+        focList.add(new FileOutConfig(vueViewTemplatePath) {
+            @Override
+            public String outputFile(TableInfo tableInfo) {
+                // 自定义输出文件名
+                return "D:/workspace/webstorm/deyatech-ui/src/views" + "/" + pc.getModuleName() +
+                        "/" + StringUtils.firstCharToLower(tableInfo.getEntityName()) + ".vue";
+            }
+        });
         cfg.setFileOutConfigList(focList);
         mpg.setCfg(cfg);
 
@@ -178,11 +196,11 @@ public class CodeGenerator {
         strategy.setSuperEntityColumns("id_", "enable_", "version_", "remark_", "create_by", "create_time", "update_by", "update_time");
         strategy.setEntityLombokModel(true);
         strategy.setRestControllerStyle(true);
-        strategy.setSuperEntityClass("org.land.common.base.BaseEntity");
-        strategy.setSuperMapperClass("org.land.common.base.BaseMapper");
-        strategy.setSuperServiceClass("org.land.common.base.BaseService");
-        strategy.setSuperServiceImplClass("org.land.common.base.BaseServiceImpl");
-        strategy.setSuperControllerClass("org.land.common.base.BaseController");
+        strategy.setSuperEntityClass("BaseEntity");
+        strategy.setSuperMapperClass("BaseMapper");
+        strategy.setSuperServiceClass("BaseService");
+        strategy.setSuperServiceImplClass("BaseServiceImpl");
+        strategy.setSuperControllerClass("BaseController");
         strategy.setInclude(scanner("表名,多个用英文逗号分开").split(","));
         strategy.setTablePrefix(pc.getModuleName() + "_");
         strategy.setEntityTableFieldAnnotationEnable(true);

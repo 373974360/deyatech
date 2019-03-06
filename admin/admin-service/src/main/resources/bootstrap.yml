@@ -5,7 +5,7 @@ spring:
     active: dev
   cloud:
     consul:
-      host: 192.168.2.170
+      host: dev.consul.deyatong.com
       port: 8500
       config:
         # enabled为true表示启用配置管理功能

@@ -1,7 +1,7 @@
 package ${package.Mapper};
 
 import ${package.Entity}.${entity};
-import ${superMapperClassPackage};
+import com.deyatech.common.base.BaseMapper;
 
 /**
  * <p>

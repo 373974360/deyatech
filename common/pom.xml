@@ -14,7 +14,7 @@
     </modules>
 
     <parent>
-        <groupId>org.land</groupId>
+        <groupId>com.deyatech</groupId>
         <artifactId>root</artifactId>
         <version>0.0.1</version>
     </parent>

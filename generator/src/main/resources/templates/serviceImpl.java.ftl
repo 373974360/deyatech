@@ -12,11 +12,11 @@ import ${package.Entity}.${entity};
 import ${package.Entity?replace("entity","vo")}.${entityVo};
 import ${package.Mapper}.${table.mapperName};
 import ${package.Service}.${entity}${table.serviceName};
-import ${superServiceImplClassPackage};
+import com.deyatech.common.base.BaseServiceImpl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 <#if isTree??>
-import org.land.common.Constants;
+import com.deyatech.common.Constants;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ObjectUtil;
 </#if>
@@ -44,11 +44,13 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
     /**
      * 根据${entity}对象属性检索${table.comment!}的tree对象
      *
+     * @param ${lowerEntity}
      * @return
      */
     @Override
-    public Collection<${entityVo}> get${entity}Tree() {
-        List<${entityVo}> ${lowerEntity}Vos = setVoProperties(super.list());
+    public Collection<${entityVo}> get${entity}Tree(${entity} ${lowerEntity}) {
+        ${lowerEntity}.setSortSql("sortNo asc");
+        List<${entityVo}> ${lowerEntity}Vos = setVoProperties(super.listByBean(${lowerEntity}));
         List<${entityVo}> root${entity}s = CollectionUtil.newArrayList();
         if (CollectionUtil.isNotEmpty(${lowerEntityVo}s)) {
             for (${entityVo} ${lowerEntityVo} : ${lowerEntityVo}s) {

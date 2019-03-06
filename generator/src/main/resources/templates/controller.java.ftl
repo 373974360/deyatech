@@ -6,16 +6,15 @@ package ${package.Controller};
 import ${package.Entity}.${entity};
 import ${package.Entity?replace("entity","vo")}.${entityVo};
 import ${package.Service}.${entity}Service;
-import org.land.common.entity.RestResult;
-import cn.hutool.core.lang.Assert;
+import com.deyatech.common.entity.RestResult;
 <#list table.fields as field>
     <#if field.name = "parent_id">
         <#assign isTree=true/>
     </#if>
 </#list>
 <#if isTree??>
-import org.land.common.entity.CascaderResult;
-import org.land.common.utils.CascaderUtil;
+import com.deyatech.common.entity.CascaderResult;
+import com.deyatech.common.utils.CascaderUtil;
 import java.util.List;
 </#if>
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.stereotype.Controller;
 </#if>
 <#if superControllerClassPackage??>
-import ${superControllerClassPackage};
+import com.deyatech.common.base.BaseController;
 </#if>
 <#if swagger2>
 import io.swagger.annotations.Api;
@@ -81,7 +80,6 @@ public class ${table.controllerName} {
     @ApiImplicitParam(name = "${lowerEntity}", value = "${table.comment!}对象", required = true, dataType = "${entity}", paramType = "query")
     </#if>
     public RestResult<Boolean> saveOrUpdate(${entity} ${lowerEntity}) {
-        Assert.notNull(${lowerEntity});
         log.info(String.format("保存或者更新${table.comment!}: %s ", JSONUtil.toJsonStr(${lowerEntity})));
         boolean result = ${lowerEntity}Service.saveOrUpdate(${lowerEntity});
         return RestResult.ok(result);
@@ -99,7 +97,6 @@ public class ${table.controllerName} {
     @ApiImplicitParam(name = "${lowerEntity}List", value = "${table.comment!}对象集合", required = true, allowMultiple = true, dataType = "${entity}", paramType = "query")
     </#if>
     public RestResult<Boolean> saveOrUpdateBatch(Collection<${entity}> ${lowerEntity}List) {
-        Assert.notNull(${lowerEntity}List);
         log.info(String.format("批量保存或者更新${table.comment!}: %s ", JSONUtil.toJsonStr(${lowerEntity}List)));
         boolean result = ${lowerEntity}Service.saveOrUpdateBatch(${lowerEntity}List);
         return RestResult.ok(result);
@@ -117,7 +114,6 @@ public class ${table.controllerName} {
     @ApiImplicitParam(name = "${lowerEntity}", value = "${table.comment!}对象", required = true, dataType = "${entity}", paramType = "query")
     </#if>
     public RestResult<Boolean> removeBy${entity}(${entity} ${lowerEntity}) {
-        Assert.notNull(${lowerEntity});
         log.info(String.format("根据${entity}对象属性逻辑删除${table.comment!}: %s ", ${lowerEntity}));
         boolean result = ${lowerEntity}Service.removeByBean(${lowerEntity});
         return RestResult.ok(result);
@@ -136,7 +132,6 @@ public class ${table.controllerName} {
     @ApiImplicitParam(name = "ids", value = "${table.comment!}对象ID集合", required = true, allowMultiple = true, dataType = "Serializable", paramType = "query")
     </#if>
     public RestResult<Boolean> removeByIds(Collection<Serializable> ids) {
-        Assert.notNull(ids);
         log.info(String.format("根据id批量删除${table.comment!}: %s ", JSONUtil.toJsonStr(ids)));
         boolean result = ${lowerEntity}Service.removeByIds(ids);
         return RestResult.ok(result);
@@ -166,12 +161,12 @@ public class ${table.controllerName} {
      * @param ${lowerEntity}
      * @return
      */
-    @GetMapping("/listByBean")
+    @GetMapping("/listBy${entity}")
     <#if swagger2>
     @ApiOperation(value="根据${entity}对象属性检索所有${table.comment!}", notes="根据${entity}对象属性检索所有${table.comment!}信息")
     @ApiImplicitParam(name = "${lowerEntity}", value = "${table.comment!}对象", required = false, dataType = "${entity}", paramType = "query")
     </#if>
-    public RestResult<Collection<${entityVo}>> listByBean(${entity} ${lowerEntity}) {
+    public RestResult<Collection<${entityVo}>> listBy${entity}(${entity} ${lowerEntity}) {
         Collection<${entity}> ${lowerEntity}s = ${lowerEntity}Service.listByBean(${lowerEntity});
         Collection<${entityVo}> ${lowerEntityVo}s = ${lowerEntity}Service.setVoProperties(${lowerEntity}s);
         log.info(String.format("根据${entity}对象属性检索所有${table.comment!}: %s ",JSONUtil.toJsonStr(${lowerEntityVo}s)));
@@ -184,12 +179,12 @@ public class ${table.controllerName} {
      * @param ${lowerEntity}
      * @return
      */
-    @GetMapping("/pageByBean")
+    @GetMapping("/pageBy${entity}")
     <#if swagger2>
     @ApiOperation(value="根据${entity}对象属性分页检索${table.comment!}", notes="根据${entity}对象属性分页检索${table.comment!}信息")
     @ApiImplicitParam(name = "${lowerEntity}", value = "${table.comment!}对象", required = false, dataType = "${entity}", paramType = "query")
     </#if>
-    public RestResult<IPage<${entityVo}>> pageByBean(${entity} ${lowerEntity}) {
+    public RestResult<IPage<${entityVo}>> pageBy${entity}(${entity} ${lowerEntity}) {
         IPage<${entityVo}> ${lowerEntity}s = ${lowerEntity}Service.pageByBean(${lowerEntity});
         ${lowerEntity}s.setRecords(${lowerEntity}Service.setVoProperties(${lowerEntity}s.getRecords()));
         log.info(String.format("根据${entity}对象属性分页检索${table.comment!}: %s ",JSONUtil.toJsonStr(${lowerEntity}s)));
@@ -200,14 +195,15 @@ public class ${table.controllerName} {
     /**
      * 获取${table.comment!}的tree对象
      *
+     * @param ${lowerEntity}
      * @return
      */
     @GetMapping("/getTree")
     <#if swagger2>
     @ApiOperation(value="获取${table.comment!}的tree对象", notes="获取${table.comment!}的tree对象")
     </#if>
-    public RestResult<Collection<${entityVo}>> get${entity}Tree() {
-        Collection<${entityVo}> ${lowerEntity}Tree = ${lowerEntity}Service.get${entity}Tree();
+    public RestResult<Collection<${entityVo}>> get${entity}Tree(${entity} ${lowerEntity}) {
+        Collection<${entityVo}> ${lowerEntity}Tree = ${lowerEntity}Service.get${entity}Tree(${lowerEntity});
         log.info(String.format("获取${table.comment!}的tree对象: %s ",JSONUtil.toJsonStr(${lowerEntity}Tree)));
         return RestResult.ok(${lowerEntity}Tree);
     }
@@ -215,17 +211,17 @@ public class ${table.controllerName} {
     /**
      * 获取${table.comment!}的级联对象
      *
-     * @param id
+     * @param ${lowerEntity}
      * @return
      */
     @GetMapping("/getCascader")
     <#if swagger2>
     @ApiOperation(value="获取${table.comment!}的级联对象", notes="获取${table.comment!}的级联对象")
-    @ApiImplicitParam(name = "id", value = "id", required = false, dataType = "String", paramType = "query")
+    @ApiImplicitParam(name = "${lowerEntity}", value = "${lowerEntity}", required = false, dataType = "${entity}", paramType = "query")
     </#if>
-    public RestResult<List<CascaderResult>> getCascader(String id) {
-        Collection<${entityVo}> ${lowerEntityVo}s = ${lowerEntity}Service.get${entity}Tree();
-        List<CascaderResult> cascaderResults = CascaderUtil.getResult("Id", "Name","TreePosition", id, ${lowerEntityVo}s);
+    public RestResult<List<CascaderResult>> getCascader(${entity} ${lowerEntity}) {
+        Collection<${entityVo}> ${lowerEntityVo}s = ${lowerEntity}Service.get${entity}Tree(${lowerEntity});
+        List<CascaderResult> cascaderResults = CascaderUtil.getResult("Id", "Name","TreePosition", ${lowerEntity}.getId(), ${lowerEntityVo}s);
         log.info(String.format("获取${table.comment!}的级联对象: %s ",JSONUtil.toJsonStr(cascaderResults)));
         return RestResult.ok(cascaderResults);
     }
