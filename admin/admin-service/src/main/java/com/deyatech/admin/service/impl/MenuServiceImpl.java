@@ -10,6 +10,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.deyatech.common.Constants;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ObjectUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Collection;
@@ -24,6 +25,9 @@ import java.util.Collection;
  */
 @Service
 public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, Menu> implements MenuService {
+
+    @Autowired
+    MenuMapper menuMapper;
 
     /**
      * 根据Menu对象属性检索系统菜单信息的tree对象
@@ -94,5 +98,10 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, Menu> implement
             }
         }
         return menuVos;
+    }
+
+    @Override
+    public String[] getAllPermissionsByUserId(String userId) {
+        return menuMapper.getAllPermissionsByUserId(userId);
     }
 }

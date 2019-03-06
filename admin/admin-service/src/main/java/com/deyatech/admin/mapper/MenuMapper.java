@@ -13,4 +13,11 @@ import com.deyatech.common.base.BaseMapper;
  */
 public interface MenuMapper extends BaseMapper<Menu> {
 
+    /**
+     * 根据用户ID查找该用户拥有的所有权限
+     * @param userId
+     * @return
+     */
+    String[] getAllPermissionsByUserId(String userId);
+
 }

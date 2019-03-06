@@ -10,14 +10,14 @@
 <#if isTree??>
 <template>
     <basic-container>
-        <div class="msfj-container pull-auto">
-            <div class="msfj-menu">
-                <div class="msfj-menu_left">
+        <div class="deyatech-container pull-auto">
+            <div class="deyatech-menu">
+                <div class="deyatech-menu_left">
                     <el-button type="primary" :size="btnSize" @click="btnCreate" :disabled="selectedRows.length > 1">{{${dollar}t('table.create')}}</el-button>
                     <el-button type="primary" :size="btnSize" @click="btnUpdate" :disabled="selectedRows.length != 1">{{${dollar}t('table.update')}}</el-button>
                     <el-button type="danger" :size="btnSize" @click="btnDelete" :disabled="selectedRows.length < 1">{{${dollar}t('table.delete')}}</el-button>
                 </div>
-                <div class="msfj-menu_right">
+                <div class="deyatech-menu_right">
                     <!--<el-button type="primary" icon="el-icon-edit" :size="btnSize" circle @click="btnUpdate"></el-button>
                     <el-button type="danger" icon="el-icon-delete" :size="btnSize" circle @click="btnDelete"></el-button>-->
                     <el-button icon="el-icon-refresh" :size="btnSize" circle @click="reloadList"></el-button>
@@ -61,7 +61,7 @@
 
         <el-dialog :title="titleMap[dialogTitle]" :visible.sync="dialogVisible"
                    :close-on-click-modal="closeOnClickModal">
-            <el-form ref="${lowerEntity}DialogForm" class="msfj-form" :model="${lowerEntity}" label-position="right"
+            <el-form ref="${lowerEntity}DialogForm" class="deyatech-form" :model="${lowerEntity}" label-position="right"
                      label-width="80px" :rules="${lowerEntity}Rules">
                 <el-row :gutter="20" :span="24">
                     <el-col :span="12">
@@ -503,7 +503,7 @@
                 this.total = undefined;
                 get${entity}List(this.listQuery).then(response => {
                     this.listLoading = false;
-                    this.${lowerEntity}List = response.data.list;
+                    this.${lowerEntity}List = response.data.records;
                     this.total = response.data.total;
                 })
             },

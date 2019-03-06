@@ -4,22 +4,22 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.deyatech.admin.entity.Menu">
-        <result column="id_" property="id" />
-        <result column="remark_" property="remark" />
-        <result column="enable_" property="enable" />
-        <result column="create_by" property="createBy" />
-        <result column="create_time" property="createTime" />
-        <result column="update_by" property="updateBy" />
-        <result column="update_time" property="updateTime" />
-        <result column="version_" property="version" />
-        <result column="name_" property="name" />
-        <result column="type_" property="type" />
-        <result column="parent_id" property="parentId" />
-        <result column="tree_position" property="treePosition" />
-        <result column="icon_" property="icon" />
-        <result column="path_" property="path" />
-        <result column="sort_no" property="sortNo" />
-        <result column="permission_" property="permission" />
+        <result column="id_" property="id"/>
+        <result column="remark_" property="remark"/>
+        <result column="enable_" property="enable"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version_" property="version"/>
+        <result column="name_" property="name"/>
+        <result column="type_" property="type"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="tree_position" property="treePosition"/>
+        <result column="icon_" property="icon"/>
+        <result column="path_" property="path"/>
+        <result column="sort_no" property="sortNo"/>
+        <result column="permission_" property="permission"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -34,5 +34,10 @@
         version_,
         name_, type_, parent_id, tree_position, icon_, path_, sort_no, permission_
     </sql>
+
+    <select id="getAllPermissionsByUserId" resultType="java.lang.String">
+        select permission_ from admin_menu join admin_role_menu on admin_menu.id_ = admin_role_menu.menu_id where admin_role_menu.role_id
+        in (select role_id from admin_user_role where user_id = #{userId})
+    </select>
 
 </mapper>

@@ -3,10 +3,8 @@ package com.deyatech.gateway.service.impl;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpStatus;
-import cn.hutool.json.JSONUtil;
-import lombok.extern.slf4j.Slf4j;
 import com.deyatech.admin.entity.User;
-import com.deyatech.admin.feign.UserFeign;
+import com.deyatech.admin.feign.AdminFeign;
 import com.deyatech.admin.vo.UserVo;
 import com.deyatech.common.Constants;
 import com.deyatech.common.entity.RestResult;
@@ -15,6 +13,7 @@ import com.deyatech.common.jwt.JwtInfo;
 import com.deyatech.common.jwt.JwtUtil;
 import com.deyatech.gateway.config.JwtConfig;
 import com.deyatech.gateway.service.UserAuthService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -38,7 +37,7 @@ public class UserAuthServiceImpl implements UserAuthService {
     JwtConfig jwtConfig;
 
     @Autowired
-    UserFeign userFeign;
+    AdminFeign adminFeign;
 
     @Autowired
     RedisTemplate redisTemplate;
@@ -55,7 +54,7 @@ public class UserAuthServiceImpl implements UserAuthService {
      */
     @Override
     public RestResult login(String account, String password) {
-        RestResult<UserVo> result = userFeign.getByUser(new User().setAccount(account));
+        RestResult<UserVo> result = adminFeign.getByUser(new User().setAccount(account));
         if (result != null && result.isOk()) {
             UserVo userVo = result.getData();
             if (ObjectUtil.isNotNull(userVo)) {
@@ -63,6 +62,11 @@ public class UserAuthServiceImpl implements UserAuthService {
                     JwtInfo jwtInfo = new JwtInfo(userVo.getId(), userVo.getAccount(), userVo.getName(), null);
                     String token = JwtUtil.generateToken(jwtInfo, jwtConfig.getPriKeyPath(), jwtConfig.getXpire());
                     userVo.setToken(token);
+                    userVo.setPassword(null);
+                    RestResult<String[]> allPermissionsByUserId = adminFeign.getAllPermissionsByUserId(userVo.getId());
+                    if (allPermissionsByUserId != null && allPermissionsByUserId.isOk()) {
+                        userVo.setPermissions(allPermissionsByUserId.getData());
+                    }
                     return RestResult.ok(userVo);
                 } else {
                     return RestResult.build(HttpStatus.HTTP_INTERNAL_ERROR, "密码不正确");

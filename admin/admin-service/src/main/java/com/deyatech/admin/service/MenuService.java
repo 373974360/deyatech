@@ -39,4 +39,11 @@ public interface MenuService extends BaseService<Menu> {
      * @return
      */
     List<MenuVo> setVoProperties(Collection menus);
+
+    /**
+     * 根据用户ID查找该用户拥有的所有权限
+     * @param userId
+     * @return
+     */
+    String[] getAllPermissionsByUserId(String userId);
 }
