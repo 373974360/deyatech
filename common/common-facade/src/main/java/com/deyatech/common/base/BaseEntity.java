@@ -70,7 +70,6 @@ public class BaseEntity implements Serializable {
      */
     @ApiModelProperty(value = "数据记录更新时间", dataType = "Date", hidden = true)
     @TableField(value = "update_time", fill = FieldFill.UPDATE)
-
     private Date updateTime;
 
     /**
