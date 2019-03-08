@@ -176,7 +176,7 @@ public class CodeGenerator {
             }
         });
         cfg.setFileOutConfigList(focList);
-        //自己写算法实现merge
+        //自己写算法实现java文件以及xml文件merge
         //cfg.setFileCreate()
         mpg.setCfg(cfg);
 
