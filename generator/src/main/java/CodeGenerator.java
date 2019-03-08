@@ -176,6 +176,8 @@ public class CodeGenerator {
             }
         });
         cfg.setFileOutConfigList(focList);
+        //自己写算法实现merge
+        //cfg.setFileCreate()
         mpg.setCfg(cfg);
 
         // 配置模板

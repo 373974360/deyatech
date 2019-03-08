@@ -8,27 +8,29 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
 import java.util.Date;
+
 /**
  * <p>
  * 系统角色菜单关联信息
  * </p>
  *
  * @author lee.
- * @since 2019-03-05
+ * @since 2019-03-07
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @TableName("admin_role_menu")
-@ApiModel(value="系统角色菜单关联信息对象", description="系统角色菜单关联信息" ,parent = BaseEntity.class)
+@ApiModel(value = "系统角色菜单关联信息对象", description = "系统角色菜单关联信息", parent = BaseEntity.class)
 public class RoleMenu extends BaseEntity {
 
-    @ApiModelProperty(value = "角色id",dataType = "String")
+    @ApiModelProperty(value = "角色id", dataType = "String")
     @TableField("role_id")
     private String roleId;
 
-    @ApiModelProperty(value = "菜单id",dataType = "String")
+    @ApiModelProperty(value = "菜单id", dataType = "String")
     @TableField("menu_id")
     private String menuId;
 

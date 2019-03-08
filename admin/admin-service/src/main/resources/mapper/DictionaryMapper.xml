@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.deyatech.admin.mapper.DictIndexMapper">
+<mapper namespace="com.deyatech.admin.mapper.DictionaryMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.deyatech.admin.entity.DictIndex">
+    <resultMap id="BaseResultMap" type="com.deyatech.admin.entity.Dictionary">
         <result column="id_" property="id" />
         <result column="enable_" property="enable" />
         <result column="remark_" property="remark" />
@@ -12,8 +12,11 @@
         <result column="update_by" property="updateBy" />
         <result column="update_time" property="updateTime" />
         <result column="version_" property="version" />
-        <result column="key_" property="key" />
-        <result column="name_" property="name" />
+        <result column="index_id" property="indexId" />
+        <result column="code_" property="code" />
+        <result column="code_text" property="codeText" />
+        <result column="sort_no" property="sortNo" />
+        <result column="editable_" property="editable" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -26,7 +29,7 @@
         update_by,
         update_time,
         version_,
-        key_, name_
+        index_id, code_, code_text, sort_no, editable_
     </sql>
 
 </mapper>

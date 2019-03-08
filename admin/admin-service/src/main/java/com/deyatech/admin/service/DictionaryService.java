@@ -1,7 +1,7 @@
 package com.deyatech.admin.service;
 
-import com.deyatech.admin.entity.Dict;
-import com.deyatech.admin.vo.DictVo;
+import com.deyatech.admin.entity.Dictionary;
+import com.deyatech.admin.vo.DictionaryVo;
 import com.deyatech.common.base.BaseService;
 import java.util.Collection;
 import java.util.List;
@@ -12,23 +12,23 @@ import java.util.List;
  * </p>
  *
  * @Author lee.
- * @since 2019-03-06
+ * @since 2019-03-07
  */
-public interface DictService extends BaseService<Dict> {
+public interface DictionaryService extends BaseService<Dictionary> {
 
     /**
      * 单个将对象转换为vo系统数据字典明细信息
      *
-     * @param dict
+     * @param dictionary
      * @return
      */
-    DictVo setVoProperties(Dict dict);
+    DictionaryVo setVoProperties(Dictionary dictionary);
 
     /**
      * 批量将对象转换为vo系统数据字典明细信息
      *
-     * @param dicts
+     * @param dictionarys
      * @return
      */
-    List<DictVo> setVoProperties(Collection dicts);
+    List<DictionaryVo> setVoProperties(Collection dictionarys);
 }

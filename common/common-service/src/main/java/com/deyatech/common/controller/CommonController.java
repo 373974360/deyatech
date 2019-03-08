@@ -101,17 +101,12 @@ public class CommonController extends BaseController {
         return RestResult.build(HttpStatus.HTTP_INTERNAL_ERROR, "验证码错误", false);
     }
 
-
     /**
      * 类型,状态,各个枚举类型的javascript对象
      */
-    @GetMapping(value = {"/enumsjs"}, produces = "application/json; charset=utf-8")
+    @GetMapping("/getEnums")
     @ApiOperation(value="获取系统枚举类型的javascript对象", notes="获取系统枚举类型的javascript对象")
-    public String enumJS() {
-        return "ENUMS = " + JSONUtil.toJsonStr(enums().getData());
-    }
-
-    private RestResult enums() {
+    public RestResult enums() {
         EnumsResult[] result = null;
         try {
             List<Class> allClassByInterface = ClassUtil.getAllClassByInterface(IEnums.class, "com.deyatech.common.enums");

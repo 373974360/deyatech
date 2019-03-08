@@ -39,7 +39,7 @@ import java.util.Date;
 @TableName("${table.name}")
 </#if>
 <#if swagger2>
-@ApiModel(value="${table.comment!}对象", description="${table.comment!}" ,parent = BaseEntity.class)
+@ApiModel(value = "${table.comment!}对象", description = "${table.comment!}", parent = BaseEntity.class)
 </#if>
 <#if superEntityClass??>
 public class ${entity} extends ${superEntityClass}<#if activeRecord><${entity}></#if> {
@@ -57,9 +57,9 @@ public class ${entity}{
     <#if field.comment!?length gt 0>
         <#if swagger2>
             <#if field.propertyType == "Integer" || field.propertyType == "Long">
-    @ApiModelProperty(value = "${field.comment}",dataType = "${field.propertyType}", example = "1")
+    @ApiModelProperty(value = "${field.comment}", dataType = "${field.propertyType}", example = "1")
             <#else>
-    @ApiModelProperty(value = "${field.comment}",dataType = "${field.propertyType}")
+    @ApiModelProperty(value = "${field.comment}", dataType = "${field.propertyType}")
             </#if>
         <#else>
     /**

@@ -8,27 +8,29 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
 import java.util.Date;
+
 /**
  * <p>
  * 系统数据字典索引信息
  * </p>
  *
  * @author lee.
- * @since 2019-03-05
+ * @since 2019-03-07
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @TableName("admin_user_role")
-@ApiModel(value="系统数据字典索引信息对象", description="系统数据字典索引信息" ,parent = BaseEntity.class)
+@ApiModel(value = "系统数据字典索引信息对象", description = "系统数据字典索引信息", parent = BaseEntity.class)
 public class UserRole extends BaseEntity {
 
-    @ApiModelProperty(value = "用户id",dataType = "String")
+    @ApiModelProperty(value = "用户id", dataType = "String")
     @TableField("user_id")
     private String userId;
 
-    @ApiModelProperty(value = "角色id",dataType = "String")
+    @ApiModelProperty(value = "角色id", dataType = "String")
     @TableField("role_id")
     private String roleId;
 

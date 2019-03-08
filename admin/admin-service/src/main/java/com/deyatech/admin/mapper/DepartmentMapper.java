@@ -1,6 +1,6 @@
 package com.deyatech.admin.mapper;
 
-import com.deyatech.admin.entity.Dept;
+import com.deyatech.admin.entity.Department;
 import com.deyatech.common.base.BaseMapper;
 
 /**
@@ -9,8 +9,8 @@ import com.deyatech.common.base.BaseMapper;
  * </p>
  *
  * @Author lee.
- * @since 2019-03-06
+ * @since 2019-03-07
  */
-public interface DeptMapper extends BaseMapper<Dept> {
+public interface DepartmentMapper extends BaseMapper<Department> {
 
 }

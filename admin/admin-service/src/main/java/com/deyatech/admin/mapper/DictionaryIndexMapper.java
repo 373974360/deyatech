@@ -1,6 +1,6 @@
 package com.deyatech.admin.mapper;
 
-import com.deyatech.admin.entity.DictIndex;
+import com.deyatech.admin.entity.DictionaryIndex;
 import com.deyatech.common.base.BaseMapper;
 
 /**
@@ -9,8 +9,8 @@ import com.deyatech.common.base.BaseMapper;
  * </p>
  *
  * @Author lee.
- * @since 2019-03-06
+ * @since 2019-03-07
  */
-public interface DictIndexMapper extends BaseMapper<DictIndex> {
+public interface DictionaryIndexMapper extends BaseMapper<DictionaryIndex> {
 
 }

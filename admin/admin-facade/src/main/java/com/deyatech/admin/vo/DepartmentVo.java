@@ -1,6 +1,6 @@
 package com.deyatech.admin.vo;
 
-import com.deyatech.admin.entity.Menu;
+import com.deyatech.admin.entity.Department;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * <p>
- * 系统菜单信息扩展对象
+ * 系统部门信息扩展对象
  * </p>
  *
  * @author lee.
@@ -20,13 +20,13 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@ApiModel(value = "系统菜单信息扩展对象", description = "系统菜单信息扩展对象", parent = Menu.class)
-public class MenuVo extends Menu {
+@ApiModel(value = "系统部门信息扩展对象", description = "系统部门信息扩展对象", parent = Department.class)
+public class DepartmentVo extends Department {
     @ApiModelProperty(value = "树结构中显示的名称", dataType = "String")
     private String label;
 
-    @ApiModelProperty(value = "树结构中子节点对象集合", dataType = "List<MenuVo>")
-    private List<MenuVo> children;
+    @ApiModelProperty(value = "树结构中子节点对象集合", dataType = "List<DepartmentVo>")
+    private List<DepartmentVo> children;
 
     @ApiModelProperty(value = "树结构中的层级", dataType = "String")
     private Integer level;

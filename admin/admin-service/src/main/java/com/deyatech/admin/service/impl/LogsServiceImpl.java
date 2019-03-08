@@ -17,7 +17,7 @@ import java.util.Collection;
  * </p>
  *
  * @Author lee.
- * @since 2019-03-06
+ * @since 2019-03-07
  */
 @Service
 public class LogsServiceImpl extends BaseServiceImpl<LogsMapper, Logs> implements LogsService {

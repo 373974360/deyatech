@@ -13,11 +13,11 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author lee.
- * @since 2019-03-05
+ * @since 2019-03-07
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@ApiModel(value="系统数据字典索引信息扩展对象", description="系统数据字典索引信息扩展对象", parent = Logs.class)
+@ApiModel(value = "系统数据字典索引信息扩展对象", description = "系统数据字典索引信息扩展对象", parent = Logs.class)
 public class LogsVo extends Logs {
 }
