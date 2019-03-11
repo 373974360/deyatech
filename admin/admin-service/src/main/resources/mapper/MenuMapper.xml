@@ -41,4 +41,9 @@
         in (select role_id from admin_user_role where user_id = #{userId})
     </select>
 
+    <select id="getAllRequestsByUserId" resultType="java.lang.String">
+        select request_ from admin_menu join admin_role_menu on admin_menu.id_ = admin_role_menu.menu_id where admin_role_menu.role_id
+        in (select role_id from admin_user_role where user_id = #{userId})
+    </select>
+
 </mapper>

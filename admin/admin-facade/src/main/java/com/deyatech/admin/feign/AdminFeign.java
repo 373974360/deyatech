@@ -31,6 +31,15 @@ public interface AdminFeign {
     RestResult<String[]> getAllPermissionsByUserId(@RequestParam("userId") String userId);
 
     /**
+     * 根据用户ID查找该用户拥有的所有后台请求权限
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping(value = "/menu/getAllRequestsByUserId", method = RequestMethod.GET)
+    RestResult<String[]> getAllRequestsByUserId(@RequestParam("userId") String userId);
+
+    /**
      * 根据ID获取系统用户信息
      *
      * @param user

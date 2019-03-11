@@ -3,6 +3,11 @@ package com.deyatech.admin.service;
 import com.deyatech.admin.entity.Menu;
 import com.deyatech.admin.vo.MenuVo;
 import com.deyatech.common.base.BaseService;
+import com.deyatech.common.entity.RestResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -46,4 +51,12 @@ public interface MenuService extends BaseService<Menu> {
      * @return
      */
     String[] getAllPermissionsByUserId(String userId);
+
+    /**
+     * 根据用户ID查找该用户拥有的所有后台请求权限
+     *
+     * @param userId
+     * @return
+     */
+    String[] getAllRequestsByUserId(String userId);
 }

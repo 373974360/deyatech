@@ -34,6 +34,11 @@ public class AdminFeignImpl implements AdminFeign {
     }
 
     @Override
+    public RestResult<String[]> getAllRequestsByUserId(@RequestParam("userId") String userId) {
+        return RestResult.ok(menuService.getAllRequestsByUserId(userId));
+    }
+
+    @Override
     public RestResult<UserVo> getByUser(@RequestBody User user) {
         User byBean = userService.getByBean(user);
         return RestResult.ok(userService.setVoProperties(byBean));

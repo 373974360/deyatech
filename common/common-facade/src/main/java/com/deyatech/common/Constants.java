@@ -85,6 +85,11 @@ public interface Constants {
     Integer DEFAULT_ROOT_LEVEL = 1;
 
     /**
+     * 默认常用字符串分隔符
+     */
+    String DEFAULT_STRING_SPLIT = ";";
+
+    /**
      * 默认treePosition分隔符
      */
     String DEFAULT_TREE_POSITION_SPLIT = "&";

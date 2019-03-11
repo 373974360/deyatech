@@ -1,19 +1,21 @@
 package com.deyatech.admin.service.impl;
 
-import com.deyatech.admin.entity.Menu;
-import com.deyatech.admin.vo.MenuVo;
-import com.deyatech.admin.mapper.MenuMapper;
-import com.deyatech.admin.service.MenuService;
-import com.deyatech.common.base.BaseServiceImpl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
-import com.deyatech.common.Constants;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import com.deyatech.admin.entity.Menu;
+import com.deyatech.admin.mapper.MenuMapper;
+import com.deyatech.admin.service.MenuService;
+import com.deyatech.admin.vo.MenuVo;
+import com.deyatech.common.Constants;
+import com.deyatech.common.base.BaseServiceImpl;
+import com.deyatech.common.entity.RestResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.List;
+
 import java.util.Collection;
+import java.util.List;
 
 /**
  * <p>
@@ -43,10 +45,10 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, Menu> implement
         if (CollectionUtil.isNotEmpty(menuVos)) {
             for (MenuVo menuVo : menuVos) {
                 menuVo.setLabel(menuVo.getName());
-                if(StrUtil.isNotBlank(menuVo.getTreePosition())){
+                if (StrUtil.isNotBlank(menuVo.getTreePosition())) {
                     String[] split = menuVo.getTreePosition().split(Constants.DEFAULT_TREE_POSITION_SPLIT);
                     menuVo.setLevel(split.length);
-                }else{
+                } else {
                     menuVo.setLevel(Constants.DEFAULT_ROOT_LEVEL);
                 }
                 if (ObjectUtil.equal(menuVo.getParentId(), Constants.DEFAULT_PARENT_ROOT)) {
@@ -75,7 +77,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, Menu> implement
      * @return
      */
     @Override
-    public MenuVo setVoProperties(Menu menu){
+    public MenuVo setVoProperties(Menu menu) {
         MenuVo menuVo = new MenuVo();
         BeanUtil.copyProperties(menu, menuVo);
         return menuVo;
@@ -88,7 +90,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, Menu> implement
      * @return
      */
     @Override
-    public List<MenuVo> setVoProperties(Collection menus){
+    public List<MenuVo> setVoProperties(Collection menus) {
         List<MenuVo> menuVos = CollectionUtil.newArrayList();
         if (CollectionUtil.isNotEmpty(menus)) {
             for (Object menu : menus) {
@@ -103,5 +105,10 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, Menu> implement
     @Override
     public String[] getAllPermissionsByUserId(String userId) {
         return menuMapper.getAllPermissionsByUserId(userId);
+    }
+
+    @Override
+    public String[] getAllRequestsByUserId(String userId) {
+        return menuMapper.getAllRequestsByUserId(userId);
     }
 }
