@@ -5,12 +5,12 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpStatus;
 import com.deyatech.common.Constants;
 import com.deyatech.common.exception.BusinessException;
+import com.deyatech.common.utils.RsaKeyUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
-import com.deyatech.common.utils.RsaKeyUtil;
 
 import java.util.Date;
 
@@ -73,7 +73,7 @@ public class JwtUtil {
             return new JwtInfo(body.getSubject(), StrUtil.toString(body.get(Constants.JWT_KEY_UNIQUENAME)), StrUtil.toString(body.get(Constants.JWT_KEY_NAME)), buffer);
         } catch (Exception e) {
             log.error("解析token信息出错：", e);
-            throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "解析token信息出错", e);
+            throw new BusinessException(HttpStatus.HTTP_FORBIDDEN, "解析token信息出错", e);
         }
 
     }

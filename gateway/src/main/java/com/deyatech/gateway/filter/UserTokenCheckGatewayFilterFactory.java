@@ -53,32 +53,29 @@ public class UserTokenCheckGatewayFilterFactory extends AbstractGatewayFilterFac
     @Override
     public GatewayFilter apply(Object config) {
         return (exchange, chain) -> {
-            if (!checkRequestIsIgnore(exchange)) {
+            if (!checkRequestIsIgnore(exchange) && checkRequestIsNeedValidate(exchange)) {
                 String userToken = getToken(exchange);
                 ServerHttpResponse response = exchange.getResponse();
                 JwtInfo jwtInfo;
                 if (StrUtil.isBlank(userToken)) {
-                    RestResult restResult = RestResult.build(HttpStatus.HTTP_INTERNAL_ERROR, "登录信息过期，请重新登录！");
-                    DataBuffer bodyDataBuffer = response.bufferFactory().wrap(JSONUtil.toJsonStr(restResult).getBytes());
-                    return response.writeWith(Mono.just(bodyDataBuffer));
-                } else {
+                    return tokenError(response, "登录信息过期，请重新登录！");
+                }
+                try {
                     jwtInfo = JwtUtil.getInfoFromToken(userToken, jwtConfig.getPubKeyPath());
                     Object invlideToken = redisTemplate.opsForValue().get(Constants.TOKEN.concat(jwtInfo.getId()));
                     if (ObjectUtil.isNotNull(invlideToken) && userToken.equals(invlideToken.toString())) {
-                        throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "登录信息过期，请重新登录！");
-                    } else {
-                        if (!checkRequestIsAllow(exchange, jwtInfo.getId())) {
-                            RestResult restResult = RestResult.build(HttpStatus.HTTP_FORBIDDEN, "权限不足，请联系管理员！");
-                            DataBuffer bodyDataBuffer = response.bufferFactory().wrap(JSONUtil.toJsonStr(restResult).getBytes());
-                            return response.writeWith(Mono.just(bodyDataBuffer));
-                        } else {
-                            ServerHttpRequest request = exchange.getRequest().mutate().header(Constants.CONTEXT_KEY_USER_ID, jwtInfo.getId()).build();
-                            exchange = exchange.mutate().request(request).build();
-                            if (jwtInfo.getBuffer() <= jwtConfig.getBuffer()) {
-                                exchange.getResponse().getHeaders().add(Constants.REFRESH_TOKEN, "true");
-                            }
-                        }
+                        return tokenError(response, "登录信息过期，请重新登录！");
                     }
+                    if (!checkRequestIsAllow(exchange, jwtInfo.getId())) {
+                        return permissionError(response, "权限不足，请联系管理员！");
+                    }
+                    ServerHttpRequest request = exchange.getRequest().mutate().header(Constants.CONTEXT_KEY_USER_ID, jwtInfo.getId()).build();
+                    exchange = exchange.mutate().request(request).build();
+                    if (jwtInfo.getBuffer() <= jwtConfig.getBuffer()) {
+                        exchange.getResponse().getHeaders().add(Constants.REFRESH_TOKEN, "true");
+                    }
+                } catch (BusinessException e) {
+                    return tokenError(response, "登录信息过期，请重新登录！");
                 }
             }
             return chain.filter(exchange);
@@ -125,6 +122,25 @@ public class UserTokenCheckGatewayFilterFactory extends AbstractGatewayFilterFac
     }
 
     /**
+     * 根据系统菜单配置检查请求是否需要判断权限
+     *
+     * @param exchange
+     * @return
+     */
+    private boolean checkRequestIsNeedValidate(ServerWebExchange exchange) {
+        String path = exchange.getRequest().getPath().value();
+        RestResult<String[]> allRequests = adminFeign.getAllRequests();
+        if (allRequests.isOk() && ObjectUtil.isNotNull(allRequests.getData())) {
+            for (String datum : allRequests.getData()) {
+                if (path.contains(datum)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * 根据用户ID判断是否拥有该请求权限
      *
      * @param exchange
@@ -142,5 +158,31 @@ public class UserTokenCheckGatewayFilterFactory extends AbstractGatewayFilterFac
             }
         }
         return false;
+    }
+
+    /**
+     * 返回权限错误的响应给前台
+     *
+     * @param response
+     * @param message
+     * @return
+     */
+    private Mono<Void> permissionError(ServerHttpResponse response, String message) {
+        RestResult restResult = RestResult.build(HttpStatus.HTTP_FORBIDDEN, message);
+        DataBuffer bodyDataBuffer = response.bufferFactory().wrap(JSONUtil.toJsonStr(restResult).getBytes());
+        return response.writeWith(Mono.just(bodyDataBuffer));
+    }
+
+    /**
+     * 返回token错误的响应，前台判断重新登录
+     *
+     * @param response
+     * @param message
+     * @return
+     */
+    private Mono<Void> tokenError(ServerHttpResponse response, String message) {
+        RestResult restResult = RestResult.build(HttpStatus.HTTP_UNAUTHORIZED, message);
+        DataBuffer bodyDataBuffer = response.bufferFactory().wrap(JSONUtil.toJsonStr(restResult).getBytes());
+        return response.writeWith(Mono.just(bodyDataBuffer));
     }
 }

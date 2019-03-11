@@ -40,6 +40,14 @@ public interface AdminFeign {
     RestResult<String[]> getAllRequestsByUserId(@RequestParam("userId") String userId);
 
     /**
+     * 获取系统所有需要验证的请求地址
+     *
+     * @return
+     */
+    @RequestMapping(value = "/menu/getAllRequests", method = RequestMethod.GET)
+    RestResult<String[]> getAllRequests();
+
+    /**
      * 根据ID获取系统用户信息
      *
      * @param user

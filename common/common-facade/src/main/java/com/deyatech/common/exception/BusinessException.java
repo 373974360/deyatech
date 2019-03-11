@@ -35,6 +35,7 @@ public class BusinessException extends RuntimeException {
     private Object e;
 
     public BusinessException(Integer httpCode, String msg) {
+        super(msg);
         this.httpCode = httpCode;
         this.msg = msg;
     }

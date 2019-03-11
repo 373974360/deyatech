@@ -2,6 +2,8 @@ package com.deyatech.gateway.filter;
 
 
 import cn.hutool.core.util.StrUtil;
+import com.deyatech.common.Constants;
+import com.deyatech.common.utils.AesUtil;
 import com.deyatech.gateway.swagger.SwaggerProvider;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -33,9 +35,7 @@ public class RequestGlobalFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         String rawPath = request.getURI().getRawPath();
-        if (!StrUtil.endWithIgnoreCase(rawPath, SwaggerProvider.API_URI)) {
-            return chain.filter(exchange);
-        } else {
+        if (StrUtil.endWithIgnoreCase(rawPath, SwaggerProvider.API_URI)) {
             // 处理swagger生成的接口url错误
             Stream<String> stream = Arrays.stream(StringUtils.tokenizeToStringArray(rawPath, "/"));
             String first = stream.findFirst().get();
@@ -45,8 +45,9 @@ public class RequestGlobalFilter implements GlobalFilter, Ordered {
                     .path(newPath)
                     .build();
             exchange.getAttributes().put(GATEWAY_REQUEST_URL_ATTR, newRequest.getURI());
-            return chain.filter(exchange.mutate().request(newRequest.mutate().build()).build());
+            request = newRequest;
         }
+        return chain.filter(exchange.mutate().request(request.mutate().headers(httpHeaders -> httpHeaders.add(Constants.GATEWAY_HEADER, AesUtil.aesEncrypt(Constants.GATEWAY_VALUE))).build()).build());
     }
 
     @Override

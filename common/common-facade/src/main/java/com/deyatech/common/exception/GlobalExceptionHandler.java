@@ -1,12 +1,13 @@
 package com.deyatech.common.exception;
 
 import cn.hutool.http.HttpStatus;
-import lombok.extern.slf4j.Slf4j;
+import com.deyatech.common.context.SpringContextHelper;
 import com.deyatech.common.entity.RestResult;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.server.ServerWebExchange;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>
@@ -18,11 +19,11 @@ import org.springframework.web.server.ServerWebExchange;
  */
 @Slf4j
 @RestControllerAdvice
-@ResponseBody
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(Exception.class)
-    public Object serverExceptionHandler(ServerWebExchange serverWebExchange, Exception ex) {
-        log.error("错误发生在请求：" + serverWebExchange.getRequest().getURI() + "  " + ex.getMessage(), ex);
+    public Object serverExceptionHandler(Exception ex) {
+        log.error("错误发生在：" + ex.getMessage(), ex);
         if (ex instanceof BusinessException) {
             BusinessException businessException = (BusinessException) ex;
             return businessException;

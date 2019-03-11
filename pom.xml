@@ -24,6 +24,8 @@
         <hutool.version>4.4.5</hutool.version>
         <!-- jjwt 版本号 -->
         <jjwt.version>0.9.1</jjwt.version>
+        <!-- 加密相关类 -->
+        <bcprov-jdk15on.version>1.60</bcprov-jdk15on.version>
         <!-- lombok 版本号 -->
         <lombok.version>1.18.6</lombok.version>
         <!-- springfox-swagger 版本号 -->
@@ -79,6 +81,12 @@
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt</artifactId>
                 <version>${jjwt.version}</version>
+            </dependency>
+            <!-- 加密相关类 -->
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15on</artifactId>
+                <version>${bcprov-jdk15on.version}</version>
             </dependency>
             <!-- lombok -->
             <dependency>

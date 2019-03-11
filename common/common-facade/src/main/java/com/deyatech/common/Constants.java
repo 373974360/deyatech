@@ -99,4 +99,13 @@ public interface Constants {
      */
     String PREFIX_KEY_VERIFY_CODE = "verifyCode_";
 
+    /**
+     * 路由标识
+     */
+    String GATEWAY_HEADER = "deyatech-gateway";
+
+    /**
+     * 路由header数据
+     */
+    String GATEWAY_VALUE = "西安德雅通科技有限公司";
 }

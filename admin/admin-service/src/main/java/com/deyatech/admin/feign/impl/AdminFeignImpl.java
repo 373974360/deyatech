@@ -1,5 +1,7 @@
 package com.deyatech.admin.feign.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
+import com.deyatech.admin.entity.Menu;
 import com.deyatech.admin.entity.User;
 import com.deyatech.admin.feign.AdminFeign;
 import com.deyatech.admin.service.MenuService;
@@ -10,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -36,6 +41,16 @@ public class AdminFeignImpl implements AdminFeign {
     @Override
     public RestResult<String[]> getAllRequestsByUserId(@RequestParam("userId") String userId) {
         return RestResult.ok(menuService.getAllRequestsByUserId(userId));
+    }
+
+    @Override
+    public RestResult<String[]> getAllRequests() {
+        Collection<Menu> menus = menuService.listByBean(null);
+        String[] requests = null;
+        if (CollectionUtil.isNotEmpty(menus)) {
+            requests = menus.stream().map(Menu::getRequest).collect(Collectors.toList()).toArray(new String[menus.size()]);
+        }
+        return RestResult.ok(requests);
     }
 
     @Override
