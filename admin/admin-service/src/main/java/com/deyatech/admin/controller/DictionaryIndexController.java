@@ -1,23 +1,26 @@
 package com.deyatech.admin.controller;
 
-import com.deyatech.admin.entity.DictionaryIndex;
-import com.deyatech.admin.vo.DictionaryIndexVo;
-import com.deyatech.admin.service.DictionaryIndexService;
-import com.deyatech.common.entity.RestResult;
-import lombok.extern.slf4j.Slf4j;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import java.io.Serializable;
-import java.util.Collection;
-import org.springframework.web.bind.annotation.RestController;
+import com.deyatech.admin.entity.Dictionary;
+import com.deyatech.admin.entity.DictionaryIndex;
+import com.deyatech.admin.service.DictionaryIndexService;
+import com.deyatech.admin.service.DictionaryService;
+import com.deyatech.admin.vo.DictionaryIndexVo;
 import com.deyatech.common.base.BaseController;
+import com.deyatech.common.entity.RestResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * <p>
@@ -33,6 +36,8 @@ import io.swagger.annotations.ApiOperation;
 public class DictionaryIndexController extends BaseController {
     @Autowired
     DictionaryIndexService dictionaryIndexService;
+    @Autowired
+    DictionaryService dictionaryService;
 
     /**
      * 单个保存或者更新系统数据字典索引信息
@@ -45,6 +50,22 @@ public class DictionaryIndexController extends BaseController {
     @ApiImplicitParam(name = "dictionaryIndex", value = "系统数据字典索引信息对象", required = true, dataType = "DictionaryIndex", paramType = "query")
     public RestResult<Boolean> saveOrUpdate(DictionaryIndex dictionaryIndex) {
         log.info(String.format("保存或者更新系统数据字典索引信息: %s ", JSONUtil.toJsonStr(dictionaryIndex)));
+        if(StrUtil.isEmpty(dictionaryIndex.getId())){
+            List<DictionaryIndex> list = dictionaryIndexService.getBaseMapper().selectList(new QueryWrapper<DictionaryIndex>()
+                    .eq("key_",dictionaryIndex.getKey())
+                    .eq("enable_",1));
+            if(!list.isEmpty()){
+                return RestResult.error("已存在相同名称的索引，请重新提交！");
+            }
+        }else{
+            List<DictionaryIndex> list = dictionaryIndexService.getBaseMapper().selectList(new QueryWrapper<DictionaryIndex>()
+                    .eq("key_",dictionaryIndex.getKey())
+                    .eq("enable_",1)
+                    .notIn("id_",dictionaryIndex.getId()));
+            if(!list.isEmpty()){
+                return RestResult.error("已存在相同名称的索引，请重新提交！");
+            }
+        }
         boolean result = dictionaryIndexService.saveOrUpdate(dictionaryIndex);
         return RestResult.ok(result);
     }
@@ -89,8 +110,21 @@ public class DictionaryIndexController extends BaseController {
     @PostMapping("/removeByIds")
     @ApiOperation(value="根据ID批量逻辑删除系统数据字典索引信息", notes="根据系统数据字典索引信息对象ID批量逻辑删除系统数据字典索引信息信息")
     @ApiImplicitParam(name = "ids", value = "系统数据字典索引信息对象ID集合", required = true, allowMultiple = true, dataType = "Serializable", paramType = "query")
-    public RestResult<Boolean> removeByIds(Collection<Serializable> ids) {
+    public RestResult<Boolean> removeByIds(@RequestParam(value="ids[]") List<String> ids) {
         log.info(String.format("根据id批量删除系统数据字典索引信息: %s ", JSONUtil.toJsonStr(ids)));
+        List<DictionaryIndex> list = (List<DictionaryIndex>) dictionaryIndexService.listByIds(ids);
+        if(!list.isEmpty()){
+            List<String> indexIds = new ArrayList<>();
+            for(DictionaryIndex dictionaryIndex:list){
+                indexIds.add(dictionaryIndex.getKey());
+            }
+            boolean b = dictionaryService.remove(new QueryWrapper<Dictionary>()
+                    .in("index_id",indexIds));
+            if(!b){
+                return RestResult.error("删除出错，请联系管理员");
+            }
+        }
+
         boolean result = dictionaryIndexService.removeByIds(ids);
         return RestResult.ok(result);
     }

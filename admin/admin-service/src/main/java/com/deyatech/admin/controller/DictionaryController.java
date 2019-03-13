@@ -1,23 +1,23 @@
 package com.deyatech.admin.controller;
 
-import com.deyatech.admin.entity.Dictionary;
-import com.deyatech.admin.vo.DictionaryVo;
-import com.deyatech.admin.service.DictionaryService;
-import com.deyatech.common.entity.RestResult;
-import lombok.extern.slf4j.Slf4j;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import java.io.Serializable;
-import java.util.Collection;
-import org.springframework.web.bind.annotation.RestController;
+import com.deyatech.admin.entity.Dictionary;
+import com.deyatech.admin.service.DictionaryService;
+import com.deyatech.admin.vo.DictionaryVo;
 import com.deyatech.common.base.BaseController;
+import com.deyatech.common.entity.RestResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * <p>
@@ -45,6 +45,24 @@ public class DictionaryController extends BaseController {
     @ApiImplicitParam(name = "dictionary", value = "系统数据字典明细信息对象", required = true, dataType = "Dictionary", paramType = "query")
     public RestResult<Boolean> saveOrUpdate(Dictionary dictionary) {
         log.info(String.format("保存或者更新系统数据字典明细信息: %s ", JSONUtil.toJsonStr(dictionary)));
+        if(StrUtil.isEmpty(dictionary.getId())){
+            List<Dictionary> list = dictionaryService.getBaseMapper().selectList(new QueryWrapper<Dictionary>()
+                    .eq("code_",dictionary.getCode())
+                    .eq("index_id",dictionary.getIndexId())
+                    .eq("enable_",1));
+            if(!list.isEmpty()){
+                return RestResult.error("该子项目已存在，请重新提交！");
+            }
+        }else{
+            List<Dictionary> list = dictionaryService.getBaseMapper().selectList(new QueryWrapper<Dictionary>()
+                    .eq("code_",dictionary.getCode())
+                    .eq("index_id",dictionary.getIndexId())
+                    .eq("enable_",1)
+                    .notIn("id_",dictionary.getId()));
+            if(!list.isEmpty()){
+                return RestResult.error("该子项目已存在，请重新提交！");
+            }
+        }
         boolean result = dictionaryService.saveOrUpdate(dictionary);
         return RestResult.ok(result);
     }
@@ -89,7 +107,7 @@ public class DictionaryController extends BaseController {
     @PostMapping("/removeByIds")
     @ApiOperation(value="根据ID批量逻辑删除系统数据字典明细信息", notes="根据系统数据字典明细信息对象ID批量逻辑删除系统数据字典明细信息信息")
     @ApiImplicitParam(name = "ids", value = "系统数据字典明细信息对象ID集合", required = true, allowMultiple = true, dataType = "Serializable", paramType = "query")
-    public RestResult<Boolean> removeByIds(Collection<Serializable> ids) {
+    public RestResult<Boolean> removeByIds(@RequestParam(value="ids[]") List<String> ids) {
         log.info(String.format("根据id批量删除系统数据字典明细信息: %s ", JSONUtil.toJsonStr(ids)));
         boolean result = dictionaryService.removeByIds(ids);
         return RestResult.ok(result);
