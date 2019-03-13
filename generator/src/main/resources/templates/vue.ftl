@@ -291,7 +291,7 @@
                 this.${dollar}refs['${lowerEntity}DialogForm'].validate(valid => {
                     if(valid) {
                         this.submitLoading = true;
-                        createOrUpdate${entity}(this.${lowerEntity}).then(response => {
+                        createOrUpdate${entity}(this.${lowerEntity}).then(() => {
                             this.lastExpanded = this.${lowerEntity}.treePosition;
                             this.reset${entity}Dialog();
                             this.${dollar}message.success(this.${dollar}t("table.createSuccess"));
@@ -305,7 +305,7 @@
                 this.${dollar}refs['${lowerEntity}DialogForm'].validate(valid => {
                     if(valid) {
                         this.submitLoading = true;
-                        createOrUpdate${entity}(this.${lowerEntity}).then(response => {
+                        createOrUpdate${entity}(this.${lowerEntity}).then(() => {
                             this.lastExpanded = this.${lowerEntity}.treePosition;
                             this.reset${entity}Dialog();
                             this.${dollar}message.success(this.${dollar}t("table.updateSuccess"));
@@ -317,7 +317,7 @@
             },
             doDelete(ids){
                 this.listLoading = true;
-                del${entity}s(ids).then(response => {
+                del${entity}s(ids).then(() => {
                     this.reloadList();
                     this.${dollar}message.success(this.${dollar}t("table.deleteSuccess"));
                 })
@@ -584,7 +584,7 @@
                 this.${dollar}refs['${lowerEntity}DialogForm'].validate(valid => {
                     if(valid) {
                         this.submitLoading = true;
-                        createOrUpdate${entity}(this.${lowerEntity}).then(response => {
+                        createOrUpdate${entity}(this.${lowerEntity}).then(() => {
                             this.reset${entity}Dialog();
                             this.${dollar}message.success(this.${dollar}t("table.createSuccess"));
                         })
@@ -597,7 +597,7 @@
                 this.${dollar}refs['${lowerEntity}DialogForm'].validate(valid => {
                     if(valid) {
                         this.submitLoading = true;
-                        createOrUpdate${entity}(this.${lowerEntity}).then(response => {
+                        createOrUpdate${entity}(this.${lowerEntity}).then(() => {
                             this.reset${entity}Dialog();
                             this.${dollar}message.success(this.${dollar}t("table.updateSuccess"));
                         })
@@ -608,7 +608,7 @@
             },
             doDelete(ids){
                 this.listLoading = true;
-                del${entity}s(ids).then(response => {
+                del${entity}s(ids).then(() => {
                     this.reloadList();
                     this.${dollar}message.success(this.${dollar}t("table.deleteSuccess"));
                 })
