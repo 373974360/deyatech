@@ -67,7 +67,7 @@
                     <el-col :span="12">
                         <el-form-item :label="${dollar}t('table.parent')">
                             <el-cascader :options="${lowerEntity}Cascader" v-model="${lowerEntity}TreePosition"
-                                         show-all-levels expand-trigger="hover" clearable
+                                         show-all-levels expand-trigger="click" clearable
                                          change-on-select></el-cascader>
                         </el-form-item>
                     </el-col>
@@ -243,6 +243,7 @@
                         this.${lowerEntity}.parentId = this.selectedRows[0].id;
                     }
                 }
+                this.${lowerEntity}.children = undefined;
                 this.get${entity}Cascader(null);
                 this.dialogTitle = 'create';
                 this.dialogVisible = true;
@@ -254,6 +255,7 @@
                 } else {
                     this.${lowerEntity} = deepClone(this.selectedRows[0]);
                 }
+                this.${lowerEntity}.children = undefined;
                 this.get${entity}Cascader(this.${lowerEntity}.id);
                 this.dialogTitle = 'update';
                 this.dialogVisible = true;

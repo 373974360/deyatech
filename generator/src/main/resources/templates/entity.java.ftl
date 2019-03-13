@@ -3,9 +3,19 @@ package ${package.Entity};
 <#assign lowerEntity = entity?uncap_first/>
 <#assign entityVo = entity + "Vo"/>
 <#assign lowerEntityVo = lowerEntity + "Vo"/>
+<#assign hasDate = false />
+<#list table.fields as field>
+    <#if field.propertyType == "Date">
+        <#assign hasDate = true />
+    </#if>
+</#list>
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.deyatech.common.base.BaseEntity;
+<#if hasDate>
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+</#if>
 <#if swagger2>
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -86,6 +96,10 @@ public class ${entity}{
         </#if>
     <#elseif field.convert>
     @TableField("${field.name}")
+    <#if field.propertyType == "Date">
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    </#if>
     </#if>
 <#-- 乐观锁注解 -->
     <#if (versionFieldName!"") == field.name>
