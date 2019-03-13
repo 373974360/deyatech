@@ -26,7 +26,7 @@
         </div>
 
         <el-table :data="${lowerEntity}List" v-loading.body="listLoading" stripe border highlight-current-row
-                  @selection-change="handleSelectionChange">
+                  @selection-change="handleSelectionChange" v-if="tableReset">
             <el-table-column type="selection" width="50" align="center"/>
     <#list table.fields as column>
         <#if column.propertyName = "name">
@@ -141,7 +141,7 @@
         get${entity}Cascader,
         createOrUpdate${entity},
         del${entity}s} from '@/api/${package.ModuleName}/${lowerEntity}';
-    import {deepClone} from '@/util/util';
+    import {deepClone, setExpanded} from '@/util/util';
     import {mapGetters} from 'vuex';
 
     export default {
@@ -167,7 +167,9 @@
                         {required: true, message: this.${dollar}t("table.pleaseInput") + '${column.comment}'}
                     ]<#if count != column_index>,</#if>
                 </#list>
-                }
+                },
+                lastExpanded: undefined,
+                tableReset: false
             }
         },
         created() {
@@ -210,7 +212,14 @@
             reloadList(){
                 this.listLoading = true;
                 get${entity}Tree().then(response => {
+                    this.tableReset = false;
                     this.${lowerEntity}List = response.data;
+                    if (this.lastExpanded) {
+                        this.${lowerEntity}List = setExpanded(this.${lowerEntity}List, this.lastExpanded);
+                    }
+                    this.$nextTick(() => {
+                        this.tableReset = true
+                    });
                     this.listLoading = false;
                 })
             },
@@ -265,11 +274,13 @@
                 if (row.id) {
                     this.${dollar}confirm(this.${dollar}t("table.deleteConfirm"), this.${dollar}t("table.tip"), {type: 'error'}).then(() => {
                         ids.push(row.id);
+                        this.lastExpanded = row.treePosition;
                         this.doDelete(ids);
                     })
                 } else {
                     this.${dollar}confirm(this.${dollar}t("table.deleteConfirm"), this.${dollar}t("table.tip"), {type: 'error'}).then(() => {
                         for(const deleteRow of this.selectedRows) {
+                            this.lastExpanded = deleteRow.treePosition;
                             ids.push(deleteRow.id);
                         }
                         this.doDelete(ids);
@@ -281,6 +292,7 @@
                     if(valid) {
                         this.submitLoading = true;
                         createOrUpdate${entity}(this.${lowerEntity}).then(response => {
+                            this.lastExpanded = this.${lowerEntity}.treePosition;
                             this.reset${entity}Dialog();
                             this.${dollar}message.success(this.${dollar}t("table.createSuccess"));
                         })
@@ -294,6 +306,7 @@
                     if(valid) {
                         this.submitLoading = true;
                         createOrUpdate${entity}(this.${lowerEntity}).then(response => {
+                            this.lastExpanded = this.${lowerEntity}.treePosition;
                             this.reset${entity}Dialog();
                             this.${dollar}message.success(this.${dollar}t("table.updateSuccess"));
                         })
