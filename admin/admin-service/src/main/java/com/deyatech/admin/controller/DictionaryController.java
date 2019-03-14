@@ -1,8 +1,6 @@
 package com.deyatech.admin.controller;
 
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.deyatech.admin.entity.Dictionary;
 import com.deyatech.admin.service.DictionaryService;
@@ -45,23 +43,8 @@ public class DictionaryController extends BaseController {
     @ApiImplicitParam(name = "dictionary", value = "系统数据字典明细信息对象", required = true, dataType = "Dictionary", paramType = "query")
     public RestResult<Boolean> saveOrUpdate(Dictionary dictionary) {
         log.info(String.format("保存或者更新系统数据字典明细信息: %s ", JSONUtil.toJsonStr(dictionary)));
-        if(StrUtil.isEmpty(dictionary.getId())){
-            List<Dictionary> list = dictionaryService.getBaseMapper().selectList(new QueryWrapper<Dictionary>()
-                    .eq("code_",dictionary.getCode())
-                    .eq("index_id",dictionary.getIndexId())
-                    .eq("enable_",1));
-            if(!list.isEmpty()){
-                return RestResult.error("该子项目已存在，请重新提交！");
-            }
-        }else{
-            List<Dictionary> list = dictionaryService.getBaseMapper().selectList(new QueryWrapper<Dictionary>()
-                    .eq("code_",dictionary.getCode())
-                    .eq("index_id",dictionary.getIndexId())
-                    .eq("enable_",1)
-                    .notIn("id_",dictionary.getId()));
-            if(!list.isEmpty()){
-                return RestResult.error("该子项目已存在，请重新提交！");
-            }
+        if(!dictionaryService.validataByCodeAndIndexId(dictionary)){
+            return RestResult.error("已存在相同的字典项目，请重新提交！");
         }
         boolean result = dictionaryService.saveOrUpdate(dictionary);
         return RestResult.ok(result);
@@ -139,6 +122,7 @@ public class DictionaryController extends BaseController {
     @ApiOperation(value="根据Dictionary对象属性检索所有系统数据字典明细信息", notes="根据Dictionary对象属性检索所有系统数据字典明细信息信息")
     @ApiImplicitParam(name = "dictionary", value = "系统数据字典明细信息对象", required = false, dataType = "Dictionary", paramType = "query")
     public RestResult<Collection<DictionaryVo>> listByDictionary(Dictionary dictionary) {
+        dictionary.setSortSql("sort_no asc");
         Collection<Dictionary> dictionarys = dictionaryService.listByBean(dictionary);
         Collection<DictionaryVo> dictionaryVos = dictionaryService.setVoProperties(dictionarys);
         log.info(String.format("根据Dictionary对象属性检索所有系统数据字典明细信息: %s ",JSONUtil.toJsonStr(dictionaryVos)));

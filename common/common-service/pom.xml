@@ -21,6 +21,11 @@
             <version>${land.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.deyatech</groupId>
+            <artifactId>admin-facade</artifactId>
+            <version>${land.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-consul-config</artifactId>
         </dependency>

@@ -1,15 +1,22 @@
 package com.deyatech.admin.service.impl;
 
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.deyatech.admin.entity.Dictionary;
 import com.deyatech.admin.entity.DictionaryIndex;
+import com.deyatech.admin.service.DictionaryService;
 import com.deyatech.admin.vo.DictionaryIndexVo;
 import com.deyatech.admin.mapper.DictionaryIndexMapper;
 import com.deyatech.admin.service.DictionaryIndexService;
 import com.deyatech.common.base.BaseServiceImpl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import com.deyatech.common.entity.EnumsResult;
+import com.deyatech.common.entity.RestResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.Collection;
+
+import java.util.*;
 
 /**
  * <p>
@@ -21,6 +28,71 @@ import java.util.Collection;
  */
 @Service
 public class DictionaryIndexServiceImpl extends BaseServiceImpl<DictionaryIndexMapper, DictionaryIndex> implements DictionaryIndexService {
+
+    @Autowired
+    DictionaryService dictionaryService;
+
+
+    /**
+     * 返回所有字典索引和字典子项目集合
+     *
+     * @return
+     */
+    @Override
+    public List<EnumsResult> getDictsAll() {
+        List<EnumsResult> resultList = new ArrayList<>();
+        List<DictionaryIndex> dictionaryIndexList = getBaseMapper().selectList(new QueryWrapper<DictionaryIndex>()
+                .eq("enable_",1));
+        List<Dictionary> dictionaryList = dictionaryService.getBaseMapper().selectList(new QueryWrapper<Dictionary>()
+                .eq("enable_",1));
+        if(!dictionaryIndexList.isEmpty()){
+            for(DictionaryIndex dictionaryIndex:dictionaryIndexList){
+                EnumsResult enumsResult = new EnumsResult();
+                enumsResult.setName(dictionaryIndex.getKey());
+                if(!dictionaryList.isEmpty()){
+                    List<Map<String,Object>> valueList = new ArrayList<>();
+                    for(Dictionary dictionary:dictionaryList){
+                        if(dictionaryIndex.getKey().equals(dictionary.getIndexId())){
+                            HashMap<String,Object> map = new HashMap<>();
+                            map.put("code",dictionary.getCode());
+                            map.put("value",dictionary.getCodeText());
+                            valueList.add(map);
+                        }
+                    }
+                    enumsResult.setValue(valueList);
+                }
+                resultList.add(enumsResult);
+            }
+        }
+        return resultList;
+    }
+
+    /**
+     * 根据字典索引验证是否已存在
+     *
+     * @param dictionaryIndex
+     * @return
+     */
+    @Override
+    public boolean validataByKey(DictionaryIndex dictionaryIndex) {
+        if(StrUtil.isEmpty(dictionaryIndex.getId())){
+            List<DictionaryIndex> list = getBaseMapper().selectList(new QueryWrapper<DictionaryIndex>()
+                    .eq("key_",dictionaryIndex.getKey())
+                    .eq("enable_",1));
+            if(!list.isEmpty()){
+                return false;
+            }
+        }else{
+            List<DictionaryIndex> list = getBaseMapper().selectList(new QueryWrapper<DictionaryIndex>()
+                    .eq("key_",dictionaryIndex.getKey())
+                    .eq("enable_",1)
+                    .notIn("id_",dictionaryIndex.getId()));
+            if(!list.isEmpty()){
+                return false;
+            }
+        }
+        return true;
+    }
 
     /**
      * 单个将对象转换为vo系统数据字典索引信息
