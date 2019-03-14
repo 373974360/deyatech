@@ -3,6 +3,7 @@ package com.deyatech.common.interceptor;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpStatus;
 import com.deyatech.common.Constants;
+import com.deyatech.common.context.UserContextHelper;
 import com.deyatech.common.exception.BusinessException;
 import com.deyatech.common.utils.AesUtil;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -29,6 +30,10 @@ public class AuthRestInterceptor extends HandlerInterceptorAdapter {
             if (!Constants.GATEWAY_VALUE.equalsIgnoreCase(s)) {
                 throw new BusinessException(HttpStatus.HTTP_FORBIDDEN, "请求被拒绝！");
             }
+        }
+        String userId = request.getHeader(Constants.CONTEXT_KEY_USER_ID);
+        if (StrUtil.isNotBlank(userId)) {
+            UserContextHelper.setUserID(userId);
         }
         return super.preHandle(request, response, handler);
     }
