@@ -22,10 +22,13 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
         log.info("start insert fill clumns createTime,createBy");
         this.setFieldValByName("createTime", new Date(), metaObject);
+        this.setFieldValByName("updateTime", new Date(), metaObject);
         if (StrUtil.isNotBlank(UserContextHelper.getUserId())) {
             this.setFieldValByName("createBy", UserContextHelper.getUserId(), metaObject);
+            this.setFieldValByName("updateBy", UserContextHelper.getUserId(), metaObject);
         }else{
             this.setFieldValByName("createBy", null, metaObject);
+            this.setFieldValByName("updateBy", null, metaObject);
         }
     }
 

@@ -65,14 +65,14 @@ public class BaseEntity implements Serializable {
     /**
      * 数据记录更新者
      */
-    @TableField(value = "update_by", fill = FieldFill.UPDATE)
+    @TableField(value = "update_by", fill = FieldFill.INSERT_UPDATE)
     @ApiModelProperty(value = "数据记录更新者", dataType = "String", hidden = true)
     private String updateBy;
 
     /**
      * 数据记录更新时间
      */
-    @TableField(value = "update_time", fill = FieldFill.UPDATE)
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
