@@ -8,6 +8,7 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpStatus;
 import cn.hutool.json.JSONUtil;
+import com.deyatech.admin.feign.AdminFeign;
 import com.deyatech.common.base.BaseController;
 import com.deyatech.common.enums.IEnums;
 import io.swagger.annotations.Api;
@@ -59,6 +60,10 @@ public class CommonController extends BaseController {
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Autowired
+    private AdminFeign adminFeignApi;
+
 
     /**
      * 获取验证码图片
@@ -133,6 +138,15 @@ public class CommonController extends BaseController {
             ExceptionUtil.getMessage(e);
         }
         return RestResult.ok(result);
+    }
+
+    /**
+     * 获取系统数据字典javascript对象
+     */
+    @GetMapping("/getDictionaries")
+    @ApiOperation(value="获取系统数据字典javascript对象", notes="获取系统数据字典javascript对象")
+    public RestResult dicts() {
+        return adminFeignApi.getDictsAll();
     }
 
     /**

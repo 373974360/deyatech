@@ -16,6 +16,23 @@ import java.util.List;
  */
 public interface DictionaryService extends BaseService<Dictionary> {
 
+
+    /**
+     * 逻辑删除字典索引的时候，根据字典索引同步逻辑删除字典子项目
+     *
+     * @param ids
+     * @return
+     */
+    boolean removeByIndexIds(List<String> ids);
+
+    /**
+     * 根据字典英文代码和索引验证是否已存在
+     *
+     * @param dictionary
+     * @return
+     */
+    boolean validataByCodeAndIndexId(Dictionary dictionary);
+
     /**
      * 单个将对象转换为vo系统数据字典明细信息
      *

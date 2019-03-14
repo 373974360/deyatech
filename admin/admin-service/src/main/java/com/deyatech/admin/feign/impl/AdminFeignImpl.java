@@ -4,9 +4,11 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.deyatech.admin.entity.Menu;
 import com.deyatech.admin.entity.User;
 import com.deyatech.admin.feign.AdminFeign;
+import com.deyatech.admin.service.DictionaryIndexService;
 import com.deyatech.admin.service.MenuService;
 import com.deyatech.admin.service.UserService;
 import com.deyatech.admin.vo.UserVo;
+import com.deyatech.common.entity.EnumsResult;
 import com.deyatech.common.entity.RestResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -32,6 +35,9 @@ public class AdminFeignImpl implements AdminFeign {
 
     @Autowired
     MenuService menuService;
+
+    @Autowired
+    DictionaryIndexService dictionaryIndexService;
 
     @Override
     public RestResult<String[]> getAllPermissionsByUserId(@RequestParam("userId") String userId) {
@@ -57,5 +63,11 @@ public class AdminFeignImpl implements AdminFeign {
     public RestResult<UserVo> getByUser(@RequestBody User user) {
         User byBean = userService.getByBean(user);
         return RestResult.ok(userService.setVoProperties(byBean));
+    }
+
+    @Override
+    public RestResult<List<EnumsResult>> getDictsAll() {
+        List<EnumsResult> resultList = dictionaryIndexService.getDictsAll();
+        return RestResult.ok(resultList);
     }
 }

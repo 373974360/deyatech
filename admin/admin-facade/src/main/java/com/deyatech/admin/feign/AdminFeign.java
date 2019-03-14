@@ -2,12 +2,15 @@ package com.deyatech.admin.feign;
 
 import com.deyatech.admin.entity.User;
 import com.deyatech.admin.vo.UserVo;
+import com.deyatech.common.entity.EnumsResult;
 import com.deyatech.common.entity.RestResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 /**
  * <p>
@@ -55,4 +58,13 @@ public interface AdminFeign {
      */
     @RequestMapping(value = "/user/getByUser", method = RequestMethod.POST)
     RestResult<UserVo> getByUser(@RequestBody User user);
+
+
+    /**
+     * 返回所有字典索引和字典子项目集合
+     *
+     * @return
+     */
+    @RequestMapping(value = "/dicts/getDictsAll", method = RequestMethod.GET)
+    RestResult<List<EnumsResult>> getDictsAll();
 }
