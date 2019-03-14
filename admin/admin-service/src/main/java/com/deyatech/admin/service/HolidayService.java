@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * <p>
- *  系统角色信息 服务类
+ *  节假日信息 服务类
  * </p>
  *
  * @Author lee.
@@ -16,8 +16,17 @@ import java.util.List;
  */
 public interface HolidayService extends BaseService<Holiday> {
 
+
     /**
-     * 单个将对象转换为vo系统角色信息
+     * 批量保存节假日
+     *
+     * @param year
+     * @param value
+     * @return
+     */
+    boolean saveOrUpdateBatch(String year,String[] value);
+    /**
+     * 单个将对象转换为vo节假日信息
      *
      * @param holiday
      * @return
@@ -25,7 +34,7 @@ public interface HolidayService extends BaseService<Holiday> {
     HolidayVo setVoProperties(Holiday holiday);
 
     /**
-     * 批量将对象转换为vo系统角色信息
+     * 批量将对象转换为vo节假日信息
      *
      * @param holidays
      * @return

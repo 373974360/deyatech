@@ -50,15 +50,16 @@ public class HolidayController extends BaseController {
     /**
      * 批量保存或者更新节假日信息
      *
-     * @param holidayList
+     * @param year
+     * @param value
      * @return
      */
     @PostMapping("/saveOrUpdateBatch")
     @ApiOperation(value="批量保存或者更新节假日信息", notes="根据节假日信息对象集合批量保存或者更新节假日信息信息")
     @ApiImplicitParam(name = "holidayList", value = "节假日信息对象集合", required = true, allowMultiple = true, dataType = "Holiday", paramType = "query")
-    public RestResult<Boolean> saveOrUpdateBatch(@RequestBody List<Holiday> holidayList) {
-        log.info(String.format("批量保存或者更新节假日信息: %s ", JSONUtil.toJsonStr(holidayList)));
-        boolean result = holidayService.saveOrUpdateBatch(holidayList);
+    public RestResult<Boolean> saveOrUpdateBatch(String year,@RequestParam(value="value[]") String[] value) {
+        log.info(String.format("批量保存或者更新节假日信息: %s ", JSONUtil.toJsonStr(year+""+value)));
+        boolean result = holidayService.saveOrUpdateBatch(year,value);
         return RestResult.ok(result);
     }
 
