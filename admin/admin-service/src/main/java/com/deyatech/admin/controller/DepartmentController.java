@@ -5,6 +5,7 @@ import com.deyatech.admin.vo.DepartmentVo;
 import com.deyatech.admin.service.DepartmentService;
 import com.deyatech.common.entity.RestResult;
 import com.deyatech.common.entity.CascaderResult;
+import com.deyatech.common.enums.EnableEnum;
 import com.deyatech.common.utils.CascaderUtil;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -48,6 +49,9 @@ public class DepartmentController extends BaseController {
     @ApiImplicitParam(name = "department", value = "系统部门信息对象", required = true, dataType = "Department", paramType = "query")
     public RestResult<Boolean> saveOrUpdate(Department department) {
         log.info(String.format("保存或者更新系统部门信息: %s ", JSONUtil.toJsonStr(department)));
+        if (department.getEnable() == null) {
+            department.setEnable(EnableEnum.ENABLE.getCode());
+        }
         boolean result = departmentService.saveOrUpdate(department);
         return RestResult.ok(result);
     }
