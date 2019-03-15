@@ -1,5 +1,6 @@
 package com.deyatech.admin.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.deyatech.admin.entity.User;
 import com.deyatech.admin.vo.UserVo;
 import com.deyatech.common.base.BaseService;
@@ -31,4 +32,29 @@ public interface UserService extends BaseService<User> {
      * @return
      */
     List<UserVo> setVoProperties(Collection users);
+
+    /**
+     * 分页查询
+     *
+     * @param user
+     * @return
+     */
+    IPage<UserVo> findPage(User user);
+
+    /**
+     * 保存用户信息
+     *
+     * @param user
+     * @return
+     */
+    boolean saveOrEdit(User user);
+
+    /**
+     * 检查登录帐号是否存在
+     *
+     * @param id
+     * @param account
+     * @return
+     */
+    boolean checkAccountExist(String id, String account);
 }

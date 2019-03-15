@@ -1,7 +1,12 @@
 package com.deyatech.common.base;
 
+import cn.hutool.http.HttpStatus;
 import com.deyatech.common.Constants;
+import com.deyatech.common.exception.BusinessException;
 import org.springframework.data.redis.core.RedisTemplate;
+
+import java.io.Closeable;
+import java.io.IOException;
 
 /**
  * 前端控制器基类
@@ -28,6 +33,16 @@ public class BaseController {
             return true;
         }
         return false;
+    }
+
+    protected void close(Closeable c) {
+        if (c != null) {
+            try {
+                c.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

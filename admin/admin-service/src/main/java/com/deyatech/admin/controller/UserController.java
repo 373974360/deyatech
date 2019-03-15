@@ -4,6 +4,7 @@ import com.deyatech.admin.entity.User;
 import com.deyatech.admin.vo.UserVo;
 import com.deyatech.admin.service.UserService;
 import com.deyatech.common.entity.RestResult;
+import io.swagger.annotations.ApiImplicitParams;
 import lombok.extern.slf4j.Slf4j;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -45,7 +46,7 @@ public class UserController extends BaseController {
     @ApiImplicitParam(name = "user", value = "系统用户信息对象", required = true, dataType = "User", paramType = "query")
     public RestResult<Boolean> saveOrUpdate(User user) {
         log.info(String.format("保存或者更新系统用户信息: %s ", JSONUtil.toJsonStr(user)));
-        boolean result = userService.saveOrUpdate(user);
+        boolean result = userService.saveOrEdit(user);
         return RestResult.ok(result);
     }
 
@@ -137,10 +138,29 @@ public class UserController extends BaseController {
     @ApiOperation(value="根据User对象属性分页检索系统用户信息", notes="根据User对象属性分页检索系统用户信息信息")
     @ApiImplicitParam(name = "user", value = "系统用户信息对象", required = false, dataType = "User", paramType = "query")
     public RestResult<IPage<UserVo>> pageByUser(User user) {
-        IPage<UserVo> users = userService.pageByBean(user);
-        users.setRecords(userService.setVoProperties(users.getRecords()));
+        /*IPage<UserVo> users = userService.pageByBean(user);
+        users.setRecords(userService.setVoProperties(users.getRecords()));*/
+        IPage<UserVo> users = userService.findPage(user);
         log.info(String.format("根据User对象属性分页检索系统用户信息: %s ",JSONUtil.toJsonStr(users)));
         return RestResult.ok(users);
+    }
+
+    /**
+     * 检查帐号是否已经存在
+     *
+     * @param id
+     * @param account
+     * @return
+     */
+    @GetMapping("/checkAccountExist")
+    @ApiOperation(value="检查帐号是否已经存在", notes="检查帐号是否已经存在")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "用户id", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "acount", value = "用户登录帐号", required = true, dataType = "String", paramType = "query")
+    })
+    public RestResult checkAccountExist(String id, String account) {
+        boolean exist = userService.checkAccountExist(id, account);
+        return RestResult.ok(exist);
     }
 
 }

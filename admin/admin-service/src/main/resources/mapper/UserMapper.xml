@@ -34,4 +34,35 @@
         department_id, name_, gender_, phone_, avatar_, account_, password_
     </sql>
 
+    <select id="findList" resultType="com.deyatech.admin.vo.UserVo" parameterType="com.deyatech.admin.entity.User">
+        SELECT
+        au.id_ AS id,
+        au.enable_ AS enable,
+        au.remark_ AS remark,
+        au.create_by AS createBy,
+        au.create_time AS createTime,
+        au.update_by AS updateBy,
+        au.update_time AS updateTime,
+        au.version_ AS version,
+        au.department_id AS departmentId,
+        au.name_ AS name,
+        au.gender_ AS gender,
+        au.phone_ AS phone,
+        au.avatar_ AS avatar,
+        au.account_ AS account,
+        au.password_ AS password,
+        ad.name_ AS departmentName,
+        ad.tree_position AS departmentTreePosition
+        FROM admin_user au LEFT JOIN admin_department ad ON au.department_id = ad.id_
+        WHERE au.enable_ != -1
+        <if test="user != null">
+            <if test="user.enable != null">
+                AND au.enable_ = #{user.enable}
+            </if>
+            <if test="user.name != null and user.name != ''">
+                and (au.name_ like concat('%', #{user.name}, '%') or au.account_ like concat('%', #{user.name}, '%'))
+            </if>
+        </if>
+        order by au.update_time desc
+    </select>
 </mapper>

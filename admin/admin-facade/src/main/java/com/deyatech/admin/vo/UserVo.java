@@ -29,4 +29,14 @@ public class UserVo extends User {
      * 用户拥有的权限列表
      */
     private String[] permissions;
+
+    /**
+     * 部门名称
+     */
+    private String departmentName;
+
+    /**
+     * 部门树结构索引位置
+     */
+    private String departmentTreePosition;
 }

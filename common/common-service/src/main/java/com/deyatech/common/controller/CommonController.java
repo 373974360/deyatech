@@ -7,7 +7,6 @@ import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpStatus;
-import cn.hutool.json.JSONUtil;
 import com.deyatech.admin.feign.AdminFeign;
 import com.deyatech.common.base.BaseController;
 import com.deyatech.common.enums.IEnums;
@@ -23,19 +22,15 @@ import com.deyatech.common.entity.RestResult;
 import com.deyatech.common.exception.BusinessException;
 import com.deyatech.common.utils.ClassUtil;
 import com.deyatech.common.utils.VerifyCodeUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -155,7 +150,7 @@ public class CommonController extends BaseController {
      * @param file
      * @return UeditorResult
      */
-    @GetMapping("/upload")
+    @PostMapping("/upload")
     @ApiOperation(value="上传文件", notes="上传文件")
     @ApiImplicitParam(name = "file", value = "验证码", required = true, dataType = "MultipartFile", paramType = "query")
     public RestResult uploadFile(@RequestParam("file") MultipartFile file) {
@@ -196,6 +191,32 @@ public class CommonController extends BaseController {
             e.printStackTrace();
             log.error("上传失败");
             throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "上传失败");
+        }
+    }
+
+    /**
+     * 查看图片
+     *
+     * @param filePath
+     * @param response
+     */
+    @GetMapping("/showPicImg")
+    @ApiOperation(value="查看图片", notes="查看图片")
+    @ApiImplicitParam(name = "filePath", value = "图片路径", required = true, dataType = "String", paramType = "query")
+    public void showPicImg(String filePath, HttpServletResponse response) {
+        FileInputStream in = null;
+        OutputStream out = null;
+        try {
+            response.setContentType("image/jpeg");
+            in = new FileInputStream(uploadPath + filePath);
+            out = response.getOutputStream();
+            IOUtils.copy(in, out);
+        } catch (IOException e) {
+            log.error("读取文件失败", e);
+            throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "读取文件失败");
+        } finally {
+            close(in);
+            close(out);
         }
     }
 

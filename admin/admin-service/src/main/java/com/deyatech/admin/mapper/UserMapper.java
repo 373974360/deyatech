@@ -1,7 +1,11 @@
 package com.deyatech.admin.mapper;
 
 import com.deyatech.admin.entity.User;
+import com.deyatech.admin.vo.UserVo;
 import com.deyatech.common.base.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +17,5 @@ import com.deyatech.common.base.BaseMapper;
  */
 public interface UserMapper extends BaseMapper<User> {
 
+    List<UserVo> findList(@Param("user") User user);
 }
