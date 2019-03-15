@@ -21,7 +21,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @TableName("admin_logs")
-@ApiModel(value = "系统数据字典索引信息对象", description = "系统数据字典索引信息", parent = BaseEntity.class)
+@ApiModel(value = "系统日志信息对象", description = "系统日志信息对象", parent = BaseEntity.class)
 public class Logs extends BaseEntity {
 
     @ApiModelProperty(value = "执行方法说明", dataType = "String")
