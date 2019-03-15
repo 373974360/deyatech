@@ -29,4 +29,8 @@
         year_, date_
     </sql>
 
+    <delete id="deleteHolidayByYear">
+        delete from admin_holiday where year_=#{year}
+    </delete>
+
 </mapper>

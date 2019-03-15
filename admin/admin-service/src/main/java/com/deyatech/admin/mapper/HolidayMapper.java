@@ -5,7 +5,7 @@ import com.deyatech.common.base.BaseMapper;
 
 /**
  * <p>
- * 系统角色信息 Mapper 接口
+ * 节假日信息 Mapper 接口
  * </p>
  *
  * @Author lee.
@@ -13,4 +13,11 @@ import com.deyatech.common.base.BaseMapper;
  */
 public interface HolidayMapper extends BaseMapper<Holiday> {
 
+    /**
+     * 根据年份物理删除节假日
+     *
+     * @param year
+     * @return
+     */
+    void deleteHolidayByYear(String year);
 }
