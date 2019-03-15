@@ -35,7 +35,7 @@ public class BaseEntity implements Serializable {
      * 记录状态，0为禁用，1为启用，-1为已删除
      */
     @TableLogic
-    @TableField("enable_")
+    @TableField(value = "enable_", fill = FieldFill.INSERT)
     @ApiModelProperty(value = "记录状态", dataType = "Integer", notes = "0为禁用，1为启用，-1为已删除", example = "1")
     private Integer enable;
 

@@ -49,9 +49,6 @@ public class DepartmentController extends BaseController {
     @ApiImplicitParam(name = "department", value = "系统部门信息对象", required = true, dataType = "Department", paramType = "query")
     public RestResult<Boolean> saveOrUpdate(Department department) {
         log.info(String.format("保存或者更新系统部门信息: %s ", JSONUtil.toJsonStr(department)));
-        if (department.getEnable() == null) {
-            department.setEnable(EnableEnum.ENABLE.getCode());
-        }
         boolean result = departmentService.saveOrUpdate(department);
         return RestResult.ok(result);
     }

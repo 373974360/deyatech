@@ -2,6 +2,7 @@ package com.deyatech.common.mybatisplus;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.deyatech.common.enums.EnableEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import com.deyatech.common.context.UserContextHelper;
@@ -26,9 +27,12 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
         if (StrUtil.isNotBlank(UserContextHelper.getUserId())) {
             this.setFieldValByName("createBy", UserContextHelper.getUserId(), metaObject);
             this.setFieldValByName("updateBy", UserContextHelper.getUserId(), metaObject);
-        }else{
+        } else {
             this.setFieldValByName("createBy", null, metaObject);
             this.setFieldValByName("updateBy", null, metaObject);
+        }
+        if (this.getFieldValByName("enable", metaObject) == null) {
+            this.setFieldValByName("enable", EnableEnum.ENABLE.getCode(), metaObject);
         }
     }
 
