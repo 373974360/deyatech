@@ -8,6 +8,7 @@ import com.deyatech.admin.service.DictionaryService;
 import com.deyatech.admin.vo.DictionaryIndexVo;
 import com.deyatech.common.base.BaseController;
 import com.deyatech.common.entity.RestResult;
+import com.deyatech.common.log.SysLog;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -44,13 +45,14 @@ public class DictionaryIndexController extends BaseController {
     @PostMapping("/saveOrUpdate")
     @ApiOperation(value="单个保存或者更新系统数据字典索引信息", notes="根据系统数据字典索引信息对象保存或者更新系统数据字典索引信息信息")
     @ApiImplicitParam(name = "dictionaryIndex", value = "系统数据字典索引信息对象", required = true, dataType = "DictionaryIndex", paramType = "query")
+    @SysLog(module = "数据字典",notes = "单个保存或者更新系统数据字典索引信息")
     public RestResult<Boolean> saveOrUpdate(DictionaryIndex dictionaryIndex) {
         log.info(String.format("保存或者更新系统数据字典索引信息: %s ", JSONUtil.toJsonStr(dictionaryIndex)));
         if(!dictionaryIndexService.validataByKey(dictionaryIndex)){
             return RestResult.error("已存在相同的字典索引，请重新提交！");
         }
         boolean result = dictionaryIndexService.saveOrUpdate(dictionaryIndex);
-        return RestResult.ok(result);
+        return RestResult.ok(true);
     }
 
     /**
@@ -62,6 +64,7 @@ public class DictionaryIndexController extends BaseController {
     @PostMapping("/saveOrUpdateBatch")
     @ApiOperation(value="批量保存或者更新系统数据字典索引信息", notes="根据系统数据字典索引信息对象集合批量保存或者更新系统数据字典索引信息信息")
     @ApiImplicitParam(name = "dictionaryIndexList", value = "系统数据字典索引信息对象集合", required = true, allowMultiple = true, dataType = "DictionaryIndex", paramType = "query")
+    @SysLog(module = "数据字典",notes = "批量保存或者更新系统数据字典索引信息")
     public RestResult<Boolean> saveOrUpdateBatch(Collection<DictionaryIndex> dictionaryIndexList) {
         log.info(String.format("批量保存或者更新系统数据字典索引信息: %s ", JSONUtil.toJsonStr(dictionaryIndexList)));
         boolean result = dictionaryIndexService.saveOrUpdateBatch(dictionaryIndexList);
@@ -77,6 +80,7 @@ public class DictionaryIndexController extends BaseController {
     @PostMapping("/removeByDictionaryIndex")
     @ApiOperation(value="根据DictionaryIndex对象属性逻辑删除系统数据字典索引信息", notes="根据系统数据字典索引信息对象逻辑删除系统数据字典索引信息信息")
     @ApiImplicitParam(name = "dictionaryIndex", value = "系统数据字典索引信息对象", required = true, dataType = "DictionaryIndex", paramType = "query")
+    @SysLog(module = "数据字典",notes = "根据DictionaryIndex对象属性逻辑删除系统数据字典索引信息")
     public RestResult<Boolean> removeByDictionaryIndex(DictionaryIndex dictionaryIndex) {
         log.info(String.format("根据DictionaryIndex对象属性逻辑删除系统数据字典索引信息: %s ", dictionaryIndex));
         boolean result = dictionaryIndexService.removeByBean(dictionaryIndex);
@@ -93,6 +97,7 @@ public class DictionaryIndexController extends BaseController {
     @PostMapping("/removeByIds")
     @ApiOperation(value="根据ID批量逻辑删除系统数据字典索引信息", notes="根据系统数据字典索引信息对象ID批量逻辑删除系统数据字典索引信息信息")
     @ApiImplicitParam(name = "ids", value = "系统数据字典索引信息对象ID集合", required = true, allowMultiple = true, dataType = "Serializable", paramType = "query")
+    @SysLog(module = "数据字典",notes = "根据ID批量逻辑删除系统数据字典索引信息")
     public RestResult<Boolean> removeByIds(@RequestParam(value="ids[]") List<String> ids) {
         log.info(String.format("根据id批量删除系统数据字典索引信息: %s ", JSONUtil.toJsonStr(ids)));
         if(!dictionaryService.removeByIndexIds(ids)){
