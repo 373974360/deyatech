@@ -69,16 +69,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 
     @Override
     public IPage<UserVo> findPage(User user) {
-        List<UserVo> list = userMapper.findList(user);
-        int offset = (int) ((user.getPage() - 1) * user.getSize());
-        if (offset + user.getSize() > list.size()) {
-            list = list.subList(offset, list.size());
-        } else {
-            list = list.subList(offset, offset + user.getSize().intValue());
-        }
-        IPage<UserVo> page = new Page<>(user.getPage(), user.getSize(), list.size());
-        page.setRecords(list);
-        return page;
+        IPage<User> page = new Page<>(user.getPage(), user.getSize());
+        return userMapper.findList(page, user);
     }
 
     @Override

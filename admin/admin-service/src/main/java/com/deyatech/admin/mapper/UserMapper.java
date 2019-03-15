@@ -1,5 +1,6 @@
 package com.deyatech.admin.mapper;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.deyatech.admin.entity.User;
 import com.deyatech.admin.vo.UserVo;
 import com.deyatech.common.base.BaseMapper;
@@ -17,5 +18,5 @@ import java.util.List;
  */
 public interface UserMapper extends BaseMapper<User> {
 
-    List<UserVo> findList(@Param("user") User user);
+    IPage<UserVo> findList(@Param("page") IPage<User> page, @Param("user") User user);
 }
