@@ -7,6 +7,7 @@ import com.deyatech.admin.service.HolidayService;
 import com.deyatech.admin.vo.HolidayVo;
 import com.deyatech.common.base.BaseController;
 import com.deyatech.common.entity.RestResult;
+import com.deyatech.common.log.SysLog;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -41,6 +42,7 @@ public class HolidayController extends BaseController {
     @PostMapping("/saveOrUpdate")
     @ApiOperation(value="单个保存或者更新节假日信息", notes="根据节假日信息对象保存或者更新节假日信息信息")
     @ApiImplicitParam(name = "holiday", value = "节假日信息对象", required = true, dataType = "Holiday", paramType = "query")
+    @SysLog(module = "节假日",notes = "单个保存或者更新节假日信息")
     public RestResult<Boolean> saveOrUpdate(@RequestBody Holiday holiday) {
         log.info(String.format("保存或者更新节假日信息: %s ", JSONUtil.toJsonStr(holiday)));
         boolean result = holidayService.saveOrUpdate(holiday);
@@ -57,6 +59,7 @@ public class HolidayController extends BaseController {
     @PostMapping("/saveOrUpdateBatch")
     @ApiOperation(value="批量保存或者更新节假日信息", notes="根据节假日信息对象集合批量保存或者更新节假日信息信息")
     @ApiImplicitParam(name = "holidayList", value = "节假日信息对象集合", required = true, allowMultiple = true, dataType = "Holiday", paramType = "query")
+    @SysLog(module = "节假日",notes = "批量保存或者更新节假日信息")
     public RestResult<Boolean> saveOrUpdateBatch(String year,@RequestParam(value="value[]") String[] value) {
         log.info(String.format("批量保存或者更新节假日信息: %s ", JSONUtil.toJsonStr(year+""+value)));
         boolean result = holidayService.saveOrUpdateBatch(year,value);
@@ -72,6 +75,7 @@ public class HolidayController extends BaseController {
     @PostMapping("/removeByHoliday")
     @ApiOperation(value="根据Holiday对象属性逻辑删除节假日信息", notes="根据节假日信息对象逻辑删除节假日信息信息")
     @ApiImplicitParam(name = "holiday", value = "节假日信息对象", required = true, dataType = "Holiday", paramType = "query")
+    @SysLog(module = "节假日",notes = "根据Holiday对象属性逻辑删除节假日信息")
     public RestResult<Boolean> removeByHoliday(Holiday holiday) {
         log.info(String.format("根据Holiday对象属性逻辑删除节假日信息: %s ", holiday));
         boolean result = holidayService.removeByBean(holiday);
@@ -88,6 +92,7 @@ public class HolidayController extends BaseController {
     @PostMapping("/removeByIds")
     @ApiOperation(value="根据ID批量逻辑删除节假日信息", notes="根据节假日信息对象ID批量逻辑删除节假日信息信息")
     @ApiImplicitParam(name = "ids", value = "节假日信息对象ID集合", required = true, allowMultiple = true, dataType = "Serializable", paramType = "query")
+    @SysLog(module = "节假日",notes = "根据ID批量逻辑删除节假日信息")
     public RestResult<Boolean> removeByIds(@RequestBody List<String> ids) {
         log.info(String.format("根据id批量删除节假日信息: %s ", JSONUtil.toJsonStr(ids)));
         boolean result = holidayService.removeByIds(ids);
