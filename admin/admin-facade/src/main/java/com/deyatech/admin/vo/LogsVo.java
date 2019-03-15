@@ -18,6 +18,8 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@ApiModel(value = "系统数据字典索引信息扩展对象", description = "系统数据字典索引信息扩展对象", parent = Logs.class)
+@ApiModel(value = "系统日志信息扩展对象", description = "系统日志信息扩展对象", parent = Logs.class)
 public class LogsVo extends Logs {
+
+    private String userName;
 }

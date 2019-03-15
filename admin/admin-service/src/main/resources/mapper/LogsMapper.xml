@@ -34,4 +34,14 @@
         notes_, method_, request_url, user_id, params_, time_, ip_
     </sql>
 
+    <select id="selectListByBean" resultType="com.deyatech.admin.vo.LogsVo">
+        select l.*,u.name_ as user_name from admin_logs l left join admin_user u on l.user_id=u.id_ where l.enable_=1
+        <if test="logs.notes != null">
+            and l.notes_ like concat(concat('%',#{logs.notes}),'%')
+        </if>
+        <if test="logs.userId != null">
+            and l.user_id = #{logs.userId}
+        </if>
+         order by create_time desc
+    </select>
 </mapper>
