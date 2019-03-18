@@ -1,19 +1,20 @@
 package com.deyatech.admin.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.deyatech.admin.entity.Logs;
-import com.deyatech.admin.vo.LogsVo;
 import com.deyatech.admin.mapper.LogsMapper;
 import com.deyatech.admin.service.LogsService;
-import com.deyatech.common.Constants;
+import com.deyatech.admin.vo.LogsVo;
 import com.deyatech.common.base.BaseServiceImpl;
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.List;
+
 import java.util.Collection;
+import java.util.List;
 
 /**
  * <p>
@@ -37,8 +38,14 @@ public class LogsServiceImpl extends BaseServiceImpl<LogsMapper, Logs> implement
      * @return
      */
     @Override
-    public IPage<LogsVo> selectListByBean(Logs logs) {
-        return logsMapper.selectListByBean(new Page<Logs>().setCurrent(logs.getPage()).setSize(Constants.DEFAULT_PAGE_SIZE),logs);
+    public IPage<LogsVo> findPage(Logs logs,String startTime,String endTime) {
+        if(StrUtil.isNotEmpty(startTime)){
+            startTime+=" 00:00:00";
+        }
+        if(StrUtil.isNotEmpty(endTime)){
+            endTime+=" 23:59:59";
+        }
+        return logsMapper.findPage(new Page<>(logs.getPage(),logs.getSize()),logs,startTime,endTime);
     }
 
     /**

@@ -23,5 +23,5 @@ public interface LogsMapper extends BaseMapper<Logs> {
      * @param logs
      * @return
      */
-    IPage<LogsVo> selectListByBean(Page<Logs> page,@Param("logs") Logs logs);
+    IPage<LogsVo> findPage(Page<Logs> page,@Param("logs") Logs logs,@Param("startTime") String startTime,@Param("endTime") String endTime);
 }

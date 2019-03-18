@@ -137,8 +137,8 @@ public class LogsController extends BaseController {
     @GetMapping("/pageByLogs")
     @ApiOperation(value="根据Logs对象属性分页检索系统日志信息", notes="根据Logs对象属性分页检索系统日志信息信息")
     @ApiImplicitParam(name = "logs", value = "系统日志信息对象", required = false, dataType = "Logs", paramType = "query")
-    public RestResult<IPage<LogsVo>> pageByLogs(Logs logs) {
-        IPage<LogsVo> logss = logsService.selectListByBean(logs);
+    public RestResult<IPage<LogsVo>> pageByLogs(Logs logs,String startTime,String endTime) {
+        IPage<LogsVo> logss = logsService.findPage(logs,startTime,endTime);
         log.info(String.format("根据Logs对象属性分页检索系统日志信息: %s ",JSONUtil.toJsonStr(logss)));
         return RestResult.ok(logss);
     }
