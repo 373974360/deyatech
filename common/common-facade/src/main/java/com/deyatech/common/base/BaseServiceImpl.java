@@ -46,7 +46,7 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> exte
      * @param entity
      * @return
      */
-    private Page<T> getPageByBean(T entity) {
+    public Page<T> getPageByBean(T entity) {
         Page<T> page = new Page();
         if (ObjectUtil.isNotNull(entity.getPage())) {
             page.setCurrent(entity.getPage());

@@ -1,23 +1,23 @@
 package com.deyatech.admin.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.deyatech.admin.entity.User;
-import com.deyatech.admin.vo.UserVo;
 import com.deyatech.admin.mapper.UserMapper;
 import com.deyatech.admin.service.UserService;
+import com.deyatech.admin.vo.UserVo;
 import com.deyatech.common.Constants;
 import com.deyatech.common.base.BaseServiceImpl;
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollectionUtil;
 import com.deyatech.common.enums.EnableEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.List;
+
 import java.util.Collection;
+import java.util.List;
 
 /**
  * <p>
@@ -42,7 +42,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
      * @return
      */
     @Override
-    public UserVo setVoProperties(User user){
+    public UserVo setVoProperties(User user) {
         UserVo userVo = new UserVo();
         BeanUtil.copyProperties(user, userVo);
         return userVo;
@@ -55,7 +55,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
      * @return
      */
     @Override
-    public List<UserVo> setVoProperties(Collection users){
+    public List<UserVo> setVoProperties(Collection users) {
         List<UserVo> userVos = CollectionUtil.newArrayList();
         if (CollectionUtil.isNotEmpty(users)) {
             for (Object user : users) {
@@ -69,8 +69,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 
     @Override
     public IPage<UserVo> findPage(User user) {
-        IPage<User> page = new Page<>(user.getPage(), user.getSize());
-        return userMapper.findList(page, user);
+        return userMapper.findList(getPageByBean(user), user);
     }
 
     @Override
