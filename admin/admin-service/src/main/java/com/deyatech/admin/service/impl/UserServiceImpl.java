@@ -3,7 +3,6 @@ package com.deyatech.admin.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.deyatech.admin.entity.User;
 import com.deyatech.admin.vo.UserVo;
 import com.deyatech.admin.mapper.UserMapper;
@@ -69,8 +68,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 
     @Override
     public IPage<UserVo> findPage(UserVo user) {
-        IPage<User> page = new Page<>(user.getPage(), user.getSize());
-        return userMapper.findList(page, user);
+        return userMapper.findList(getPageByBean(user), user);
     }
 
     @Override
