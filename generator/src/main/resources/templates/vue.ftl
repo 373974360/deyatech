@@ -60,7 +60,7 @@
         </el-table>
 
         <el-dialog :title="titleMap[dialogTitle]" :visible.sync="dialogVisible"
-                   :close-on-click-modal="closeOnClickModal">
+                   :close-on-click-modal="closeOnClickModal" @close="close${entity}Dialog">
             <el-form ref="${lowerEntity}DialogForm" class="deyatech-form" :model="${lowerEntity}" label-position="right"
                      label-width="80px" :rules="${lowerEntity}Rules">
                 <el-row :gutter="20" :span="24">
@@ -129,7 +129,7 @@
             <span slot="footer" class="dialog-footer">
                 <el-button v-if="dialogTitle=='create'" type="primary" :size="btnSize" @click="doCreate" :loading="submitLoading">{{${dollar}t('table.confirm')}}</el-button>
                 <el-button v-else type="primary" :size="btnSize" @click="doUpdate" :loading="submitLoading">{{${dollar}t('table.confirm')}}</el-button>
-                <el-button :size="btnSize" @click="dialogVisible = false">{{${dollar}t('table.cancel')}}</el-button>
+                <el-button :size="btnSize" @click="close${entity}Dialog">{{${dollar}t('table.cancel')}}</el-button>
             </span>
         </el-dialog>
     </basic-container>
@@ -293,7 +293,7 @@
                         this.submitLoading = true;
                         createOrUpdate${entity}(this.${lowerEntity}).then(() => {
                             this.lastExpanded = this.${lowerEntity}.treePosition;
-                            this.reset${entity}Dialog();
+                            this.reset${entity}DialogAndList();
                             this.${dollar}message.success(this.${dollar}t("table.createSuccess"));
                         })
                     } else {
@@ -307,7 +307,7 @@
                         this.submitLoading = true;
                         createOrUpdate${entity}(this.${lowerEntity}).then(() => {
                             this.lastExpanded = this.${lowerEntity}.treePosition;
-                            this.reset${entity}Dialog();
+                            this.reset${entity}DialogAndList();
                             this.${dollar}message.success(this.${dollar}t("table.updateSuccess"));
                         })
                     } else {
@@ -330,11 +330,15 @@
                 </#list>
                 }
             },
-            reset${entity}Dialog(){
+            reset${entity}DialogAndList(){
+                this.close${entity}Dialog();
+                this.submitLoading = false;
+                this.reloadList();
+            },
+            close${entity}Dialog() {
                 this.dialogVisible = false;
                 this.reset${entity}();
-                this.reloadList();
-                this.submitLoading = false;
+                this.${dollar}refs['${lowerEntity}DialogForm'].resetFields();
             }
         }
     }
@@ -404,7 +408,7 @@
 
 
             <el-dialog :title="titleMap[dialogTitle]" :visible.sync="dialogVisible"
-                       :close-on-click-modal="closeOnClickModal">
+                       :close-on-click-modal="closeOnClickModal" @close="close${entity}Dialog">
                 <el-form ref="${lowerEntity}DialogForm" class="deyatech-form" :model="${lowerEntity}" label-position="right"
                          label-width="80px" :rules="${lowerEntity}Rules">
         <#list table.fields as column>
@@ -456,7 +460,7 @@
                 <span slot="footer" class="dialog-footer">
                     <el-button v-if="dialogTitle=='create'" type="primary" :size="btnSize" @click="doCreate" :loading="submitLoading">{{${dollar}t('table.confirm')}}</el-button>
                     <el-button v-else type="primary" :size="btnSize" @click="doUpdate" :loading="submitLoading">{{${dollar}t('table.confirm')}}</el-button>
-                    <el-button :size="btnSize" @click="dialogVisible = false">{{${dollar}t('table.cancel')}}</el-button>
+                    <el-button :size="btnSize" @click="close${entity}Dialog">{{${dollar}t('table.cancel')}}</el-button>
                 </span>
             </el-dialog>
         </div>
@@ -482,7 +486,7 @@
                 listLoading: true,
                 listQuery: {
                     page: this.$store.state.common.page,
-                    size: this.$store.state.common.rows,
+                    size: this.$store.state.common.size,
                     name: undefined
                 },
                 ${lowerEntity}: {
@@ -585,7 +589,7 @@
                     if(valid) {
                         this.submitLoading = true;
                         createOrUpdate${entity}(this.${lowerEntity}).then(() => {
-                            this.reset${entity}Dialog();
+                            this.reset${entity}DialogAndList();
                             this.${dollar}message.success(this.${dollar}t("table.createSuccess"));
                         })
                     } else {
@@ -598,7 +602,7 @@
                     if(valid) {
                         this.submitLoading = true;
                         createOrUpdate${entity}(this.${lowerEntity}).then(() => {
-                            this.reset${entity}Dialog();
+                            this.reset${entity}DialogAndList();
                             this.${dollar}message.success(this.${dollar}t("table.updateSuccess"));
                         })
                     } else {
@@ -621,11 +625,15 @@
                 </#list>
                 }
             },
-            reset${entity}Dialog(){
-                this.dialogVisible = false;
+            reset${entity}DialogAndList(){
+                this.close${entity}Dialog();
                 this.submitLoading = false;
-                this.reset${entity}();
                 this.reloadList();
+            },
+            close${entity}Dialog() {
+                this.dialogVisible = false;
+                this.reset${entity}();
+                this.${dollar}refs['${lowerEntity}DialogForm'].resetFields();
             }
         }
     }
