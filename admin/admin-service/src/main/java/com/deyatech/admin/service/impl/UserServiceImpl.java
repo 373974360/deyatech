@@ -42,7 +42,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
      * @return
      */
     @Override
-    public UserVo setVoProperties(User user){
+    public UserVo setVoProperties(User user) {
         UserVo userVo = new UserVo();
         BeanUtil.copyProperties(user, userVo);
         return userVo;
@@ -55,7 +55,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
      * @return
      */
     @Override
-    public List<UserVo> setVoProperties(Collection users){
+    public List<UserVo> setVoProperties(Collection users) {
         List<UserVo> userVos = CollectionUtil.newArrayList();
         if (CollectionUtil.isNotEmpty(users)) {
             for (Object user : users) {

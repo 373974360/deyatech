@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.deyatech.admin.entity.Logs;
 import com.deyatech.admin.vo.LogsVo;
 import com.deyatech.common.base.BaseService;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public interface LogsService extends BaseService<Logs> {
      * @param logs
      * @return
      */
-    IPage<LogsVo> selectListByBean(Logs logs);
+    IPage<LogsVo> findPage(Logs logs,String startTime,String endTime);
 
     /**
      * 单个将对象转换为vo系统日志信息
