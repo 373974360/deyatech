@@ -5,19 +5,16 @@ import com.deyatech.admin.vo.DepartmentVo;
 import com.deyatech.admin.service.DepartmentService;
 import com.deyatech.common.entity.RestResult;
 import com.deyatech.common.entity.CascaderResult;
-import com.deyatech.common.enums.EnableEnum;
 import com.deyatech.common.utils.CascaderUtil;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import java.io.Serializable;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.Collection;
-import org.springframework.web.bind.annotation.RestController;
+
 import com.deyatech.common.base.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -92,8 +89,8 @@ public class DepartmentController extends BaseController {
      */
     @PostMapping("/removeByIds")
     @ApiOperation(value="根据ID批量逻辑删除系统部门信息", notes="根据系统部门信息对象ID批量逻辑删除系统部门信息信息")
-    @ApiImplicitParam(name = "ids", value = "系统部门信息对象ID集合", required = true, allowMultiple = true, dataType = "Serializable", paramType = "query")
-    public RestResult<Boolean> removeByIds(Collection<Serializable> ids) {
+    @ApiImplicitParam(name = "ids", value = "系统部门信息对象ID集合", required = true, allowMultiple = true, dataType = "String", paramType = "query")
+    public RestResult<Boolean> removeByIds(@RequestParam("ids[]") List<String> ids) {
         log.info(String.format("根据id批量删除系统部门信息: %s ", JSONUtil.toJsonStr(ids)));
         boolean result = departmentService.removeByIds(ids);
         return RestResult.ok(result);
