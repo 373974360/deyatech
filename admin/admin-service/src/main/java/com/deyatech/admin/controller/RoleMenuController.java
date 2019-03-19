@@ -4,16 +4,17 @@ import com.deyatech.admin.entity.RoleMenu;
 import com.deyatech.admin.vo.RoleMenuVo;
 import com.deyatech.admin.service.RoleMenuService;
 import com.deyatech.common.entity.RestResult;
+import io.swagger.annotations.ApiImplicitParams;
 import lombok.extern.slf4j.Slf4j;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
 import java.io.Serializable;
 import java.util.Collection;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
+
 import com.deyatech.common.base.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -143,4 +144,21 @@ public class RoleMenuController extends BaseController {
         return RestResult.ok(roleMenus);
     }
 
+    /**
+     * 设置权限菜单
+     *
+     * @param roleId
+     * @param menuIds
+     * @return
+     */
+    @PostMapping("/setRoleMenus")
+    @ApiOperation(value="设置权限菜单", notes="设置权限菜单")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "menuIds", value = "菜单id", required = true, dataType = "String", paramType = "query")
+    })
+    public RestResult setRoleMenus(String roleId, @RequestParam(value = "menuIds[]", required = false) List<String> menuIds) {
+        roleMenuService.setRoleMenus(roleId, menuIds);
+        return RestResult.ok();
+    }
 }

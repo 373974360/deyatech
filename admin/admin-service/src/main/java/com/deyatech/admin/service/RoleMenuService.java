@@ -31,4 +31,12 @@ public interface RoleMenuService extends BaseService<RoleMenu> {
      * @return
      */
     List<RoleMenuVo> setVoProperties(Collection roleMenus);
+
+    /**
+     * 设置权限菜单
+     *
+     * @param roleId
+     * @param menuIds
+     */
+    void setRoleMenus(String roleId, List<String> menuIds);
 }

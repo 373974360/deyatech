@@ -39,7 +39,7 @@ public interface UserService extends BaseService<User> {
      * @param user
      * @return
      */
-    IPage<UserVo> findPage(User user);
+    IPage<UserVo> findPage(UserVo user);
 
     /**
      * 保存用户信息

@@ -18,5 +18,5 @@ import java.util.List;
  */
 public interface UserMapper extends BaseMapper<User> {
 
-    IPage<UserVo> findList(@Param("page") IPage<User> page, @Param("user") User user);
+    IPage<UserVo> findList(@Param("page") IPage<User> page, @Param("user") UserVo user);
 }

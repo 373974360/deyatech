@@ -31,4 +31,12 @@ public interface UserRoleService extends BaseService<UserRole> {
      * @return
      */
     List<UserRoleVo> setVoProperties(Collection userRoles);
+
+    /**
+     * 设置角色用户
+     *
+     * @param roleId
+     * @param userIds
+     */
+    void setRoleUsers(String roleId, List<String> userIds);
 }

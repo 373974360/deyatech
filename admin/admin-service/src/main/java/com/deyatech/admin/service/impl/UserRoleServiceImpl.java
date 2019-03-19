@@ -8,6 +8,9 @@ import com.deyatech.common.base.BaseServiceImpl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Collection;
 
@@ -52,5 +55,23 @@ public class UserRoleServiceImpl extends BaseServiceImpl<UserRoleMapper, UserRol
             }
         }
         return userRoleVos;
+    }
+
+    @Override
+    @Transactional
+    public void setRoleUsers(String roleId, List<String> userIds) {
+        UserRole userRole = new UserRole();
+        userRole.setRoleId(roleId);
+        this.removeByBean(userRole);
+        if (CollectionUtil.isNotEmpty(userIds)) {
+            List<UserRole> list = new ArrayList<>();
+            for (String userId : userIds) {
+                UserRole ur = new UserRole();
+                ur.setRoleId(roleId);
+                ur.setUserId(userId);
+                list.add(ur);
+            }
+            this.saveOrUpdateBatch(list);
+        }
     }
 }

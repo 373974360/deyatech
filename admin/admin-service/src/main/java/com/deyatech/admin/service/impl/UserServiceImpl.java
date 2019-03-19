@@ -68,7 +68,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
     }
 
     @Override
-    public IPage<UserVo> findPage(User user) {
+    public IPage<UserVo> findPage(UserVo user) {
         IPage<User> page = new Page<>(user.getPage(), user.getSize());
         return userMapper.findList(page, user);
     }

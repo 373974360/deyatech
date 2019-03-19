@@ -4,16 +4,17 @@ import com.deyatech.admin.entity.UserRole;
 import com.deyatech.admin.vo.UserRoleVo;
 import com.deyatech.admin.service.UserRoleService;
 import com.deyatech.common.entity.RestResult;
+import io.swagger.annotations.ApiImplicitParams;
 import lombok.extern.slf4j.Slf4j;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
 import java.io.Serializable;
 import java.util.Collection;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
+
 import com.deyatech.common.base.BaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -143,4 +144,21 @@ public class UserRoleController extends BaseController {
         return RestResult.ok(userRoles);
     }
 
+    /**
+     * 设置角色用户
+     *
+     * @param roleId
+     * @param userIds
+     * @return
+     */
+    @PostMapping("/setRoleUsers")
+    @ApiOperation(value="设置角色用户", notes="设置角色用户")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "userIds", value = "用户id", required = true, dataType = "String", paramType = "query")
+    })
+    public RestResult setRoleUsers(String roleId, @RequestParam(value = "userIds[]", required = false) List<String> userIds) {
+        userRoleService.setRoleUsers(roleId, userIds);
+        return RestResult.ok();
+    }
 }

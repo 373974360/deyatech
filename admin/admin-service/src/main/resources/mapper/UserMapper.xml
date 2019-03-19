@@ -34,7 +34,7 @@
         department_id, name_, gender_, phone_, avatar_, account_, password_
     </sql>
 
-    <select id="findList" resultType="com.deyatech.admin.vo.UserVo" parameterType="com.deyatech.admin.entity.User">
+    <select id="findList" resultType="com.deyatech.admin.vo.UserVo" parameterType="com.deyatech.admin.vo.UserVo">
         SELECT
         au.id_ AS id,
         au.enable_ AS enable,
@@ -53,7 +53,9 @@
         au.password_ AS password,
         ad.name_ AS departmentName,
         ad.tree_position AS departmentTreePosition
-        FROM admin_user au LEFT JOIN admin_department ad ON au.department_id = ad.id_
+        FROM admin_user au
+        LEFT JOIN admin_department ad ON au.department_id = ad.id_
+        LEFT JOIN admin_user_role aur ON au.id_ = aur.user_id
         WHERE au.enable_ != -1
         <if test="user != null">
             <if test="user.enable != null">
@@ -61,6 +63,12 @@
             </if>
             <if test="user.name != null and user.name != ''">
                 and (au.name_ like concat('%', #{user.name}, '%') or au.account_ like concat('%', #{user.name}, '%'))
+            </if>
+            <if test="user.departmentId != null and user.departmentId != ''">
+                and au.department_id = #{user.departmentId}
+            </if>
+            <if test="user.roleId != null and user.roleId != ''">
+                and aur.role_id = #{user.roleId}
             </if>
         </if>
         order by au.update_time desc

@@ -8,6 +8,9 @@ import com.deyatech.common.base.BaseServiceImpl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Collection;
 
@@ -52,5 +55,23 @@ public class RoleMenuServiceImpl extends BaseServiceImpl<RoleMenuMapper, RoleMen
             }
         }
         return roleMenuVos;
+    }
+
+    @Override
+    @Transactional
+    public void setRoleMenus(String roleId, List<String> menuIds) {
+        RoleMenu roleMenu = new RoleMenu();
+        roleMenu.setRoleId(roleId);
+        this.removeByBean(roleMenu);
+        if (CollectionUtil.isNotEmpty(menuIds)) {
+            List<RoleMenu> list = new ArrayList<>();
+            for (String menuId : menuIds) {
+                RoleMenu rm = new RoleMenu();
+                rm.setRoleId(roleId);
+                rm.setMenuId(menuId);
+                list.add(rm);
+            }
+            this.saveOrUpdateBatch(list);
+        }
     }
 }
