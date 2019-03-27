@@ -9,6 +9,13 @@ package com.deyatech.common;
  * @since: 2018-12-14 16:17
  */
 public interface Constants {
+
+    /**
+     * 异常信息统一头信息<br>
+     * 非常遗憾的通知您,程序发生了异常
+     */
+    String Exception_Head = "发生了异常 :";
+
     /**
      * 系统当前登录用户id存储Key值
      */
@@ -108,4 +115,14 @@ public interface Constants {
      * 路由header数据
      */
     String GATEWAY_VALUE = "西安德雅通科技有限公司";
+
+    /**
+     * 缓存命名空间
+     */
+    String CACHE_NAMESPACE = "deyatech:";
+
+    /**
+     * 缓存命名空间
+     */
+    String REDIS_SET_KEY = "~keys";
 }

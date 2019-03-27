@@ -8,12 +8,15 @@ import com.deyatech.admin.service.DictionaryService;
 import com.deyatech.admin.vo.DictionaryIndexVo;
 import com.deyatech.admin.mapper.DictionaryIndexMapper;
 import com.deyatech.admin.service.DictionaryIndexService;
+import com.deyatech.common.Constants;
 import com.deyatech.common.base.BaseServiceImpl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import com.deyatech.common.entity.EnumsResult;
 import com.deyatech.common.entity.RestResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -27,6 +30,7 @@ import java.util.*;
  * @since 2019-03-07
  */
 @Service
+@CacheConfig(cacheNames = Constants.CACHE_NAMESPACE + "dicIndex")
 public class DictionaryIndexServiceImpl extends BaseServiceImpl<DictionaryIndexMapper, DictionaryIndex> implements DictionaryIndexService {
 
     @Autowired
@@ -39,6 +43,7 @@ public class DictionaryIndexServiceImpl extends BaseServiceImpl<DictionaryIndexM
      * @return
      */
     @Override
+    @Cacheable
     public List<EnumsResult> getDictsAll() {
         List<EnumsResult> resultList = new ArrayList<>();
         List<DictionaryIndex> dictionaryIndexList = getBaseMapper().selectList(new QueryWrapper<DictionaryIndex>()
