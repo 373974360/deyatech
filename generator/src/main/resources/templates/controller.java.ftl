@@ -21,9 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import com.deyatech.common.log.SysLog;
 import java.io.Serializable;
 import java.util.Collection;
@@ -136,7 +134,7 @@ public class ${table.controllerName} {
     @ApiImplicitParam(name = "ids", value = "${table.comment!}对象ID集合", required = true, allowMultiple = true, dataType = "Serializable", paramType = "query")
     </#if>
     @SysLog(module = "${table.comment!}",notes = "根据ID批量逻辑删除${table.comment!}")
-    public RestResult<Boolean> removeByIds(Collection<Serializable> ids) {
+    public RestResult<Boolean> removeByIds(@RequestParam("ids[]") List<String> ids) {
         log.info(String.format("根据id批量删除${table.comment!}: %s ", JSONUtil.toJsonStr(ids)));
         boolean result = ${lowerEntity}Service.removeByIds(ids);
         return RestResult.ok(result);

@@ -12,13 +12,11 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * <p>
@@ -90,7 +88,7 @@ public class LogsController extends BaseController {
     @PostMapping("/removeByIds")
     @ApiOperation(value="根据ID批量逻辑删除系统日志信息", notes="根据系统日志信息对象ID批量逻辑删除系统日志信息信息")
     @ApiImplicitParam(name = "ids", value = "系统日志信息对象ID集合", required = true, allowMultiple = true, dataType = "Serializable", paramType = "query")
-    public RestResult<Boolean> removeByIds(Collection<Serializable> ids) {
+    public RestResult<Boolean> removeByIds(@RequestParam(value="ids[]") List<String> ids) {
         log.info(String.format("根据id批量删除系统日志信息: %s ", JSONUtil.toJsonStr(ids)));
         boolean result = logsService.removeByIds(ids);
         return RestResult.ok(result);

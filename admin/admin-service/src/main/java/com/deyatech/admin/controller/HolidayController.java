@@ -93,7 +93,7 @@ public class HolidayController extends BaseController {
     @ApiOperation(value="根据ID批量逻辑删除节假日信息", notes="根据节假日信息对象ID批量逻辑删除节假日信息信息")
     @ApiImplicitParam(name = "ids", value = "节假日信息对象ID集合", required = true, allowMultiple = true, dataType = "Serializable", paramType = "query")
     @SysLog(module = "节假日",notes = "根据ID批量逻辑删除节假日信息")
-    public RestResult<Boolean> removeByIds(@RequestBody List<String> ids) {
+    public RestResult<Boolean> removeByIds(@RequestParam(value="ids[]") List<String>  ids) {
         log.info(String.format("根据id批量删除节假日信息: %s ", JSONUtil.toJsonStr(ids)));
         boolean result = holidayService.removeByIds(ids);
         return RestResult.ok(result);
