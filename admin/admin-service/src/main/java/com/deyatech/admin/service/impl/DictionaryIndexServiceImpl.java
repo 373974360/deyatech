@@ -54,8 +54,8 @@ public class DictionaryIndexServiceImpl extends BaseServiceImpl<DictionaryIndexM
             for(DictionaryIndex dictionaryIndex:dictionaryIndexList){
                 EnumsResult enumsResult = new EnumsResult();
                 enumsResult.setName(dictionaryIndex.getKey());
+                List<Map<String,Object>> valueList = new ArrayList<>();
                 if(!dictionaryList.isEmpty()){
-                    List<Map<String,Object>> valueList = new ArrayList<>();
                     for(Dictionary dictionary:dictionaryList){
                         if(dictionaryIndex.getKey().equals(dictionary.getIndexId())){
                             HashMap<String,Object> map = new HashMap<>();
@@ -64,8 +64,8 @@ public class DictionaryIndexServiceImpl extends BaseServiceImpl<DictionaryIndexM
                             valueList.add(map);
                         }
                     }
-                    enumsResult.setValue(valueList);
                 }
+                enumsResult.setValue(valueList);
                 resultList.add(enumsResult);
             }
         }
