@@ -26,7 +26,6 @@ public class FeignRequestInterceptor implements RequestInterceptor {
     @Override
     public void apply(RequestTemplate requestTemplate) {
         try {
-            log.info("设置Feign请求header[" + Constants.GATEWAY_HEADER + "]:" + Constants.GATEWAY_VALUE);
             requestTemplate.header(Constants.GATEWAY_HEADER, AesUtil.aesEncrypt(Constants.GATEWAY_VALUE));
             requestTemplate.header(Constants.CONTEXT_KEY_USER_ID, UserContextHelper.getUserId());
         } catch (Exception e) {

@@ -1,13 +1,10 @@
 package com.deyatech.common.exception;
 
 import cn.hutool.http.HttpStatus;
-import com.deyatech.common.context.SpringContextHelper;
 import com.deyatech.common.entity.RestResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>

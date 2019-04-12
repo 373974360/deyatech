@@ -1,0 +1,64 @@
+1.elk使用现成的docker镜像
+
+docker run -p 5601:5601 -p 9200:9200 -p 5044:5044 -it --name elk sebp/elk
+
+docker run -p 5601:5601 -p 9200:9200 -p 5044:5044 -e ES_MIN_MEM=128m  -e ES_MAX_MEM=1024m -it --name elk sebp/elk
+
+5601 - Kibana web 接口
+9200 - Elasticsearch JSON 接口
+5044 - Logstash 日志接收接口
+
+报错信息：max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
+
+解决：
+
+切换到root用户
+
+执行命令：
+
+sysctl -w vm.max_map_count=262144
+
+查看结果：
+
+sysctl -a|grep vm.max_map_count
+
+显示：
+
+vm.max_map_count = 262144
+
+上述方法修改之后，如果重启虚拟机将失效，所以：
+
+解决办法：
+
+在   /etc/sysctl.conf文件最后添加一行
+
+vm.max_map_count=262144
+
+即可永久修改
+
+2 修改logstash的input
+
+docker exec -it elk /bin/bash 进入容器
+
+cd etc/logstash/conf.d/
+
+vim 02-beats-input.conf 修改input配置
+
+input {
+	rabbitmq {
+		host => "192.168.2.217"
+		port => 5762
+		exchange => 'ex_logstash'
+		queue => 'q_logstash'
+		durable => true
+	}
+}
+output {
+	elasticsearch {
+		hosts => ["localhost"]
+	}
+}
+
+3 启动rabbitmq
+
+docker run -d --hostname my-rabbit --name rabbitmq -p 15672:15672 -p 5672:5672 rabbitmq:3-management

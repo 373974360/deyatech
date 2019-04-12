@@ -70,4 +70,5 @@ public class AdminFeignImpl implements AdminFeign {
         List<EnumsResult> resultList = dictionaryIndexService.getDictsAll();
         return RestResult.ok(resultList);
     }
+
 }

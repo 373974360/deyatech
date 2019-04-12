@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.deyatech.common.Constants;
 import com.deyatech.common.utils.ColumnUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
 import java.util.Map;
@@ -18,6 +19,7 @@ import java.util.Map;
  * @author: lee.
  * @since: 2018-12-14 11:14
  */
+@Slf4j
 public class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseEntity> extends ServiceImpl<M, T> implements BaseService<T> {
 
     @Override
