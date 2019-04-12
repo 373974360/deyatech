@@ -1,8 +1,8 @@
 1.elk使用现成的docker镜像
 
-docker run -p 5601:5601 -p 9200:9200 -p 5044:5044 -it --name elk sebp/elk
+docker run -d --restart=always -p 5601:5601 -p 9200:9200 -p 5044:5044 -it --name elk sebp/elk
 
-docker run -p 5601:5601 -p 9200:9200 -p 5044:5044 -e ES_MIN_MEM=128m  -e ES_MAX_MEM=1024m -it --name elk sebp/elk
+docker run -d --restart=always -p 5601:5601 -p 9200:9200 -p 5044:5044 -e ES_MIN_MEM=128m  -e ES_MAX_MEM=1024m -it --name elk sebp/elk
 
 5601 - Kibana web 接口
 9200 - Elasticsearch JSON 接口
@@ -46,19 +46,87 @@ vim 02-beats-input.conf 修改input配置
 
 input {
 	rabbitmq {
-		host => "192.168.2.217"
+		host => "192.168.2.170"
 		port => 5762
 		exchange => 'ex_logstash'
 		queue => 'q_logstash'
 		durable => true
 	}
 }
+
+vim 30-output.conf 修改output配置
+
 output {
 	elasticsearch {
 		hosts => ["localhost"]
 	}
 }
 
+然后重启elk
+
 3 启动rabbitmq
 
-docker run -d --hostname my-rabbit --name rabbitmq -p 15672:15672 -p 5672:5672 rabbitmq:3-management
+docker run -d --restart=always --hostname my-rabbit --name rabbitmq -p 15672:15672 -p 5672:5672 rabbitmq:3-management
+
+4 创建 ex_logstash、q_logstash
+
+访问rabbitmq对应的web地址  端口为15672 默认用户名和密码为guest
+
+点击Exchanges  --> Add a new exchange
+
+Name: ex_logstash
+Type: direct
+
+点击Add exchange提交
+
+点击Queues --> Add a new queue
+
+Name:q_logstash
+
+点击Add queue提交
+
+然后点击Exchanges  选择刚才创建的ex_logstash 点击Bindings
+
+To queue: q_logstash
+Routing key: q_logstash
+
+点击Bind提交
+
+5 配置logback-spring.xml
+
+<appender name="AMQP" class="org.springframework.amqp.rabbit.logback.AmqpAppender">
+    <layout>
+        <pattern>
+            {
+            "time": "%date{ISO8601}",
+            "thread": "%thread",
+            "level":"%level",
+            "service": "${springAppName:-}",
+            "class": "%logger{60}",
+            "message": "%msg"
+            }
+        </pattern>
+    </layout>
+    <host>dev.rabbitmq.deyatong.com</host>
+    <port>5672</port>
+    <username>guest</username>
+    <password>guest</password>
+    <applicationId>ms</applicationId>
+    <routingKeyPattern>q_logstash</routingKeyPattern>
+    <declareExchange>true</declareExchange>
+    <exchangeType>direct</exchangeType>
+    <exchangeName>ex_logstash</exchangeName>
+    <generateId>true</generateId>
+    <charset>UTF-8</charset>
+    <durable>true</durable>
+    <deliveryMode>PERSISTENT</deliveryMode>
+</appender>
+
+<!-- 日志输出级别 -->
+<root level="DEBUG">
+    <appender-ref ref="console" />
+    <appender-ref ref="AMQP" />
+</root>
+
+
+
