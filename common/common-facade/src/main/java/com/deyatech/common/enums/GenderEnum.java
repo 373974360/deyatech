@@ -17,7 +17,12 @@ public enum GenderEnum implements IEnums<Integer> {
     /**
      * 表示女性
      */
-    WOMAN(0, "女");
+    WOMAN(0, "女"),
+    /**
+     * 标识未知
+     */
+    UNKNOWN(2, "未知");
+
 
     private Integer code;
     private String value;
