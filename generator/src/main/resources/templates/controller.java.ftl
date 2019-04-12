@@ -15,16 +15,15 @@ import com.deyatech.common.entity.RestResult;
 <#if isTree??>
 import com.deyatech.common.entity.CascaderResult;
 import com.deyatech.common.utils.CascaderUtil;
-import java.util.List;
 </#if>
 import lombok.extern.slf4j.Slf4j;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.deyatech.common.log.SysLog;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 <#if restControllerStyle>
 import org.springframework.web.bind.annotation.RestController;
 <#else>
@@ -78,7 +77,6 @@ public class ${table.controllerName} {
     @ApiOperation(value="单个保存或者更新${table.comment!}", notes="根据${table.comment!}对象保存或者更新${table.comment!}信息")
     @ApiImplicitParam(name = "${lowerEntity}", value = "${table.comment!}对象", required = true, dataType = "${entity}", paramType = "query")
     </#if>
-    @SysLog(module = "${table.comment!}",notes = "单个保存或者更新${table.comment!}")
     public RestResult<Boolean> saveOrUpdate(${entity} ${lowerEntity}) {
         log.info(String.format("保存或者更新${table.comment!}: %s ", JSONUtil.toJsonStr(${lowerEntity})));
         boolean result = ${lowerEntity}Service.saveOrUpdate(${lowerEntity});
@@ -96,7 +94,6 @@ public class ${table.controllerName} {
     @ApiOperation(value="批量保存或者更新${table.comment!}", notes="根据${table.comment!}对象集合批量保存或者更新${table.comment!}信息")
     @ApiImplicitParam(name = "${lowerEntity}List", value = "${table.comment!}对象集合", required = true, allowMultiple = true, dataType = "${entity}", paramType = "query")
     </#if>
-    @SysLog(module = "${table.comment!}",notes = "批量保存或者更新${table.comment!}")
     public RestResult<Boolean> saveOrUpdateBatch(Collection<${entity}> ${lowerEntity}List) {
         log.info(String.format("批量保存或者更新${table.comment!}: %s ", JSONUtil.toJsonStr(${lowerEntity}List)));
         boolean result = ${lowerEntity}Service.saveOrUpdateBatch(${lowerEntity}List);
@@ -114,7 +111,6 @@ public class ${table.controllerName} {
     @ApiOperation(value="根据${entity}对象属性逻辑删除${table.comment!}", notes="根据${table.comment!}对象逻辑删除${table.comment!}信息")
     @ApiImplicitParam(name = "${lowerEntity}", value = "${table.comment!}对象", required = true, dataType = "${entity}", paramType = "query")
     </#if>
-    @SysLog(module = "${table.comment!}",notes = "根据${entity}对象属性逻辑删除${table.comment!}")
     public RestResult<Boolean> removeBy${entity}(${entity} ${lowerEntity}) {
         log.info(String.format("根据${entity}对象属性逻辑删除${table.comment!}: %s ", ${lowerEntity}));
         boolean result = ${lowerEntity}Service.removeByBean(${lowerEntity});
@@ -133,7 +129,6 @@ public class ${table.controllerName} {
     @ApiOperation(value="根据ID批量逻辑删除${table.comment!}", notes="根据${table.comment!}对象ID批量逻辑删除${table.comment!}信息")
     @ApiImplicitParam(name = "ids", value = "${table.comment!}对象ID集合", required = true, allowMultiple = true, dataType = "Serializable", paramType = "query")
     </#if>
-    @SysLog(module = "${table.comment!}",notes = "根据ID批量逻辑删除${table.comment!}")
     public RestResult<Boolean> removeByIds(@RequestParam("ids[]") List<String> ids) {
         log.info(String.format("根据id批量删除${table.comment!}: %s ", JSONUtil.toJsonStr(ids)));
         boolean result = ${lowerEntity}Service.removeByIds(ids);
