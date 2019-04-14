@@ -68,8 +68,7 @@ public class DictionaryServiceImpl extends BaseServiceImpl<DictionaryMapper, Dic
         if(StrUtil.isEmpty(dictionary.getId())){
             List<Dictionary> list = getBaseMapper().selectList(new QueryWrapper<Dictionary>()
                     .eq("code_",dictionary.getCode())
-                    .eq("index_id",dictionary.getIndexId())
-                    .eq("enable_",1));
+                    .eq("index_id",dictionary.getIndexId()));
             if(!list.isEmpty()){
                 return false;
             }
@@ -77,7 +76,6 @@ public class DictionaryServiceImpl extends BaseServiceImpl<DictionaryMapper, Dic
             List<Dictionary> list = getBaseMapper().selectList(new QueryWrapper<Dictionary>()
                     .eq("code_",dictionary.getCode())
                     .eq("index_id",dictionary.getIndexId())
-                    .eq("enable_",1)
                     .notIn("id_",dictionary.getId()));
             if(!list.isEmpty()){
                 return false;

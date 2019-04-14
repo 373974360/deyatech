@@ -46,10 +46,8 @@ public class DictionaryIndexServiceImpl extends BaseServiceImpl<DictionaryIndexM
     @Cacheable
     public List<EnumsResult> getDictsAll() {
         List<EnumsResult> resultList = new ArrayList<>();
-        List<DictionaryIndex> dictionaryIndexList = getBaseMapper().selectList(new QueryWrapper<DictionaryIndex>()
-                .eq("enable_",1));
-        List<Dictionary> dictionaryList = dictionaryService.getBaseMapper().selectList(new QueryWrapper<Dictionary>()
-                .eq("enable_",1));
+        List<DictionaryIndex> dictionaryIndexList = getBaseMapper().selectList(null);
+        List<Dictionary> dictionaryList = dictionaryService.getBaseMapper().selectList(null);
         if(!dictionaryIndexList.isEmpty()){
             for(DictionaryIndex dictionaryIndex:dictionaryIndexList){
                 EnumsResult enumsResult = new EnumsResult();
@@ -82,15 +80,13 @@ public class DictionaryIndexServiceImpl extends BaseServiceImpl<DictionaryIndexM
     public boolean validataByKey(DictionaryIndex dictionaryIndex) {
         if(StrUtil.isEmpty(dictionaryIndex.getId())){
             List<DictionaryIndex> list = getBaseMapper().selectList(new QueryWrapper<DictionaryIndex>()
-                    .eq("key_",dictionaryIndex.getKey())
-                    .eq("enable_",1));
+                    .eq("key_",dictionaryIndex.getKey()));
             if(!list.isEmpty()){
                 return false;
             }
         }else{
             List<DictionaryIndex> list = getBaseMapper().selectList(new QueryWrapper<DictionaryIndex>()
                     .eq("key_",dictionaryIndex.getKey())
-                    .eq("enable_",1)
                     .notIn("id_",dictionaryIndex.getId()));
             if(!list.isEmpty()){
                 return false;

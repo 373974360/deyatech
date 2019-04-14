@@ -82,7 +82,6 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
     @Override
     public boolean checkAccountExist(String id, String account) {
         QueryWrapper<User> query = new QueryWrapper<>();
-        query.ne("enable_", EnableEnum.DELETED.getCode());
         query.eq("account_", account);
         if (StrUtil.isNotBlank(id)) {
             query.ne("id_", id);
