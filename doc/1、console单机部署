@@ -34,7 +34,7 @@ docker run -d --restart=unless-stopped --name consulServer --net=host -e 'CONSUL
 
 打开浏览器，输入：http://ip:8500后会出现界面既表示成功
 
-备份config配置命令：consul kv export --http-addr=http://172.16.186.119:8500 '' > consul_kv.json
+备份config配置命令：consul kv export --http-addr=http://172.16.186.119:8500 > consul_kv.json
 
 备份的数据都是base64编码过的，查看源码：echo 'eyJ2ZXJzaW9uX3RpbWVzdGFtcCI6IC0xfQ==' | base64 -d
 

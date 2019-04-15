@@ -3,11 +3,10 @@ package com.deyatech.common.utils;
 import cn.hutool.http.HttpStatus;
 import com.deyatech.common.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.ResourceUtils;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -71,10 +70,10 @@ public class RsaKeyUtil {
     private static byte[] getByteByFileName(String fileName) {
         byte[] keyBytes = null;
         try {
-            File file = ResourceUtils.getFile(fileName);
-            FileInputStream fis = new FileInputStream(file);
-            DataInputStream dis = new DataInputStream(fis);
-            keyBytes = new byte[(int) file.length()];
+            ClassPathResource resource = new ClassPathResource(fileName);
+            InputStream inputStream = resource.getInputStream();
+            DataInputStream dis = new DataInputStream(inputStream);
+            keyBytes = new byte[inputStream.available()];
             dis.readFully(keyBytes);
             dis.close();
         } catch (Exception e) {

@@ -66,11 +66,11 @@ output {
 
 3 启动rabbitmq
 
-docker run -d --restart=always --hostname my-rabbit --name rabbitmq -p 15672:15672 -p 5672:5672 rabbitmq:3-management
+docker run -d --restart=always --hostname my-rabbit --name rabbitmq -e RABBITMQ_DEFAULT_USER=deyatong -e RABBITMQ_DEFAULT_PASS=88352636 -p 15672:15672 -p 5672:5672 rabbitmq:3-management
 
 4 创建 ex_logstash、q_logstash
 
-访问rabbitmq对应的web地址  端口为15672 默认用户名和密码为guest
+访问rabbitmq对应的web地址  端口为15672 默认用户名和密码为命令行里面定义的
 
 点击Exchanges  --> Add a new exchange
 

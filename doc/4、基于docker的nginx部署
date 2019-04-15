@@ -1,0 +1,66 @@
+1、docker命令
+docker run -d --restart=always --name nginx -p 8080:8080 -v /deya/data/nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro -v /deya/data/nginx/html:/usr/share/nginx/html:ro -v /deya/data/nginx/log:/var/log/nginx nginx
+2、nginx.conf配置
+
+#user  nobody;
+worker_processes  1;
+
+#pid        logs/nginx.pid;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent $request_body "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    #access_log  ./logs/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    #keepalive_timeout  0;
+    keepalive_timeout  65;
+    #client_header_buffer_size 4k;
+    #large_client_header_buffers 4 4k/8k;
+
+    #gzip  on;
+
+    server {
+		listen       80;
+        server_name  localhost;
+
+        #charset koi8-r;
+
+        #access_log  logs/host.access.log  main;
+
+        location ~ ^/manage {
+            proxy_pass       http://localhost:8765;
+        }
+
+		location ~ ^/admin {
+            root /usr/share/nginx/html;
+			index  index.html index.htm;
+        }
+
+		location / {
+            root   /data/web/;
+            index  index.html index.htm;
+        }
+
+        #error_page  404              /404.html;
+
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+    }
+}
+
+
+
