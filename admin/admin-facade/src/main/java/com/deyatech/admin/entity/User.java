@@ -44,6 +44,10 @@ public class User extends BaseEntity {
     @TableField("avatar_")
     private String avatar;
 
+    @ApiModelProperty(value = "工号", dataType = "String")
+    @TableField("emp_no")
+    private String empNo;
+
     @ApiModelProperty(value = "登陆帐户", dataType = "String")
     @TableField("account_")
     private String account;
