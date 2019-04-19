@@ -89,4 +89,13 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
         List<User> list = getBaseMapper().selectList(query);
         return CollectionUtil.isNotEmpty(list);
     }
+
+    /**
+     *检索所有的用户信息含部门
+     * @return
+     */
+    @Override
+    public Collection<UserVo> selectAllUserInfo() {
+        return userMapper.selectAllUserInfo();
+    }
 }

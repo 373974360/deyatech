@@ -137,8 +137,6 @@ public class UserController extends BaseController {
     @ApiOperation(value="根据User对象属性分页检索系统用户信息", notes="根据User对象属性分页检索系统用户信息信息")
     @ApiImplicitParam(name = "user", value = "系统用户信息对象", required = false, dataType = "User", paramType = "query")
     public RestResult<IPage<UserVo>> pageByUser(UserVo user) {
-        /*IPage<UserVo> users = userService.pageByBean(user);
-        users.setRecords(userService.setVoProperties(users.getRecords()));*/
         IPage<UserVo> users = userService.findPage(user);
         log.info(String.format("根据User对象属性分页检索系统用户信息: %s ",JSONUtil.toJsonStr(users)));
         return RestResult.ok(users);

@@ -39,9 +39,4 @@ public class UserVo extends User {
      * 部门树结构索引位置
      */
     private String departmentTreePosition;
-
-    /**
-     * 角色id
-     */
-    private String roleId;
 }

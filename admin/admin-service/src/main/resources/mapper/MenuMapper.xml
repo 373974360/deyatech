@@ -37,13 +37,13 @@
     </sql>
 
     <select id="getAllPermissionsByUserId" resultType="java.lang.String">
-        select permission_ from admin_menu join admin_role_menu on admin_menu.id_ = admin_role_menu.menu_id where admin_role_menu.role_id
-        in (select role_id from admin_user_role where user_id = #{userId})
+        select permission_ from admin_menu am join (select distinct menu_id from admin_role_menu a left join admin_role_user b on a.role_id = b.role_id where b.user_id = #{userId}) rmu
+	    on am.id_ = rmu.menu_id)
     </select>
 
     <select id="getAllRequestsByUserId" resultType="java.lang.String">
-        select request_ from admin_menu join admin_role_menu on admin_menu.id_ = admin_role_menu.menu_id where admin_role_menu.role_id
-        in (select role_id from admin_user_role where user_id = #{userId})
+        select request_ from admin_menu am join (select distinct menu_id from admin_role_menu a left join admin_role_user b on a.role_id = b.role_id where b.user_id = #{userId}) rmu
+	    on am.id_ = rmu.menu_id)
     </select>
 
 </mapper>

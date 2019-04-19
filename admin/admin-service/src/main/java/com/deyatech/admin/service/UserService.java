@@ -57,4 +57,10 @@ public interface UserService extends BaseService<User> {
      * @return
      */
     boolean checkAccountExist(String id, String account);
+
+    /**
+     *检索所有的用户信息含部门
+     * @return
+     */
+    Collection<UserVo> selectAllUserInfo();
 }

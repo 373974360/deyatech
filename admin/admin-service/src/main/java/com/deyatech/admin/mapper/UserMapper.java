@@ -6,6 +6,7 @@ import com.deyatech.admin.vo.UserVo;
 import com.deyatech.common.base.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -18,5 +19,17 @@ import java.util.List;
  */
 public interface UserMapper extends BaseMapper<User> {
 
+    /**
+     * 根据参数分页获取用户对象列表
+     * @param page
+     * @param user
+     * @return
+     */
     IPage<UserVo> findList(@Param("page") IPage<User> page, @Param("user") UserVo user);
+
+    /**
+     *检索所有的用户信息含部门
+     * @return
+     */
+    Collection<UserVo> selectAllUserInfo();
 }

@@ -1,7 +1,8 @@
 package com.deyatech.admin.service;
 
-import com.deyatech.admin.entity.UserRole;
-import com.deyatech.admin.vo.UserRoleVo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.deyatech.admin.entity.RoleUser;
+import com.deyatech.admin.vo.RoleUserVo;
 import com.deyatech.common.base.BaseService;
 import java.util.Collection;
 import java.util.List;
@@ -14,23 +15,23 @@ import java.util.List;
  * @Author lee.
  * @since 2019-03-07
  */
-public interface UserRoleService extends BaseService<UserRole> {
+public interface RoleUserService extends BaseService<RoleUser> {
 
     /**
      * 单个将对象转换为vo系统数据字典索引信息
      *
-     * @param userRole
+     * @param roleUser
      * @return
      */
-    UserRoleVo setVoProperties(UserRole userRole);
+    RoleUserVo setVoProperties(RoleUser roleUser);
 
     /**
      * 批量将对象转换为vo系统数据字典索引信息
      *
-     * @param userRoles
+     * @param roleUsers
      * @return
      */
-    List<UserRoleVo> setVoProperties(Collection userRoles);
+    List<RoleUserVo> setVoProperties(Collection roleUsers);
 
     /**
      * 设置角色用户
@@ -39,4 +40,11 @@ public interface UserRoleService extends BaseService<UserRole> {
      * @param userIds
      */
     void setRoleUsers(String roleId, List<String> userIds);
+
+    /**
+     * 根据角色ID获取该角色下关联的所有用户信息
+     * @param roleUserVo
+     * @return
+     */
+    IPage<RoleUserVo> pageByRoleUserVo(RoleUserVo roleUserVo);
 }

@@ -235,10 +235,10 @@ CREATE TABLE `admin_user` (
 INSERT INTO `admin_user` VALUES ('1', '2', '系统管理员', '1', '15398090571', 'http://new.zwfw.itl.gov.cn:8080/image/M00/00/0F/Chl_ElpewlSAYb9XABDDmShEUnY371.jpg', 'admin', '$2a$12$Wi7GxhVyblcIVXQKFc6NiueDzxo7ekIFConrzMpDDvDb/7H6i3HIC', '1', null, '1', '2018-12-19 16:18:03', '1', '2018-12-19 16:18:03', '0');
 
 -- ----------------------------
--- Table structure for admin_user_role
+-- Table structure for admin_role_user
 -- ----------------------------
-DROP TABLE IF EXISTS `admin_user_role`;
-CREATE TABLE `admin_user_role` (
+DROP TABLE IF EXISTS `admin_role_user`;
+CREATE TABLE `admin_role_user` (
   `id_` varchar(19) NOT NULL COMMENT '角色用户关联编号',
   `user_id` varchar(19) NOT NULL COMMENT '用户id',
   `role_id` varchar(19) NOT NULL COMMENT '角色id',
@@ -246,5 +246,5 @@ CREATE TABLE `admin_user_role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统用户角色关联信息';
 
 -- ----------------------------
--- Records of admin_user_role
+-- Records of admin_role_user
 -- ----------------------------

@@ -55,7 +55,6 @@
         ad.tree_position AS departmentTreePosition
         FROM admin_user au
         LEFT JOIN admin_department ad ON au.department_id = ad.id_
-        LEFT JOIN admin_user_role aur ON au.id_ = aur.user_id
         WHERE au.enable_ != -1
         <if test="user != null">
             <if test="user.enable != null">
@@ -67,10 +66,33 @@
             <if test="user.departmentId != null and user.departmentId != ''">
                 and au.department_id = #{user.departmentId}
             </if>
-            <if test="user.roleId != null and user.roleId != ''">
-                and aur.role_id = #{user.roleId}
-            </if>
         </if>
+        order by au.update_time desc
+    </select>
+
+    <!-- 检索所有的用户信息含部门-->
+    <select id="selectAllUserInfo" resultType="com.deyatech.admin.vo.UserVo">
+        SELECT
+        au.id_ AS id,
+        au.enable_ AS enable,
+        au.remark_ AS remark,
+        au.create_by AS createBy,
+        au.create_time AS createTime,
+        au.update_by AS updateBy,
+        au.update_time AS updateTime,
+        au.version_ AS version,
+        au.department_id AS departmentId,
+        au.name_ AS name,
+        au.gender_ AS gender,
+        au.phone_ AS phone,
+        au.avatar_ AS avatar,
+        au.emp_no AS empNo,
+        au.account_ AS account,
+        au.password_ AS password,
+        ad.name_ AS departmentName
+        FROM admin_user au
+        LEFT JOIN admin_department ad ON au.department_id = ad.id_
+        WHERE au.enable_ != -1
         order by au.update_time desc
     </select>
 </mapper>

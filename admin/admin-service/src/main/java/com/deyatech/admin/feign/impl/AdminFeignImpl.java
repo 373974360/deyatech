@@ -71,4 +71,14 @@ public class AdminFeignImpl implements AdminFeign {
         return RestResult.ok(resultList);
     }
 
+    /**
+     * 获取系统所有的后台用户
+     * @return
+     */
+    @Override
+    public RestResult<Collection<UserVo>> selectAllUsers() {
+        Collection<UserVo> users = userService.selectAllUserInfo();
+        return RestResult.ok(users);
+    }
+
 }

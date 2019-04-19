@@ -5,11 +5,9 @@ import com.deyatech.admin.vo.UserVo;
 import com.deyatech.common.entity.EnumsResult;
 import com.deyatech.common.entity.RestResult;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -67,4 +65,11 @@ public interface AdminFeign {
      */
     @RequestMapping(value = "/dicts/getDictsAll", method = RequestMethod.GET)
     RestResult<List<EnumsResult>> getDictsAll();
+
+    /**
+     * 获取系统所有的后台用户
+     * @return
+     */
+    @GetMapping("/user/selectAllUsers")
+    RestResult<Collection<UserVo>> selectAllUsers();
 }

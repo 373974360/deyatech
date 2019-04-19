@@ -22,9 +22,9 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-@TableName("admin_user_role")
+@TableName("admin_role_user")
 @ApiModel(value = "系统数据字典索引信息对象", description = "系统数据字典索引信息", parent = BaseEntity.class)
-public class UserRole extends BaseEntity {
+public class RoleUser extends BaseEntity {
 
     @ApiModelProperty(value = "用户id", dataType = "String")
     @TableField("user_id")

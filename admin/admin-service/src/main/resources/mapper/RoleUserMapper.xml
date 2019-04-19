@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.deyatech.admin.mapper.RoleUserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.deyatech.admin.entity.RoleUser">
+        <result column="id_" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="role_id" property="roleId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id_,
+        user_id, role_id
+    </sql>
+
+    <select id="pageByRoleUserVo" resultType="com.deyatech.admin.vo.RoleUserVo" parameterType="com.deyatech.admin.vo.RoleUserVo">
+        SELECT
+        aur.id_ AS id,
+        au.id_ AS userId,
+        aur.role_id AS roleId,
+        au.name_ AS name,
+        au.gender_ AS gender,
+        au.account_ AS account,
+        ad.name_ AS departmentName
+        FROM admin_user au
+        LEFT JOIN admin_department ad ON au.department_id = ad.id_
+        LEFT JOIN admin_role_user aur ON au.id_ = aur.user_id
+        WHERE au.enable_ != -1
+        <if test="roleUserVo != null">
+            <if test="roleUserVo.name != null and roleUserVo.name != ''">
+                and (au.name_ like concat('%', #{roleUserVo.name}, '%') or au.account_ like concat('%', #{roleUserVo.name}, '%'))
+            </if>
+            <if test="roleUserVo.departmentId != null and roleUserVo.departmentId != ''">
+                and au.department_id = #{roleUserVo.departmentId}
+            </if>
+            <if test="roleUserVo.roleId != null and roleUserVo.roleId != ''">
+                and aur.role_id = #{roleUserVo.roleId}
+            </if>
+        </if>
+        order by au.update_time desc
+    </select>
+
+</mapper>
