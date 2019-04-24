@@ -1,5 +1,7 @@
 package com.deyatech.admin.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.deyatech.admin.entity.Role;
 import com.deyatech.admin.vo.RoleVo;
 import com.deyatech.admin.service.RoleService;
@@ -141,5 +143,20 @@ public class RoleController extends BaseController {
         log.info(String.format("根据Role对象属性分页检索系统角色信息: %s ",JSONUtil.toJsonStr(roles)));
         return RestResult.ok(roles);
     }
-
+    /**
+     * 根据角色名统计件数
+     * @param name
+     * @return
+     */
+    @GetMapping("/countRoleByName")
+    @ApiOperation(value="根据角色名统计件数", notes="根据角色名统计件数")
+    @ApiImplicitParam(name = "name", value = "角色名", required = true, dataType = "String", paramType = "query")
+    public RestResult<Integer> countRoleByName(@RequestParam String name) {
+        QueryWrapper queryWrapper = new QueryWrapper();
+        if (StringUtils.isNotEmpty(name)) {
+            queryWrapper.eq("name_", name);
+        }
+        Integer count = roleService.count(queryWrapper);
+        return RestResult.ok(count);
+    }
 }
