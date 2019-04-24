@@ -10,7 +10,6 @@ import com.deyatech.admin.service.MenuService;
 import com.deyatech.admin.vo.MenuVo;
 import com.deyatech.common.Constants;
 import com.deyatech.common.base.BaseServiceImpl;
-import com.deyatech.common.entity.RestResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,7 +50,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, Menu> implement
                 } else {
                     menuVo.setLevel(Constants.DEFAULT_ROOT_LEVEL);
                 }
-                if (ObjectUtil.equal(menuVo.getParentId(), Constants.DEFAULT_PARENT_ROOT)) {
+                if (ObjectUtil.equal(menuVo.getParentId(), Constants.ZERO)) {
                     rootMenus.add(menuVo);
                 }
                 for (MenuVo childVo : menuVos) {

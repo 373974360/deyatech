@@ -84,7 +84,7 @@ public interface Constants {
     /**
      * 默认父类跟ID
      */
-    String DEFAULT_PARENT_ROOT = "0";
+    String ZERO = "0";
 
     /**
      * 默认第一级Level

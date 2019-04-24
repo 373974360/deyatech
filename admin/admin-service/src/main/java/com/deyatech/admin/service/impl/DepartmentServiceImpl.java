@@ -45,7 +45,7 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
                 }else{
                     departmentVo.setLevel(Constants.DEFAULT_ROOT_LEVEL);
                 }
-                if (ObjectUtil.equal(departmentVo.getParentId(), Constants.DEFAULT_PARENT_ROOT)) {
+                if (ObjectUtil.equal(departmentVo.getParentId(), Constants.ZERO)) {
                     rootDepartments.add(departmentVo);
                 }
                 for (DepartmentVo childVo : departmentVos) {

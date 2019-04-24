@@ -31,6 +31,14 @@
         <!-- springfox-swagger 版本号 -->
         <springfox-swagger.version>2.9.2</springfox-swagger.version>
         <swagger-bootstrap-ui.version>1.9.0</swagger-bootstrap-ui.version>
+        <!-- 阿里云sdk-core版本号 -->
+        <aliyun-sdk-core.version>3.3.1</aliyun-sdk-core.version>
+        <!-- 阿里云语音sdk版本号 -->
+        <aliyun-sdk-dyvmsapi>1.0.0</aliyun-sdk-dyvmsapi>
+        <!-- commons-httpclient版本号 -->
+        <commons-httpclient.version>3.1</commons-httpclient.version>
+        <!-- weixin-java-mp版本号 -->
+        <weixin-java-mp.version>3.2.0</weixin-java-mp.version>
     </properties>
 
     <parent>
@@ -104,6 +112,29 @@
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>swagger-bootstrap-ui</artifactId>
                 <version>${swagger-bootstrap-ui.version}</version>
+            </dependency>
+            <!-- 阿里云语音功能sdk -->
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>aliyun-java-sdk-core</artifactId>
+                <version>${aliyun-sdk-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>aliyun-java-sdk-dyvmsapi</artifactId>
+                <version>${aliyun-sdk-dyvmsapi}</version>
+            </dependency>
+            <!-- httpclient -->
+            <dependency>
+                <groupId>commons-httpclient</groupId>
+                <artifactId>commons-httpclient</artifactId>
+                <version>${commons-httpclient.version}</version>
+            </dependency>
+            <!-- 微信sdk封装 -->
+            <dependency>
+                <groupId>com.github.binarywang</groupId>
+                <artifactId>weixin-java-mp</artifactId>
+                <version>${weixin-java-mp.version}</version>
             </dependency>
 
         </dependencies>
