@@ -49,6 +49,7 @@
         au.gender_ AS gender,
         au.phone_ AS phone,
         au.avatar_ AS avatar,
+        au.emp_no AS empNo,
         au.account_ AS account,
         au.password_ AS password,
         ad.name_ AS departmentName,

@@ -1,5 +1,8 @@
 package com.deyatech.admin.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.deyatech.admin.entity.Role;
 import com.deyatech.admin.vo.RoleVo;
 import com.deyatech.admin.mapper.RoleMapper;
@@ -52,5 +55,19 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implement
             }
         }
         return roleVos;
+    }
+
+    /**
+     * 根据名称模糊查询
+     * @param entity
+     * @return
+     */
+    @Override
+    public IPage<Role> pageByBean(Role entity) {
+        QueryWrapper queryWrapper = new QueryWrapper();
+        if (StringUtils.isNotEmpty(entity.getName())) {
+            queryWrapper.like("name_", entity.getName());
+        }
+        return super.page(getPageByBean(entity), queryWrapper);
     }
 }
