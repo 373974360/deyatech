@@ -10,6 +10,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>task</artifactId>
+    <name>${project.artifactId}</name>
+    <description>定时任务服务模块</description>
 
     <dependencies>
         <dependency>
