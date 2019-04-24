@@ -54,6 +54,7 @@
         <module>admin</module>
         <module>common</module>
         <module>generator</module>
+        <module>task</module>
     </modules>
 
     <dependencyManagement>
