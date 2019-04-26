@@ -2,10 +2,11 @@ package com.deyatech.common.mybatisplus;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.deyatech.common.Constants;
+import com.deyatech.common.context.UserContextHelper;
 import com.deyatech.common.enums.EnableEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
-import com.deyatech.common.context.UserContextHelper;
 
 import java.util.Date;
 
@@ -28,8 +29,8 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
             this.setFieldValByName("createBy", UserContextHelper.getUserId(), metaObject);
             this.setFieldValByName("updateBy", UserContextHelper.getUserId(), metaObject);
         } else {
-            this.setFieldValByName("createBy", null, metaObject);
-            this.setFieldValByName("updateBy", null, metaObject);
+            this.setFieldValByName("createBy", Constants.ZERO, metaObject);
+            this.setFieldValByName("updateBy", Constants.ZERO, metaObject);
         }
         if (this.getFieldValByName("enable", metaObject) == null) {
             this.setFieldValByName("enable", EnableEnum.ENABLE.getCode(), metaObject);
@@ -42,8 +43,8 @@ public class MybatisPlusMetaObjectHandler implements MetaObjectHandler {
         this.setFieldValByName("updateTime", new Date(), metaObject);
         if (StrUtil.isNotBlank(UserContextHelper.getUserId())) {
             this.setFieldValByName("updateBy", UserContextHelper.getUserId(), metaObject);
-        }else{
-            this.setFieldValByName("updateBy", null, metaObject);
+        } else {
+            this.setFieldValByName("updateBy", Constants.ZERO, metaObject);
         }
     }
 }
