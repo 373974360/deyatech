@@ -20,7 +20,7 @@ import static com.deyatech.common.submail.SubMailConfig.PREFIX;
 @Accessors(chain = true)
 @ConfigurationProperties(prefix = PREFIX)
 public class SubMailConfig {
-    public static final String PREFIX = "subMail";
+    public static final String PREFIX = "sub-mail";
 
     /**
      * 短信验证码

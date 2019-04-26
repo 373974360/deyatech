@@ -20,7 +20,7 @@ import static com.deyatech.common.wechat.WeChatConfig.PREFIX;
 @Accessors(chain = true)
 @ConfigurationProperties(prefix = PREFIX)
 public class WeChatConfig {
-    public static final String PREFIX = "weChat";
+    public static final String PREFIX = "we-chat";
 
     /**
      * 设置微信公众号的appid
