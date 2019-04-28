@@ -1,6 +1,8 @@
 package com.deyatech.gateway.filter;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
+import com.deyatech.common.Constants;
 import com.deyatech.gateway.log.RecorderServerHttpRequestDecorator;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
@@ -57,10 +59,13 @@ public class AccessLogGlobalFilter implements GlobalFilter, Ordered {
         HttpMethod method = request.getMethod();
         URI url = request.getURI();
         HttpHeaders headers = request.getHeaders();
+        if (StrUtil.isNotBlank(headers.getFirst(Constants.WEBSOCKET_HEADER_SIGN))) {
+            return chain.filter(exchange);
+        }
         RecorderServerHttpRequestDecorator requestDecorator = new RecorderServerHttpRequestDecorator(request);
         Flux<DataBuffer> body = requestDecorator.getBody();
         //读取requestBody传参
-        AtomicReference<String> requestBody = new AtomicReference<>("");
+        AtomicReference<String> requestBody = new AtomicReference<>();
         HttpMethod httpMethod = request.getMethod();
         String requestParams;
         if (httpMethod == HttpMethod.GET) {
@@ -121,6 +126,7 @@ public class AccessLogGlobalFilter implements GlobalFilter, Ordered {
 
     /**
      * 多个byte数组合并
+     *
      * @param values
      * @return
      */

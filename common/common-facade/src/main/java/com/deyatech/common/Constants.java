@@ -125,4 +125,9 @@ public interface Constants {
      * 缓存命名空间
      */
     String REDIS_SET_KEY = "~keys";
+
+    /**
+     * WebSocket header标记
+     */
+    String WEBSOCKET_HEADER_SIGN = "Upgrade";
 }
