@@ -39,6 +39,8 @@
         <commons-httpclient.version>3.1</commons-httpclient.version>
         <!-- weixin-java-mp版本号 -->
         <weixin-java-mp.version>3.2.0</weixin-java-mp.version>
+        <!-- webservice cxf 版本号-->
+        <cxf.version>3.2.4</cxf.version>
     </properties>
 
     <parent>
@@ -136,6 +138,12 @@
                 <groupId>com.github.binarywang</groupId>
                 <artifactId>weixin-java-mp</artifactId>
                 <version>${weixin-java-mp.version}</version>
+            </dependency>
+            <!-- webservice cxf-->
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-spring-boot-starter-jaxws</artifactId>
+                <version>${cxf.version}</version>
             </dependency>
 
         </dependencies>
