@@ -34,6 +34,7 @@ public class DianxinUtil {
      * @return
      */
     public boolean sendVoice(String calleeNumber, String TmpID, String TmpParam, int playCnt) {
+        log.info("电信接口发送语音消息:calleeNumber：" +calleeNumber+"----TmpID："+TmpID+"-----TmpParam:："+TmpParam+"----playCnt："+playCnt);
         //创建动态客户端
         JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
         Client client = dcf.createClient(dianxinConfig.getWsdlUrl());
