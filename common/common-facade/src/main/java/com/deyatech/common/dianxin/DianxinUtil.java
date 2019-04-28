@@ -2,6 +2,7 @@ package com.deyatech.common.dianxin;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
@@ -15,6 +16,7 @@ import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
  * @since 2019-04-28
  */
 @Slf4j
+@Data
 public class DianxinUtil {
 
     public DianxinUtil(DianxinConfig dianxinConfig) {
