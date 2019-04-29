@@ -12,7 +12,7 @@ import java.util.TimeZone;
 
 /**
  * <p>
- *
+ * jackson转json配置类
  * </p>
  *
  * @author: lee.
