@@ -52,6 +52,11 @@ public interface Constants {
     Integer PASSWORD_ENCORDER_SALT = 12;
 
     /**
+     * get上传默认前缀
+     */
+    String UPLOAD_DEFAULT_PREFIX_URL = "/upload/";
+
+    /**
      * get方法前缀
      */
     String METHOD_GET_PREX = "get";

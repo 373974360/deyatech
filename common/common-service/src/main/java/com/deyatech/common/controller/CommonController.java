@@ -8,20 +8,20 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpStatus;
 import com.deyatech.admin.feign.AdminFeign;
+import com.deyatech.common.Constants;
 import com.deyatech.common.base.BaseController;
+import com.deyatech.common.entity.EnumsResult;
+import com.deyatech.common.entity.FileUploadResult;
+import com.deyatech.common.entity.RestResult;
 import com.deyatech.common.enums.IEnums;
+import com.deyatech.common.exception.BusinessException;
+import com.deyatech.common.utils.ClassUtil;
+import com.deyatech.common.utils.VerifyCodeUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import com.deyatech.common.Constants;
-import com.deyatech.common.entity.EnumsResult;
-import com.deyatech.common.entity.FileUploadResult;
-import com.deyatech.common.entity.RestResult;
-import com.deyatech.common.exception.BusinessException;
-import com.deyatech.common.utils.ClassUtil;
-import com.deyatech.common.utils.VerifyCodeUtils;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -66,7 +66,7 @@ public class CommonController extends BaseController {
      * @return CommonResult.ok()
      */
     @GetMapping("/getVerifyCode")
-    @ApiOperation(value="获取验证码图片", notes="根据随机数获取验证码图片")
+    @ApiOperation(value = "获取验证码图片", notes = "根据随机数获取验证码图片")
     @ApiImplicitParam(name = "random", value = "随机数", required = true, dataType = "String", paramType = "query")
     public void getVerifyCode(HttpServletResponse response, String random) throws IOException {
         response.setHeader("Pragma", "No-cache");
@@ -89,10 +89,10 @@ public class CommonController extends BaseController {
      * @return CommonResult.ok()
      */
     @GetMapping("/validateVerifyCode")
-    @ApiOperation(value="根据随机数验证验证码是否正确", notes="根据随机数验证验证码是否正确")
+    @ApiOperation(value = "根据随机数验证验证码是否正确", notes = "根据随机数验证验证码是否正确")
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "verifyCode", value = "验证码", required = true, dataType = "String", paramType = "query"),
-        @ApiImplicitParam(name = "random", value = "随机数", required = true, dataType = "String", paramType = "query")
+            @ApiImplicitParam(name = "verifyCode", value = "验证码", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "random", value = "随机数", required = true, dataType = "String", paramType = "query")
     })
     public RestResult validateVerifyCode(String verifyCode, String random) {
         if (validateVerifyCode(redisTemplate, verifyCode, random)) {
@@ -105,7 +105,7 @@ public class CommonController extends BaseController {
      * 类型,状态,各个枚举类型的javascript对象
      */
     @GetMapping("/getEnums")
-    @ApiOperation(value="获取系统枚举类型的javascript对象", notes="获取系统枚举类型的javascript对象")
+    @ApiOperation(value = "获取系统枚举类型的javascript对象", notes = "获取系统枚举类型的javascript对象")
     public RestResult enums() {
         EnumsResult[] result = null;
         try {
@@ -139,7 +139,7 @@ public class CommonController extends BaseController {
      * 获取系统数据字典javascript对象
      */
     @GetMapping("/getDictionaries")
-    @ApiOperation(value="获取系统数据字典javascript对象", notes="获取系统数据字典javascript对象")
+    @ApiOperation(value = "获取系统数据字典javascript对象", notes = "获取系统数据字典javascript对象")
     public RestResult dicts() {
         return adminFeignApi.getDictsAll();
     }
@@ -151,7 +151,7 @@ public class CommonController extends BaseController {
      * @return UeditorResult
      */
     @PostMapping("/upload")
-    @ApiOperation(value="上传文件", notes="上传文件")
+    @ApiOperation(value = "上传文件", notes = "上传文件")
     @ApiImplicitParam(name = "file", value = "验证码", required = true, dataType = "MultipartFile", paramType = "query")
     public RestResult uploadFile(@RequestParam("file") MultipartFile file) {
         FileUploadResult result = new FileUploadResult();
@@ -174,7 +174,7 @@ public class CommonController extends BaseController {
             String fileName = DateUtil.format(new Date(), DatePattern.PURE_DATETIME_FORMAT) + RandomUtil.randomNumbers(4) + ext_Name;
             //调用文件处理类FileUtil，处理文件，将文件写入指定位置
             uploadFile(file.getBytes(), uploadPath, fileName);
-            String url = fileName;
+            String url = Constants.UPLOAD_DEFAULT_PREFIX_URL.concat(fileName);
             if (StrUtil.isNotBlank(url)) {
                 //转存文件
                 result.setState("SUCCESS");
@@ -201,7 +201,7 @@ public class CommonController extends BaseController {
      * @param response
      */
     @GetMapping("/showPicImg")
-    @ApiOperation(value="查看图片", notes="查看图片")
+    @ApiOperation(value = "查看图片", notes = "查看图片")
     @ApiImplicitParam(name = "filePath", value = "图片路径", required = true, dataType = "String", paramType = "query")
     public void showPicImg(String filePath, HttpServletResponse response) {
         FileInputStream in = null;
