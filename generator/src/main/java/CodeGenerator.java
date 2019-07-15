@@ -49,6 +49,7 @@ public class CodeGenerator {
         gc.setBaseResultMap(true);
         gc.setBaseColumnList(true);
         gc.setSwagger2(true);
+        gc.setFileOverride(true);
         mpg.setGlobalConfig(gc);
 
         // 数据源配置
@@ -162,7 +163,7 @@ public class CodeGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名
-                return "D:/workspace/webstorm/deyatech-ui/src/api" + "/" + pc.getModuleName() +
+                return "D:/workspace/webstorm/deyatech-zwfw-ui/src/api" + "/" + pc.getModuleName() +
                         "/" + StringUtils.firstCharToLower(tableInfo.getEntityName()) + ".js";
             }
         });
@@ -171,7 +172,7 @@ public class CodeGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名
-                return "D:/workspace/webstorm/deyatech-ui/src/views" + "/" + pc.getModuleName() +
+                return "D:/workspace/webstorm/deyatech-zwfw-ui/src/views" + "/" + pc.getModuleName() +
                         "/" + StringUtils.firstCharToLower(tableInfo.getEntityName()) + ".vue";
             }
         });

@@ -1,5 +1,6 @@
 package com.deyatech.common.context;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.deyatech.common.Constants;
 
 import java.util.HashMap;
@@ -19,7 +20,7 @@ public class UserContextHelper {
     public static void set(String key, Object value) {
         Map<String, Object> map = threadLocal.get();
         if (map == null) {
-            map = new HashMap<String, Object>();
+            map = CollectionUtil.newHashMap();
             threadLocal.set(map);
         }
         map.put(key, value);
@@ -28,10 +29,14 @@ public class UserContextHelper {
     public static Object get(String key) {
         Map<String, Object> map = threadLocal.get();
         if (map == null) {
-            map = new HashMap<String, Object>();
+            map = CollectionUtil.newHashMap();
             threadLocal.set(map);
         }
         return map.get(key);
+    }
+
+    public static void remove() {
+        threadLocal.remove();
     }
 
     public static String getUserId() {

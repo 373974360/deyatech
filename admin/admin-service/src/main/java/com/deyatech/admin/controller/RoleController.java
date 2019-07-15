@@ -108,7 +108,7 @@ public class RoleController extends BaseController {
     public RestResult<RoleVo> getByRole(Role role) {
         role = roleService.getByBean(role);
         RoleVo roleVo = roleService.setVoProperties(role);
-        log.info(String.format("根据id获取系统角色信息：s%", JSONUtil.toJsonStr(roleVo)));
+        log.info(String.format("根据id获取系统角色信息：%s", JSONUtil.toJsonStr(roleVo)));
         return RestResult.ok(roleVo);
     }
 

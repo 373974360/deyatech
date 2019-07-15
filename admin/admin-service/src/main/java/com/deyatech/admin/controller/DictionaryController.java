@@ -108,7 +108,7 @@ public class DictionaryController extends BaseController {
     public RestResult<DictionaryVo> getByDictionary(Dictionary dictionary) {
         dictionary = dictionaryService.getByBean(dictionary);
         DictionaryVo dictionaryVo = dictionaryService.setVoProperties(dictionary);
-        log.info(String.format("根据id获取系统数据字典明细信息：s%", JSONUtil.toJsonStr(dictionaryVo)));
+        log.info(String.format("根据id获取系统数据字典明细信息：%s", JSONUtil.toJsonStr(dictionaryVo)));
         return RestResult.ok(dictionaryVo);
     }
 

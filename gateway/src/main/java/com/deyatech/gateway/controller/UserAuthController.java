@@ -43,7 +43,6 @@ public class UserAuthController extends BaseController {
     @GetMapping("/token")
     public RestResult creatToken(JwtRequest jwtInfo) throws Exception {
         if (validateVerifyCode(redisTemplate, jwtInfo.getVerifyCode(), jwtInfo.getRandom())) {
-//            return userAuthService.login(AesUtil.aesDecrypt(jwtInfo.getAccount()), AesUtil.aesDecrypt(jwtInfo.getPassword()));
             return userAuthService.login(jwtInfo.getAccount(), jwtInfo.getPassword());
         } else {
             return RestResult.error("验证码不正确");

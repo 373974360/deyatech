@@ -149,7 +149,7 @@ public class ${table.controllerName} {
     public RestResult<${entityVo}> getBy${entity}(${entity} ${lowerEntity}) {
         ${lowerEntity} = ${lowerEntity}Service.getByBean(${lowerEntity});
         ${entityVo} ${lowerEntityVo} = ${lowerEntity}Service.setVoProperties(${lowerEntity});
-        log.info(String.format("根据id获取${table.comment!}：s%", JSONUtil.toJsonStr(${lowerEntityVo})));
+        log.info(String.format("根据id获取${table.comment!}：%s", JSONUtil.toJsonStr(${lowerEntityVo})));
         return RestResult.ok(${lowerEntityVo});
     }
 

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.deyatech.admin.entity.User;
 import com.deyatech.admin.vo.UserVo;
 import com.deyatech.common.base.BaseService;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -63,4 +64,20 @@ public interface UserService extends BaseService<User> {
      * @return
      */
     Collection<UserVo> selectAllUserInfo();
+
+    /**
+     * 根据用户工号取得用户信息
+     * @param empNo
+     * @return
+     */
+    UserVo getUserByEmpNo(String empNo);
+
+    /**
+     * 根据部门及窗口查询用户
+     *
+     * @param departmentIds
+     * @param windowIds
+     * @return
+     */
+    List<User> getUsersByWindowAndDepartment(String departmentIds, String windowIds);
 }

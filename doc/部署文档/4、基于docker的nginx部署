@@ -1,0 +1,42 @@
+1、docker命令
+docker run -d --restart=always --name nginx -p 8080:8080 -v /deya/data/nginx/conf.d:/etc/nginx/conf.d:ro -v /deya/data/nginx/html:/usr/share/nginx/html:ro nginx
+2、server.conf配置
+
+server {
+    listen       8080;
+    server_name  localhost;
+
+    #charset koi8-r;
+
+    #access_log  logs/host.access.log  main;
+
+    location ~ ^/manage {
+        proxy_pass       http://localhost:8765;
+    }
+
+    location ~ ^/admin {
+        root /usr/share/nginx/html;
+        index  index.html index.htm;
+    }
+
+    location / {
+        root   /data/web/;
+        index  index.html index.htm;
+    }
+
+    #error_page  404              /404.html;
+
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   html;
+    }
+}
+3、支持WebSocket，需要在http配置中增加：
+
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    ''   close;
+}
+
+
+

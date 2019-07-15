@@ -38,4 +38,55 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>build-image</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!--install阶段也上传，否则只有deploy阶段上传-->
+                    <pushImage>true</pushImage>
+                    <!--镜像名，这里用工程名-->
+                    <imageName>${imageName}</imageName>
+                    <!--覆盖相同标签镜像-->
+                    <forceTags>true</forceTags>
+                    <!--镜像的FROM，使用增加过字体，并且设置过时区的官方镜像-->
+                    <baseImage>${baseImage}</baseImage>
+                    <!--该镜像的容器启动后，直接运行spring boot工程-->
+                    <entryPoint>[ "sh", "-c", "java  ${spring.jvm.args} -jar /${project.build.finalName}.jar" ]</entryPoint>
+                    <!--构建镜像的配置信息-->
+                    <resources>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                    </resources>
+                    <!-- 私有仓库配置，需要settings.xml文件配合serverId对应的服务地址 -->
+                    <serverId>${settings.server-id}</serverId>
+                    <registryUrl>${docker.repository}</registryUrl>
+                </configuration>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources/</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
 </project>

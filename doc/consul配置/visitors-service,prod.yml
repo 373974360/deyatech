@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    dynamic:
+      primary: master #设置默认的数据源或者数据源组,默认值即为master
+      datasource:
+        master:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://mysql:3306/deyatech?characterEncoding=utf8&autoReConnect=true&useSSL=false
+          username: root
+          password: dyt@88352636
+        slave:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://mysql:3306/visitors?characterEncoding=utf8&autoReConnect=true&useSSL=false
+          username: visitor
+          password: 88352636

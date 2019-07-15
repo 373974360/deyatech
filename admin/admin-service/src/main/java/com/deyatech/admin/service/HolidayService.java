@@ -4,6 +4,7 @@ import com.deyatech.admin.entity.Holiday;
 import com.deyatech.admin.vo.HolidayVo;
 import com.deyatech.common.base.BaseService;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -40,4 +41,22 @@ public interface HolidayService extends BaseService<Holiday> {
      * @return
      */
     List<HolidayVo> setVoProperties(Collection holidays);
+
+    /**
+     * 计算某个日期几个工作日之后的时间
+     *
+     * @param startTime
+     * @param defaultLimit
+     * @return
+     */
+    Date workDayAfter(Date startTime, Integer defaultLimit);
+
+    /**
+     * 计算某个日期几个工作日之后的时间
+     *
+     * @param startTime
+     * @param limitHour
+     * @return
+     */
+    Date workHourAfter(Date startTime, Integer limitHour);
 }

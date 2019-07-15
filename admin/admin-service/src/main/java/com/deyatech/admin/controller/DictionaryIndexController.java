@@ -114,7 +114,7 @@ public class DictionaryIndexController extends BaseController {
     public RestResult<DictionaryIndexVo> getByDictionaryIndex(DictionaryIndex dictionaryIndex) {
         dictionaryIndex = dictionaryIndexService.getByBean(dictionaryIndex);
         DictionaryIndexVo dictionaryIndexVo = dictionaryIndexService.setVoProperties(dictionaryIndex);
-        log.info(String.format("根据id获取系统数据字典索引信息：s%", JSONUtil.toJsonStr(dictionaryIndexVo)));
+        log.info(String.format("根据id获取系统数据字典索引信息：%s", JSONUtil.toJsonStr(dictionaryIndexVo)));
         return RestResult.ok(dictionaryIndexVo);
     }
 

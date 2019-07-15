@@ -108,7 +108,7 @@ public class RoleMenuController extends BaseController {
     public RestResult<RoleMenuVo> getByRoleMenu(RoleMenu roleMenu) {
         roleMenu = roleMenuService.getByBean(roleMenu);
         RoleMenuVo roleMenuVo = roleMenuService.setVoProperties(roleMenu);
-        log.info(String.format("根据id获取系统角色菜单关联信息：s%", JSONUtil.toJsonStr(roleMenuVo)));
+        log.info(String.format("根据id获取系统角色菜单关联信息：%s", JSONUtil.toJsonStr(roleMenuVo)));
         return RestResult.ok(roleMenuVo);
     }
 

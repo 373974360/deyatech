@@ -56,7 +56,7 @@ public class DictionaryIndexServiceImpl extends BaseServiceImpl<DictionaryIndexM
                 if(!dictionaryList.isEmpty()){
                     for(Dictionary dictionary:dictionaryList){
                         if(dictionaryIndex.getKey().equals(dictionary.getIndexId())){
-                            HashMap<String,Object> map = new HashMap<>();
+                            HashMap<String,Object> map = CollectionUtil.newHashMap();
                             map.put("code",dictionary.getCode());
                             map.put("value",dictionary.getCodeText());
                             valueList.add(map);

@@ -25,14 +25,19 @@ public class DianxinConfig {
 
     public static final String PREFIX = "dianxin";
 
-
-    //企业识别号码， 02985992688
+    /**
+     * 企业识别号码， 02985992688
+     */
     private String accountNumber;
 
-    //webservice地址，http://logistics.118399.cn/LogisticsService.asmx?WSDL
+    /**
+     * webservice地址，http://logistics.118399.cn/LogisticsService.asmx?WSDL
+     */
     private String wsdlUrl;
 
-    //webservice方法，playWavTmpFile
+    /**
+     * webservice方法，playWavTmpFile
+     */
     private String methodName;
 
 }

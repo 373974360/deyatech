@@ -58,7 +58,7 @@ public class RoleMenuServiceImpl extends BaseServiceImpl<RoleMenuMapper, RoleMen
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void setRoleMenus(String roleId, List<String> menuIds) {
         RoleMenu roleMenu = new RoleMenu();
         roleMenu.setRoleId(roleId);

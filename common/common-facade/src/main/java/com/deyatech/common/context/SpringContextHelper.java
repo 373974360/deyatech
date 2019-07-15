@@ -19,7 +19,7 @@ public class SpringContextHelper implements ApplicationContextAware {
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.context = applicationContext;
+        SpringContextHelper.context = applicationContext;
     }
 
     public static Object getBean(String name){
@@ -29,7 +29,14 @@ public class SpringContextHelper implements ApplicationContextAware {
     public static <T> T getBean(Class<T> clazz){
         return context.getBean(clazz);
     }
-    //通过name,以及Clazz返回指定的Bean
+
+    /**
+     * 通过name,以及Clazz返回指定的Bean
+     * @param name
+     * @param clazz
+     * @param <T>
+     * @return
+     */
     public static <T> T getBean(String name,Class<T> clazz){
         return context.getBean(name, clazz);
     }

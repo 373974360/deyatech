@@ -1,5 +1,9 @@
 package com.deyatech.common.model;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -10,42 +14,13 @@ import java.util.Date;
  * @Version: 1.0
  * @Created in idea by autoCode
  */
+@Data
+@EqualsAndHashCode
+@Accessors(chain = true)
 public class RedisResult implements Serializable {
 
     private String key;
     private Object value;
     private String type;
     private Date ttl;
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public Object getValue() {
-        return value;
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Date getTtl() {
-        return ttl;
-    }
-
-    public void setTtl(Date ttl) {
-        this.ttl = ttl;
-    }
 }

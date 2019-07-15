@@ -11,12 +11,14 @@ import com.deyatech.common.Constants;
 import com.deyatech.common.base.BaseServiceImpl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
-import com.deyatech.common.enums.EnableEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * <p>
@@ -97,5 +99,32 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
     @Override
     public Collection<UserVo> selectAllUserInfo() {
         return userMapper.selectAllUserInfo();
+    }
+
+    /**
+     * 根据用户工号取得用户信息
+     * @param empNo
+     * @return
+     */
+    @Override
+    public UserVo getUserByEmpNo(String empNo) {
+        return userMapper.getUserByEmpNo(empNo);
+    }
+
+    /**
+     * 根据部门及窗口查询用户
+     *
+     * @param departmentIds
+     * @param windowIds
+     * @return
+     */
+    @Override
+    public List<User> getUsersByWindowAndDepartment(String departmentIds, String windowIds) {
+        String[] departmentArr = StrUtil.isNotEmpty(departmentIds) ? departmentIds.split(",") : null;
+        String[] windowArr = StrUtil.isNotEmpty(windowIds) ? windowIds.split(",") : null;
+        Map map = CollectionUtil.newHashMap();
+        map.put("departmentIds", departmentArr);
+        map.put("windowIds", windowArr);
+        return userMapper.getUsersByWindowAndDepartment(map);
     }
 }

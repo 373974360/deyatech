@@ -155,19 +155,20 @@ public final class RedisHelper {
         }
         for (String temp : keys) {
             //排除redis默认生成的setkey
-            if (temp.toString().indexOf(Constants.CACHE_NAMESPACE) >= 0) {
-                if (temp.toString().indexOf(Constants.REDIS_SET_KEY) < 0) {
-                    String type = redisTemplate.type(temp).name();
-                    Object value = redisTemplate.boundValueOps(temp).get(0, Integer.MAX_VALUE);
-                    Long expire = redisTemplate.getExpire(temp, TimeUnit.MILLISECONDS);
-                    DateTime date = DateUtil.date(DateUtil.current(false) + expire);
-                    RedisResult redisResult = new RedisResult();
-                    redisResult.setKey(temp.toString());
-                    redisResult.setValue(value);
-                    redisResult.setTtl(date);
-                    redisResult.setType(type);
-                    list.add(redisResult);
+            if (temp.toString().indexOf(Constants.REDIS_SET_KEY) < 0) {
+                String type = redisTemplate.type(temp).name();
+                Object value = redisTemplate.boundValueOps(temp).get(0, Integer.MAX_VALUE);
+                Long expire = redisTemplate.getExpire(temp, TimeUnit.MILLISECONDS);
+                DateTime date = null;
+                if(expire != -1){
+                    date = DateUtil.date(DateUtil.current(false) + expire);
                 }
+                RedisResult redisResult = new RedisResult();
+                redisResult.setKey(temp.toString());
+                redisResult.setValue(value);
+                redisResult.setTtl(date);
+                redisResult.setType(type);
+                list.add(redisResult);
             }
         }
         return list;

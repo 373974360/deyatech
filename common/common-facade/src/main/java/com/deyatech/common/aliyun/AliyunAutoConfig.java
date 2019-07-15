@@ -5,8 +5,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static org.springframework.cloud.commons.util.InetUtilsProperties.PREFIX;
-
+import static com.deyatech.common.aliyun.AliyunConfig.PREFIX;
 
 /**
  * <p>
@@ -22,7 +21,7 @@ import static org.springframework.cloud.commons.util.InetUtilsProperties.PREFIX;
 public class AliyunAutoConfig {
 
     @Bean
-    public AliyunUtil aliyunUtil(AliyunConfig aliyunConfig){
+    public AliyunUtil aliyunUtil(AliyunConfig aliyunConfig) {
         return new AliyunUtil(aliyunConfig);
     }
 }

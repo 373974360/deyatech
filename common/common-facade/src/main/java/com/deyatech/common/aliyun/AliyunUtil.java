@@ -80,7 +80,7 @@ public class AliyunUtil {
             e.printStackTrace();
             log.error("阿里语音发送异常", e);
         }
-        if (singleCallByTtsResponse.getCode() != null && singleCallByTtsResponse.getCode().equals("OK")) {
+        if (singleCallByTtsResponse.getCode() != null && "OK".equals(singleCallByTtsResponse.getCode())) {
             //请求成功
             log.info("语音文本外呼---------------");
             log.info("RequestId=" + singleCallByTtsResponse.getRequestId());

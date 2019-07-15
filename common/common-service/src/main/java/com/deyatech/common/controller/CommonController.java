@@ -10,11 +10,14 @@ import cn.hutool.http.HttpStatus;
 import com.deyatech.admin.feign.AdminFeign;
 import com.deyatech.common.Constants;
 import com.deyatech.common.base.BaseController;
+import com.deyatech.common.context.SpringContextHelper;
 import com.deyatech.common.entity.EnumsResult;
 import com.deyatech.common.entity.FileUploadResult;
 import com.deyatech.common.entity.RestResult;
 import com.deyatech.common.enums.IEnums;
 import com.deyatech.common.exception.BusinessException;
+import com.deyatech.common.submail.SubMailTemplate;
+import com.deyatech.common.submail.SubMailUtil;
 import com.deyatech.common.utils.ClassUtil;
 import com.deyatech.common.utils.VerifyCodeUtils;
 import io.swagger.annotations.Api;
@@ -29,6 +32,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Date;
@@ -164,14 +168,14 @@ public class CommonController extends BaseController {
             String originalFilename = file.getOriginalFilename();
             int index = originalFilename.lastIndexOf(".");
             //获取文件扩展名
-            String ext_Name;
+            String extName;
             if (index != -1) {
-                ext_Name = originalFilename.substring(index);
+                extName = originalFilename.substring(index);
             } else {
                 log.error("文件类型无法识别");
                 return RestResult.build(HttpStatus.HTTP_INTERNAL_ERROR, "文件类型无法识别");
             }
-            String fileName = DateUtil.format(new Date(), DatePattern.PURE_DATETIME_FORMAT) + RandomUtil.randomNumbers(4) + ext_Name;
+            String fileName = DateUtil.format(new Date(), DatePattern.PURE_DATETIME_FORMAT) + RandomUtil.randomNumbers(4) + extName;
             //调用文件处理类FileUtil，处理文件，将文件写入指定位置
             uploadFile(file.getBytes(), uploadPath, fileName);
             String url = Constants.UPLOAD_DEFAULT_PREFIX_URL.concat(fileName);
@@ -208,7 +212,7 @@ public class CommonController extends BaseController {
         OutputStream out = null;
         try {
             response.setContentType("image/jpeg");
-            in = new FileInputStream(uploadPath + filePath);
+            in = new FileInputStream(uploadPath + filePath.replaceAll(Constants.UPLOAD_DEFAULT_PREFIX_URL,""));
             out = response.getOutputStream();
             IOUtils.copy(in, out);
         } catch (IOException e) {
@@ -237,5 +241,48 @@ public class CommonController extends BaseController {
         out.write(file);
         out.flush();
         out.close();
+    }
+
+    /**
+     * 获取短信模板列表
+     */
+    @GetMapping("/getSubMailMessageTemplates")
+    @ApiOperation(value = "获取短信模板列表", notes = "获取短信模板列表")
+    private RestResult getSubMailMessageTemplates() {
+        SubMailUtil subMailUtil = SpringContextHelper.getBean(SubMailUtil.class);
+        List<SubMailTemplate> list = subMailUtil.getSubMailMessageTemplates();
+        if (CollectionUtil.isNotEmpty(list)) {
+            return RestResult.ok(list);
+        } else {
+            return RestResult.error("获取短信模板列表失败");
+        }
+    }
+
+    /**
+     * 下载文件
+     *
+     * @param filePath
+     * @param response
+     */
+    @GetMapping("/download")
+    @ApiOperation(value = "下载文件", notes = "下载文件")
+    @ApiImplicitParam(name = "filePath", value = "文件路径", required = true, dataType = "String", paramType = "query")
+    public void downloadFile(String filePath, HttpServletRequest request, HttpServletResponse response) {
+        FileInputStream in = null;
+        OutputStream out = null;
+        try {
+            String fileName = uploadPath + filePath.replaceAll(Constants.UPLOAD_DEFAULT_PREFIX_URL,"");
+            response.setHeader("Content-Disposition", "attachment;filename=" + filePath.substring(filePath.lastIndexOf('/')));
+            response.setContentType(request.getServletContext().getMimeType(fileName));
+            in = new FileInputStream(fileName);
+            out = response.getOutputStream();
+            IOUtils.copy(in, out);
+        } catch (IOException e) {
+            log.error("读取文件失败", e);
+            throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "读取文件失败");
+        } finally {
+            close(in);
+            close(out);
+        }
     }
 }

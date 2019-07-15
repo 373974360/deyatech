@@ -14,8 +14,10 @@ import cn.hutool.crypto.symmetric.AES;
  */
 public class AesUtil {
 
-    //密钥 (需要前端和后端保持一致)
-    private static final String key = "deyatech";
+    /**
+     * 密钥 (需要前端和后端保持一致)
+     */
+    private static final String KEY = "deyatech";
 
     /**
      * aes解密
@@ -25,7 +27,7 @@ public class AesUtil {
      * @throws Exception
      */
     public static String aesDecrypt(String encrypt) {
-        AES aes = SecureUtil.aes(key.concat(key).getBytes());
+        AES aes = SecureUtil.aes(KEY.concat(KEY).getBytes());
         return aes.decryptStr(encrypt, CharsetUtil.CHARSET_UTF_8);
     }
 
@@ -37,7 +39,7 @@ public class AesUtil {
      * @throws Exception
      */
     public static String aesEncrypt(String content) {
-        AES aes = SecureUtil.aes(key.concat(key).getBytes());
+        AES aes = SecureUtil.aes(KEY.concat(KEY).getBytes());
         return aes.encryptHex(content);
     }
 

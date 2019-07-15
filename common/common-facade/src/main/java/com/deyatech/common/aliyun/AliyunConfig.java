@@ -5,8 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import static org.springframework.cloud.commons.util.InetUtilsProperties.PREFIX;
-
+import static com.deyatech.common.aliyun.AliyunConfig.PREFIX;
 
 /**
  * <p>
@@ -22,7 +21,7 @@ import static org.springframework.cloud.commons.util.InetUtilsProperties.PREFIX;
 @ConfigurationProperties(prefix = PREFIX)
 public class AliyunConfig {
 
-    private static final String PREFIX = "aliyun";
+    public static final String PREFIX = "aliyun";
 
     /**
      * 云通信产品-语音API服务产品名称（产品名固定，无需修改）

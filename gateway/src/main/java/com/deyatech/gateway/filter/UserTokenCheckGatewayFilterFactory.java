@@ -47,13 +47,10 @@ public class UserTokenCheckGatewayFilterFactory extends AbstractGatewayFilterFac
     @Autowired
     AdminFeign adminFeign;
 
-    @Value("${userToken.ignore}")
-    String userTokenIgnore;
-
     @Override
     public GatewayFilter apply(Object config) {
         return (exchange, chain) -> {
-            if (!checkRequestIsIgnore(exchange) && checkRequestIsNeedValidate(exchange)) {
+            if (checkRequestIsNeedValidate(exchange)) {
                 String userToken = getToken(exchange);
                 ServerHttpResponse response = exchange.getResponse();
                 JwtInfo jwtInfo;
@@ -101,24 +98,6 @@ public class UserTokenCheckGatewayFilterFactory extends AbstractGatewayFilterFac
                     .getValue() : null;
         }
         return authToken;
-    }
-
-    /**
-     * 根据配置文件检查请求是否需要验证token
-     *
-     * @param exchange
-     * @return
-     */
-    private boolean checkRequestIsIgnore(ServerWebExchange exchange) {
-        String path = exchange.getRequest().getPath().value();
-        if (StrUtil.isNotBlank(userTokenIgnore)) {
-            for (String s : userTokenIgnore.split(Constants.DEFAULT_STRING_SPLIT)) {
-                if (s.equalsIgnoreCase(path)) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     /**

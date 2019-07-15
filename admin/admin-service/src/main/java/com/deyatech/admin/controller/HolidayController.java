@@ -106,7 +106,7 @@ public class HolidayController extends BaseController {
     public RestResult<HolidayVo> getByHoliday(Holiday holiday) {
         holiday = holidayService.getByBean(holiday);
         HolidayVo holidayVo = holidayService.setVoProperties(holiday);
-        log.info(String.format("根据id获取节假日信息：s%", JSONUtil.toJsonStr(holidayVo)));
+        log.info(String.format("根据id获取节假日信息：%s", JSONUtil.toJsonStr(holidayVo)));
         return RestResult.ok(holidayVo);
     }
 

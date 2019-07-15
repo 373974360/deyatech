@@ -7,6 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 
+/**
+ * 缓存工具类
+ * @Author lee.
+ */
 public class CacheUtil {
 	private static Logger logger = LoggerFactory.getLogger(CacheUtil.class);
 	private static RedisHelper redisHelper;
@@ -43,7 +47,7 @@ public class CacheUtil {
 			}
 			return false;
 		} catch (Exception e) {
-			logger.error(Constants.Exception_Head, e);
+			logger.error(Constants.EXCEPTION_HEAD, e);
 			return true;
 		}
 	}

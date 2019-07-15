@@ -107,7 +107,7 @@ public class UserController extends BaseController {
     public RestResult<UserVo> getByUser(User user) {
         user = userService.getByBean(user);
         UserVo userVo = userService.setVoProperties(user);
-        log.info(String.format("根据id获取系统用户信息：s%", JSONUtil.toJsonStr(userVo)));
+        log.info(String.format("根据id获取系统用户信息：%s", JSONUtil.toJsonStr(userVo)));
         return RestResult.ok(userVo);
     }
 
@@ -160,4 +160,22 @@ public class UserController extends BaseController {
         return RestResult.ok(exist);
     }
 
+    /**
+     * 根据部门及窗口查询用户
+     *
+     * @param departmentIds
+     * @param windowIds
+     * @return
+     */
+    @GetMapping("/getUsersByWindowAndDepartment")
+    @ApiOperation(value="根据部门及窗口查询用户", notes="根据部门及窗口查询用户")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "departmentIds", value = "部门id数组", dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "windowIds", value = "窗口id数组", dataType = "String", paramType = "query")
+    })
+    public RestResult<User> getUsersByWindowAndDepartment(@RequestParam(required = false) String departmentIds,
+                                                    @RequestParam(required = false) String windowIds) {
+        List<User> users = userService.getUsersByWindowAndDepartment(departmentIds, windowIds);
+        return RestResult.ok(users);
+    }
 }

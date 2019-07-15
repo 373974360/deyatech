@@ -1,0 +1,93 @@
+server:
+  port: 8765
+spring:
+  cloud:
+    loadbalancer:
+      retry:
+        enabled: false
+    gateway:
+      routes:
+        #------------------------------------------------------------------------
+        - id: common
+          uri: lb://common-service
+          order: 10000
+          predicates:
+            - Path=/manage/common/**
+          filters:
+            - StripPrefix=1
+        #    - name: RequestRateLimiter
+        #      args:
+        #        redis-rate-limiter.replenishRate: 1  # 令牌桶的容积
+        #        redis-rate-limiter.burstCapacity: 30  # 流速 每秒
+        #        key-resolver: "#{@remoteAddrKeyResolver}" #SPEL表达式去的对应的bean
+        #------------------------------------------------------------------------
+        - id: admin
+          uri: lb://admin-service
+          order: 10000
+          predicates:
+            - Path=/manage/admin/**
+          filters:
+            - StripPrefix=1
+            - UserTokenCheck
+        - id: gateway
+          uri: lb://gateway
+          order: 10000
+          predicates:
+            - Path=/manage/auth/**
+          filters:
+            - StripPrefix=1
+        - id: number
+          uri: lb://number-service
+          order: 10000
+          predicates:
+            - Path=/manage/number/**
+          filters:
+            - StripPrefix=1
+            - UserTokenCheck
+        - id: item
+          uri: lb://item-service
+          order: 10000
+          predicates:
+            - Path=/manage/item/**
+          filters:
+            - StripPrefix=1
+            - UserTokenCheck
+        - id: websocket-info
+          # 重点！/info必须使用http进行转发，lb代表从注册中心获取服务
+          uri: lb://message-service
+          predicates:
+            # 重点！转发该路径！
+            - Path=/web/websocket/info/**
+          filters:
+            - StripPrefix=1
+        - id: websocket
+          # 重点！lb:ws://代表从注册中心获取服务，并且转发协议为websocket，这种格式怀疑人生！
+          uri: lb:ws://message-service
+          predicates:
+            # 转发/bullet端点下的所有路径
+            - Path=/web/websocket/**
+          filters:
+            - StripPrefix=1
+        - id: statistics
+          uri: lb://statistics-service
+          order: 10000
+          predicates:
+            - Path=/manage/statistics/**
+          filters:
+            - StripPrefix=1
+            - UserTokenCheck
+        - id: api
+          uri: lb://api
+          order: 10000
+          predicates:
+            - Path=/web/api/**
+          filters:
+            - StripPrefix=1
+userToken:
+  ignore: /admin/menu/getTree
+jwt:
+  pubKeyPath: jwt/pub.key
+  priKeyPath: jwt/pri.key
+  tokenHeader: Deyatech-Token
+  buffer: 300
+  xpire: 1800

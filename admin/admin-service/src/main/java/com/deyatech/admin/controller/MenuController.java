@@ -109,7 +109,7 @@ public class MenuController extends BaseController {
     public RestResult<MenuVo> getByMenu(Menu menu) {
         menu = menuService.getByBean(menu);
         MenuVo menuVo = menuService.setVoProperties(menu);
-        log.info(String.format("根据id获取系统菜单信息：s%", JSONUtil.toJsonStr(menuVo)));
+        log.info(String.format("根据id获取系统菜单信息：%s", JSONUtil.toJsonStr(menuVo)));
         return RestResult.ok(menuVo);
     }
 

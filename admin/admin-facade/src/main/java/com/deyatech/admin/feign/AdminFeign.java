@@ -1,6 +1,10 @@
 package com.deyatech.admin.feign;
 
+import com.deyatech.admin.entity.Dictionary;
+import com.deyatech.admin.entity.Holiday;
 import com.deyatech.admin.entity.User;
+import com.deyatech.admin.vo.DictionaryVo;
+import com.deyatech.admin.vo.HolidayVo;
 import com.deyatech.admin.vo.UserVo;
 import com.deyatech.common.entity.EnumsResult;
 import com.deyatech.common.entity.RestResult;
@@ -8,6 +12,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -72,4 +77,68 @@ public interface AdminFeign {
      */
     @GetMapping("/user/selectAllUsers")
     RestResult<Collection<UserVo>> selectAllUsers();
+
+    /**
+     * 根据用户工号取得用户信息
+     * @param empNo
+     * @return
+     */
+    @RequestMapping("/user/getUserByEmpNo")
+    RestResult<UserVo> getUserByEmpNo(@RequestParam("empNo") String empNo);
+
+    /**
+     * 年份查询节假日
+     * @param holiday
+     * @return
+     */
+    @RequestMapping(value = "/holiday/listByHoliday", method = RequestMethod.POST)
+    RestResult<Collection<HolidayVo>> listByHoliday(@RequestBody Holiday holiday);
+
+    /**
+     * 返回指定日期 n 个工作日（跳过设置的节假日）之后的日期
+     *
+     * @param startTime
+     * @param workDay
+     * @return
+     */
+    @RequestMapping("/holiday/afterDay")
+    RestResult<Date> workDayAfter(@RequestParam("startTime") Date startTime, @RequestParam("workDay") Integer workDay);
+
+    /**
+     * 计算某个日期几个小时之后的时间
+     *
+     * @param startTime
+     * @param limitHour
+     * @return
+     */
+    @RequestMapping("/holiday/afterHour")
+    RestResult<Date> workHourAfter(@RequestParam("startTime") Date startTime, @RequestParam("limitHour") Integer limitHour);
+
+    /**
+     * 获取字典项信息
+     *
+     * @param key
+     * @param code
+     * @return
+     */
+    @RequestMapping(value = "/dictionary/getDictionary", method = RequestMethod.GET)
+    RestResult<DictionaryVo> getDictionary(@RequestParam("key") String key, @RequestParam("code") String code);
+
+    /**
+     * 根据快递公司代码获取字典项信息
+     *
+     * @param remark
+     * @return
+     */
+    @RequestMapping(value = "/dictionary/getKdgsDic", method = RequestMethod.GET)
+    RestResult<DictionaryVo> getKdgsDic(@RequestParam("remark") String remark);
+
+    /**
+     * 根据用户编号获取用户信息
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping(value = "/user/getUserByUserId")
+    RestResult<UserVo> getUserByUserId(@RequestParam("userId") String userId);
 }

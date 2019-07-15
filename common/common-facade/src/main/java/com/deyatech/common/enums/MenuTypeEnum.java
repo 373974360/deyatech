@@ -10,7 +10,13 @@ package com.deyatech.common.enums;
  */
 public enum MenuTypeEnum implements IEnums<Integer> {
 
+    /**
+     * 菜单
+     */
     MENU(1, "菜单"),
+    /**
+     * 按钮
+     */
     BUTTON(2, "按钮");
 
     Integer code = 1;

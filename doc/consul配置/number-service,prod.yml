@@ -1,0 +1,34 @@
+aliyun:
+  voiceProduct: Dyvmsapi
+  voiceSendUrl: dyvmsapi.aliyuncs.com
+  voiceAccessKeyId: LTAIJd2dL4aHDyXW
+  voiceAppKey: PJNNyr6ShSfCDmaERFg5oVgpe88Dy1
+  calledShowNumber: '02985796069'
+  mock: false
+  enabled: true
+we-chat:
+  app-id: wx8c7270568dc7addd
+  secret: 355e50e28e757b216a60a8bf31479ce1
+  token: 123
+  aes-key: 123
+  enabled: true
+dianxin:
+  accountNumber: 02985992688
+  wsdlUrl: http://logistics.118399.cn/LogisticsService.asmx?WSDL
+  methodName: playWavTmpFile
+  enabled: false
+setting:
+  voice-notice: 1   #是否语音通知
+  sms-notice: 0     #是否短信通知
+  wechat-notice: 1  #是否微信通知
+  alipay-notice: 0  #是否支付宝通知
+  sound-notice: 0   #是否音响通知
+  voice-current-template: TTS_141607068   #语音通知当前用户模板ID
+  voice-next-template: TTS_141616940      #语音通知下一个用户模板ID
+  voice-play-count: 2       #语音播放次数
+  sms-get-number: 1     #抽号短信通知模板ID
+  sms-call-number: 1    #叫号短信通知模板ID
+  wechat-get-number: 6s-l8mpfv08zn3qvu_09JgDRSCCRHPaRapeGWbUdk2w  #抽号微信通知模板ID
+  wechat-call-number: PSFCaRifdNLLye8OrfcBpo5QyVzc8oXhXgcnF5C8pLM  #叫号微信通知模板ID
+  wechat-order-number: BPBL2heZareoNbzGCl-pycSVuE7uw5baAKEPZRSH3iU #预约通知模板ID
+  wechat-cancel-number: dcjb5vKlK3CJrxfxH0eopJom0oFFkreUNDfHAZyzjcQ #取消预约通知模板ID

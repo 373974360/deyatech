@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -32,4 +33,19 @@ public interface UserMapper extends BaseMapper<User> {
      * @return
      */
     Collection<UserVo> selectAllUserInfo();
+
+    /**
+     * 根据用户工号取得用户信息
+     * @param empNo
+     * @return
+     */
+    UserVo getUserByEmpNo(@Param("empNo") String empNo);
+
+    /**
+     * 根据部门及窗口查询用户
+     *
+     * @param map
+     * @return
+     */
+    List<User> getUsersByWindowAndDepartment(Map map);
 }

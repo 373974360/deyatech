@@ -108,7 +108,7 @@ public class DepartmentController extends BaseController {
     public RestResult<DepartmentVo> getByDepartment(Department department) {
         department = departmentService.getByBean(department);
         DepartmentVo departmentVo = departmentService.setVoProperties(department);
-        log.info(String.format("根据id获取系统部门信息：s%", JSONUtil.toJsonStr(departmentVo)));
+        log.info(String.format("根据id获取系统部门信息：%s", JSONUtil.toJsonStr(departmentVo)));
         return RestResult.ok(departmentVo);
     }
 

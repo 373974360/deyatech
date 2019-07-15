@@ -1,0 +1,32 @@
+aliyun:
+  voiceProduct: 1
+  voiceSendUrl: 1
+  voiceAccessKeyId: 1
+  voiceAppKey: 1
+  calledShowNumber: 1
+  mock: false
+  enabled: true
+we-chat:
+  app-id: 123
+  secret: 123
+  token: 123
+  aes-key: 123
+  enabled: true
+dianxin:
+  accountNumber: 02985992688
+  wsdlUrl: http://logistics.118399.cn/LogisticsService.asmx?WSDL
+  methodName: playWavTmpFile
+  enabled: true
+setting:
+  voice-notice: 1   #是否语音通知
+  sms-notice: 1     #是否短信通知
+  wechat-notice: 1  #是否微信通知
+  alipay-notice: 1  #是否支付宝通知
+  sound-notice: 1   #是否音响通知
+  voice-current-template: 1   #语音通知当前用户模板ID
+  voice-next-template: 1      #语音通知下一个用户模板ID
+  voice-play-count: 2       #语音播放次数
+  sms-get-number: 1     #抽号短信通知模板ID
+  sms-call-number: 1    #叫号短信通知模板ID
+  wechat-get-number: 1  #抽号微信通知模板ID
+  wechat-call-number: 1  #叫号微信通知模板ID

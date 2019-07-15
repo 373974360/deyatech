@@ -10,8 +10,17 @@ package com.deyatech.common.enums;
  */
 public enum RoleTypeEnum implements IEnums<Integer> {
 
+    /**
+     * 业务角色
+     */
     SERVICE(1, "业务角色"),
+    /**
+     * 管理角色
+     */
     MANAGER(2, "管理角色"),
+    /**
+     * 系统角色
+     */
     SYSTEM(3, "系统角色");
     Integer code;
     String value;

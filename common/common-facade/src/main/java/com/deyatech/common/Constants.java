@@ -14,7 +14,7 @@ public interface Constants {
      * 异常信息统一头信息<br>
      * 非常遗憾的通知您,程序发生了异常
      */
-    String Exception_Head = "发生了异常 :";
+    String EXCEPTION_HEAD = "发生了异常 :";
 
     /**
      * 系统当前登录用户id存储Key值
@@ -50,6 +50,11 @@ public interface Constants {
      * 12位加密盐
      */
     Integer PASSWORD_ENCORDER_SALT = 12;
+
+    /**
+     * data
+     */
+    String DATA = "data";
 
     /**
      * get上传默认前缀
@@ -135,4 +140,68 @@ public interface Constants {
      * WebSocket header标记
      */
     String WEBSOCKET_HEADER_SIGN = "Upgrade";
+
+    /**
+     * 评价器更新用户操作action
+     */
+    String COMMENT_ACTION = "action";
+
+    /**
+     * 评价器更新用户操作action
+     */
+    String COMMENT_UPDATE_USER_INFO = "updateUserInfo";
+
+    /**
+     * 评价器更新叫号信息操作action
+     */
+    String COMMENT_UPDATE_CALL_INFO = "updateCallInfo";
+
+    /**
+     * 评价器欢迎用户办理业务操作action
+     */
+    String COMMENT_PLEASE_WAIT = "pleaseWait";
+
+    /**
+     * 评价器欢迎用户办理业务操作action
+     */
+    String COMMENT_SAY_WELCOME = "sayWelcome";
+
+    /**
+     * 评价器请求用户评价操作action
+     */
+    String COMMENT_PLEASE_USER_SUBMIT = "pleaseComment";
+
+    /**
+     * 是否发送消息
+     */
+    String MESSAGE_TO = "1";
+
+    /**
+     * 是否呼叫器响铃
+     */
+    String IS_RING = "1";
+    /**
+     *  微警认证返回状态
+     */
+    Integer AUTH_RES_CODE = 0;
+    /**
+     * 是否推送微信消息
+     */
+    Integer MSG_STATUS = 0;
+    /**
+     * 身份认证结果
+     */
+    Integer CERT_RES = -1;
+
+    String QUEUE_MAILBOX_UPDATE = "mailbox.update";
+
+    String QUEUE_MAILBOX_RESERVE_HAND = "mailbox.reserve.hand";
+
+    String QUEUE_MAILBOX_RESERVE_TAKE = "mailbox.reserve.take";
+
+    String QUEUE_EMS_WAYBILL_GOT_HAND_REQUEST = "ems.waybillGot.request";
+
+    String QUEUE_EXPRESS_UPDATE = "express.update";
+
+    String QUEUE_LOGISTICS_UPDATE = "logistics.update";
 }

@@ -1,0 +1,73 @@
+server:
+  port: 0
+logging:
+  config: classpath:logback-custom.xml
+  level:
+    com.deyatech: DEBUG
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mysql:3306/deyatech?characterEncoding=utf8&autoReConnect=true&useSSL=false
+    username: root
+    password: dyt@88352636
+    # hikari连接池的参数 相关设置
+    hikari:
+      # 生效超时
+      validationTimeout: 3000
+      # 定义获取连接的超时时间。最小250ms,默认30s
+      connectionTimeout: 60000
+      # 定义连接空闲时间。最小10s,默认10m
+      idleTimeout: 60000
+      # 定义最小的空闲连接数。推荐不设置。或与最大连接数一致；保持固定的连接数目
+      minimumIdle: 10
+      # 定义最大的连接数。默认10
+      maximumPoolSize: 10
+      # 定义连接的最大生命周期。推荐设置该属性。最小30s，默认30m
+      maxLifeTime: 60000
+      # 从连接池获取到连接后，进行检查的查询语句。推荐设置该属性。默认值为none
+      connectionTestQuery: select 1
+  redis:
+    database: 1
+    host: redis
+    port: 6379
+    password: dyt#88352636
+    timeout: 60000ms
+    lettuce:
+      pool:
+        max-active: 50
+        max-idle: 20
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: deyatech
+    password: 88352636
+    listener:
+      simple:
+        retry:
+          #是否开启消费者重试（为false时关闭消费者重试，这时消费端代码异常会一直重复收到消息）
+          enabled: true
+          #最大重试次数
+          max-attempts: 5
+          #重试间隔时间（单位毫秒）
+          initial-interval: 5000
+        #重试次数超过上面的设置之后是否丢弃（false不丢弃时需要写相应代码将该消息加入死信队列）
+        default-requeue-rejected: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_null
+mybatis-plus:
+  mapper-locations: classpath*:mapper/*.xml
+  configuration:
+    auto-mapping-behavior: partial
+    auto-mapping-unknown-column-behavior: warning
+  global-config:
+    db-config:
+      logic-delete-value: -1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 1 # 逻辑未删除值(默认为 0)
+feign:
+  client:
+    config:
+      default:
+        connect-timeout: 20000
+        read-timeout: 20000 
