@@ -13,4 +13,12 @@ import com.deyatech.common.base.BaseMapper;
  */
 public interface RoleMapper extends BaseMapper<Role> {
 
+
+    /**
+     * 根据角色id查询角色对应的用户个数
+     * @param roleId
+     * @return
+     */
+    int getRoleUsersCountByRoleId(String roleId);
+
 }

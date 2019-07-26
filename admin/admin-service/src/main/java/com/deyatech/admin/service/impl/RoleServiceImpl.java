@@ -10,6 +10,7 @@ import com.deyatech.admin.service.RoleService;
 import com.deyatech.common.base.BaseServiceImpl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Collection;
@@ -24,6 +25,10 @@ import java.util.Collection;
  */
 @Service
 public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implements RoleService {
+
+
+    @Autowired
+    RoleMapper roleMapper;
 
     /**
      * 单个将对象转换为vo系统角色信息
@@ -51,11 +56,15 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implement
             for (Object role : roles) {
                 RoleVo roleVo = new RoleVo();
                 BeanUtil.copyProperties(role, roleVo);
+                int count = roleMapper.getRoleUsersCountByRoleId(roleVo.getId());
+                roleVo.setRoleUsersCount(count);
                 roleVos.add(roleVo);
             }
         }
         return roleVos;
     }
+
+
 
     /**
      * 根据名称模糊查询

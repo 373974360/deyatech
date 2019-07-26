@@ -163,7 +163,7 @@ run(){
     if [ "${index}" = "1" ];then
         upload_path=" -v /deya/data/nginx/html/upload/:/deya/upload/ "
     fi
-    docker run -d --restart=always --name ${server_list[$index]} --network deyatech --privileged=true -v /deya/logs/app/${server_list[$index]}/:/deya/logs/app/ ${upload_path} -m=${xxm}m --oom-kill-disable  ${docker_server}${server_list[$index]}:${version}
+    docker run -d --restart=always --name ${server_list[$index]} --network deyatech --privileged=true -v /deya/logs/${server_list[$index]}/:/deya/logs/app/ ${upload_path} -m=${xxm}m --oom-kill-disable  ${docker_server}${server_list[$index]}:${version}
     echo -e "\e[1;32m"	#高亮绿色显示
     printf "%s\n" "docker run ${server_list[$index]} Success!"
     echo -e "\e[0m"	#恢复打印颜色

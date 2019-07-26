@@ -18,7 +18,7 @@
         <dependency>
             <groupId>com.deyatech</groupId>
             <artifactId>admin-facade</artifactId>
-            <version>${land.version}</version>
+            <version>${deyatech.version}</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
@@ -99,11 +99,6 @@
                 </configuration>
             </plugin>
         </plugins>
-        <resources>
-            <resource>
-                <directory>src/main/resources/</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
     </build>
+
 </project>

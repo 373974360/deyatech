@@ -4,16 +4,16 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.deyatech.admin.entity.Role">
-        <result column="id_" property="id" />
-        <result column="enable_" property="enable" />
-        <result column="remark_" property="remark" />
-        <result column="create_by" property="createBy" />
-        <result column="create_time" property="createTime" />
-        <result column="update_by" property="updateBy" />
-        <result column="update_time" property="updateTime" />
-        <result column="version_" property="version" />
-        <result column="name_" property="name" />
-        <result column="type_" property="type" />
+        <result column="id_" property="id"/>
+        <result column="enable_" property="enable"/>
+        <result column="remark_" property="remark"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version_" property="version"/>
+        <result column="name_" property="name"/>
+        <result column="type_" property="type"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -28,5 +28,13 @@
         version_,
         name_, type_
     </sql>
+    <select id="getRoleUsersCountByRoleId" resultType="java.lang.Integer">
+        SELECT count(ar.id_)
+        FROM admin_role_user aru
+          JOIN admin_user au
+          JOIN admin_role ar
+            ON au.id_ = aru.user_id AND ar.id_ = aru.role_id
+        WHERE ar.id_ = #{roleId} AND au.enable_ = 1;
+    </select>
 
 </mapper>

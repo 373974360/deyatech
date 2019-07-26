@@ -20,4 +20,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @ApiModel(value = "系统角色信息扩展对象", description = "系统角色信息扩展对象", parent = Role.class)
 public class RoleVo extends Role {
+    /**
+     * 角色用户关联个数
+     */
+    int roleUsersCount;
 }
