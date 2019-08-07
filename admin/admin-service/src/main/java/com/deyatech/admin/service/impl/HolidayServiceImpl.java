@@ -130,6 +130,21 @@ public class HolidayServiceImpl extends BaseServiceImpl<HolidayMapper, Holiday> 
         return after;
     }
 
+    /**
+     * 是否是节假日
+     * @param date
+     * @return
+     */
+    @Override
+    public Boolean isHoliday(Date date) {
+        String today = DateUtil.formatDate(date);
+        QueryWrapper<Holiday> queryWrapper = new QueryWrapper();
+        queryWrapper.eq("date_", today)
+                .eq("enable_", 1);
+        Integer integer = holidayMapper.selectCount(queryWrapper);
+        return integer > 0;
+    }
+
     private int hasHolidays(Date startDate, Date endDate) {
         int total = 0;
         String startYear = DateUtil.format(startDate, "yyyy");

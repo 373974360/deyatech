@@ -59,4 +59,11 @@ public interface HolidayService extends BaseService<Holiday> {
      * @return
      */
     Date workHourAfter(Date startTime, Integer limitHour);
+
+    /**
+     * 是否是节假日
+     * @param date
+     * @return
+     */
+    Boolean isHoliday(Date date);
 }
