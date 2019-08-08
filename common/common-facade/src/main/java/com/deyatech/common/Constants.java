@@ -204,4 +204,9 @@ public interface Constants {
     String QUEUE_EXPRESS_UPDATE = "express.update";
 
     String QUEUE_LOGISTICS_UPDATE = "logistics.update";
+
+    /**
+     * 模板存放文件夹名
+     * */
+    String TEMPLATE_DIR_NAME = "/template";
 }
