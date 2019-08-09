@@ -185,6 +185,7 @@ public class CommonController extends BaseController {
                 result.setOriginal(originalFilename);
                 result.setTitle(originalFilename);
                 result.setUrl(url);
+                result.setFilePath(uploadPath+fileName);
                 return RestResult.build(HttpStatus.HTTP_OK, "上传成功", result);
             } else {
                 result.setState("ERROR");
