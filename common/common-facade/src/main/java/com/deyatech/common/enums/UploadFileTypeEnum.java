@@ -8,6 +8,7 @@ package com.deyatech.common.enums;
 public enum UploadFileTypeEnum implements IEnums<String>{
     JPG("jpg", "jpg"),
     JPEG("jpeg", "jpeg"),
+    PNG("png", "png"),
     GIF("gif", "gif"),
     BMP("bmp", "bmp"),
     DOC("doc", "doc"),
