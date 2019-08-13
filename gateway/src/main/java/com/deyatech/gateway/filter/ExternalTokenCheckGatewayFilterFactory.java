@@ -65,7 +65,8 @@ public class ExternalTokenCheckGatewayFilterFactory extends AbstractGatewayFilte
                 if (StrUtil.isBlank(thirdToken)) {
                     return exceptError(response, "token is not empty");
                 }
-                String token = generaterToken(queryParams);
+                String appSecret = securityConfig.getAppSecret();
+                String token = generaterToken(queryParams,appSecret);
                 if (!token.equals(thirdToken)) {
                     return exceptError(response, "token验证不通过");
                 }
@@ -106,10 +107,10 @@ public class ExternalTokenCheckGatewayFilterFactory extends AbstractGatewayFilte
      * 生成token
      *
      * @param params
+     * @param appSecret
      * @return
      */
-    public static String generaterToken(MultiValueMap<String, String> params) {
-        SecurityConfig securityConfig = new SecurityConfig();
+    public static String generaterToken(MultiValueMap<String, String> params, String appSecret) {
         MultiValueMap<String, String> newParams = new LinkedMultiValueMap<>();
         for (String key : params.keySet()) {
             List<String> value = params.get(key);
@@ -122,7 +123,8 @@ public class ExternalTokenCheckGatewayFilterFactory extends AbstractGatewayFilte
             newParams.add(key, value.get(0));
         }
         String strParams = sortParams(newParams);
-        strParams = strParams + "," + securityConfig.getAppSecret();
+        strParams = strParams + "," + appSecret;
+        System.out.println(strParams);
         String token = encode(strParams);
         return token;
     }
@@ -165,7 +167,7 @@ public class ExternalTokenCheckGatewayFilterFactory extends AbstractGatewayFilte
         Arrays.sort(sortedKeys);
         StringBuilder s2 = new StringBuilder();
         for (String key : sortedKeys) {
-            s2.append(key).append(params2.get(key));
+            s2.append(key).append(params2.get(key).get(0));
         }
         s2.deleteCharAt(s2.length() - 1);
         return s2.toString();
@@ -176,6 +178,8 @@ public class ExternalTokenCheckGatewayFilterFactory extends AbstractGatewayFilte
      * @param args
      */
     public static void main(String[] args) {
+
+        String appSecret = "njyUo7DKmNlHZNwWIURHPTGc08mFtDeY";
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         MultiValueMap<String, String> params1 = new LinkedMultiValueMap<>();
         MultiValueMap<String, String> params11 = new LinkedMultiValueMap<>();
@@ -197,7 +201,7 @@ public class ExternalTokenCheckGatewayFilterFactory extends AbstractGatewayFilte
         params1.add("itemId", "1e2a6b8c74924aeb91a8cf479fea9efa");
         params11.addAll(params);
         params11.addAll(params1);
-        System.out.println("根据事项信息查询某一个日期下，每个时间段可预约人数=====>>"+generaterToken(params11));
+        System.out.println("根据事项信息查询某一个日期下，每个时间段可预约人数=====>>"+generaterToken(params11, appSecret));
 
         /**
          * 根据事项信息、预约时间、手机号码申请预约
@@ -214,14 +218,14 @@ public class ExternalTokenCheckGatewayFilterFactory extends AbstractGatewayFilte
         params2.add("preorderChannel", "1");
         params22.addAll(params);
         params22.addAll(params2);
-        System.out.println("根据事项信息、预约时间、手机号码申请预约=====>>"+generaterToken(params22));
+        System.out.println("根据事项信息、预约时间、手机号码申请预约=====>>"+generaterToken(params22, appSecret));
         /**
          *  取消预约
          */
         params3.add("id", "1158998421542653954");
         params33.addAll(params);
         params33.addAll(params3);
-        System.out.println("取消预约=====>>"+generaterToken(params33));
+        System.out.println("取消预约=====>>"+generaterToken(params33, appSecret));
         /**
          * 根据用户ID查找用户的预约记录
          */
@@ -230,13 +234,13 @@ public class ExternalTokenCheckGatewayFilterFactory extends AbstractGatewayFilte
         params4.add("rows", "2");
         params44.addAll(params);
         params44.addAll(params4);
-        System.out.println("根据用户ID查找用户的预约记录=====>>"+generaterToken(params44));
+        System.out.println("根据用户ID查找用户的预约记录=====>>"+generaterToken(params44, appSecret));
         /**
          * 获取当前事项可预约时间
          */
         params5.add("itemId", "1e2a6b8c74924aeb91a8cf479fea9efa");
         params55.addAll(params);
         params55.addAll(params5);
-        System.out.println("获取当前事项可预约时间=====>>"+generaterToken(params55));
+        System.out.println("获取当前事项可预约时间=====>>"+generaterToken(params55, appSecret));
     }
 }
