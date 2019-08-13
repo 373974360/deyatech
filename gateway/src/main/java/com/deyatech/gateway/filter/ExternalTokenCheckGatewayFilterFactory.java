@@ -8,9 +8,8 @@ import com.deyatech.common.utils.AesUtil;
 import com.deyatech.gateway.config.SecurityConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.gateway.filter.GatewayFilterChain;
-import org.springframework.cloud.gateway.filter.GlobalFilter;
-import org.springframework.core.Ordered;
+import org.springframework.cloud.gateway.filter.GatewayFilter;
+import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -18,7 +17,6 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.security.MessageDigest;
@@ -28,7 +26,7 @@ import java.util.List;
 
 /**
  * <p>
- * 第三方请求验证过滤器
+ * 后台用户token验证过滤器
  * </p>
  *
  * @author: lee.
@@ -36,43 +34,44 @@ import java.util.List;
  */
 @Slf4j
 @Component
-public class ExternalGlobaFilter implements GlobalFilter, Ordered {
+public class ExternalTokenCheckGatewayFilterFactory extends AbstractGatewayFilterFactory {
 
     @Autowired
     SecurityConfig securityConfig;
 
-
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        ServerHttpRequest request = exchange.getRequest();
-        ServerHttpResponse response = exchange.getResponse();
-        String url = exchange.getRequest().getPath().toString();
-        if (isStartWith(url)) {
-            MultiValueMap<String, String> queryParams = exchange.getRequest().getQueryParams();
-            String thirdAppKey = queryParams.getFirst("appKey");
-            if (StrUtil.isBlank(thirdAppKey)) {
-                return exceptError(response, "appKey is not empty");
-            }
+    public GatewayFilter apply(Object config) {
+        return (exchange, chain) -> {
+            ServerHttpRequest request = exchange.getRequest();
+            ServerHttpResponse response = exchange.getResponse();
+            String url = exchange.getRequest().getPath().toString();
+            if (isStartWith(url)) {
+                MultiValueMap<String, String> queryParams = exchange.getRequest().getQueryParams();
+                String thirdAppKey = queryParams.getFirst("appKey");
+                if (StrUtil.isBlank(thirdAppKey)) {
+                    return exceptError(response, "appKey is not empty");
+                }
 
-            if (!securityConfig.getAppKey().equals(thirdAppKey)) {
-                return exceptError(response, "appKey不存在，请联系合作方");
-            }
+                if (!securityConfig.getAppKey().equals(thirdAppKey)) {
+                    return exceptError(response, "appKey不存在，请联系合作方");
+                }
 
-            String timestamp = queryParams.getFirst("timestamp");
-            if (StrUtil.isBlank(timestamp)) {
-                return exceptError(response, "timestamp is not empty");
-            }
+                String timestamp = queryParams.getFirst("timestamp");
+                if (StrUtil.isBlank(timestamp)) {
+                    return exceptError(response, "timestamp is not empty");
+                }
 
-            String thirdToken = queryParams.getFirst("token");
-            if (StrUtil.isBlank(thirdToken)) {
-                return exceptError(response, "token is not empty");
+                String thirdToken = queryParams.getFirst("token");
+                if (StrUtil.isBlank(thirdToken)) {
+                    return exceptError(response, "token is not empty");
+                }
+                String token = generaterToken(queryParams);
+                if (!token.equals(thirdToken)) {
+                    return exceptError(response, "token验证不通过");
+                }
             }
-            String token = generaterToken(queryParams);
-            if (!token.equals(thirdToken)) {
-                return exceptError(response, "token验证不通过");
-            }
-        }
-        return chain.filter(exchange.mutate().request(request.mutate().headers(httpHeaders -> httpHeaders.add(Constants.GATEWAY_HEADER, AesUtil.aesEncrypt(Constants.GATEWAY_VALUE))).build()).build());
+            return chain.filter(exchange.mutate().request(request.mutate().headers(httpHeaders -> httpHeaders.add(Constants.GATEWAY_HEADER, AesUtil.aesEncrypt(Constants.GATEWAY_VALUE))).build()).build());
+        };
     }
 
     /**
@@ -239,11 +238,5 @@ public class ExternalGlobaFilter implements GlobalFilter, Ordered {
         params55.addAll(params);
         params55.addAll(params5);
         System.out.println("获取当前事项可预约时间=====>>"+generaterToken(params55));
-    }
-
-
-    @Override
-    public int getOrder() {
-        return -1000;
     }
 }
