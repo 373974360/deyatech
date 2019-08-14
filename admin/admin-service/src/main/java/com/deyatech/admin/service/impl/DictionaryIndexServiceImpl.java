@@ -2,6 +2,8 @@ package com.deyatech.admin.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.deyatech.admin.entity.Dictionary;
 import com.deyatech.admin.entity.DictionaryIndex;
 import com.deyatech.admin.service.DictionaryService;
@@ -13,7 +15,6 @@ import com.deyatech.common.base.BaseServiceImpl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import com.deyatech.common.entity.EnumsResult;
-import com.deyatech.common.entity.RestResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
@@ -126,4 +127,20 @@ public class DictionaryIndexServiceImpl extends BaseServiceImpl<DictionaryIndexM
         }
         return dictionaryIndexVos;
     }
+
+
+    /**
+     * 根据名称模糊查询
+     * @param dictionaryIndex
+     * @return
+     */
+    @Override
+    public IPage<DictionaryIndex> pageByBean(DictionaryIndex dictionaryIndex) {
+        QueryWrapper queryWrapper = new QueryWrapper();
+        if (StringUtils.isNotEmpty(dictionaryIndex.getName())) {
+            queryWrapper.like("name_", dictionaryIndex.getName());
+        }
+        return super.page(getPageByBean(dictionaryIndex), queryWrapper);
+    }
+
 }

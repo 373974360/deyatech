@@ -15,7 +15,6 @@ import com.deyatech.common.entity.RestResult;
 import com.deyatech.common.enums.EnableEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -166,8 +165,20 @@ public class AdminFeignImpl implements AdminFeign {
      * @param userId
      * @return
      */
+    @Override
     public RestResult<UserVo> getUserByUserId(String userId) {
         User user = userService.getById(userId);
         return RestResult.ok(userService.setVoProperties(user));
+    }
+
+    /**
+     * 是否是节假日
+     * @param date
+     * @return
+     */
+    @Override
+    public RestResult<Boolean> isHoliday(@RequestBody Date date) {
+        Boolean holiday = holidayService.isHoliday(date);
+        return RestResult.ok(holiday);
     }
 }

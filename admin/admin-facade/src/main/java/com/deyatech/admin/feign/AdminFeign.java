@@ -141,4 +141,13 @@ public interface AdminFeign {
      */
     @RequestMapping(value = "/user/getUserByUserId")
     RestResult<UserVo> getUserByUserId(@RequestParam("userId") String userId);
+
+    /**
+     * 判断某天是否是节假日
+     *
+     * @param date
+     * @return
+     */
+    @RequestMapping(value = "/holiday/isHoliday", method = RequestMethod.POST)
+    RestResult<Boolean> isHoliday(@RequestBody Date date);
 }
