@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <dataTypes>
+       <dataType id="string" name="字符型">
+           <!-- 
+              dataShow中有3个属性，
+              mustValidate :是否必须校验，可选
+              ref：引用的dataShow，必须
+              show：是否显示，默认为true，可选
+           -->
+           <dataShow mustValidate="false" ref="inputElement">
+              <validate>chinese,mail,english</validate>
+           </dataShow>
+           <dataShow mustValidate="false" ref="selectElement"></dataShow>
+           <dataShow mustValidate="false" ref="radioElement"></dataShow>
+           <dataShow mustValidate="false" ref="checkboxElement"></dataShow>
+           <dataShow ref="inputReadOnlyElement"></dataShow>
+       </dataType>
+       <dataType id="text" name="大文本">
+           <dataShow mustValidate="false" ref="textareaElement"></dataShow>
+           <dataShow mustValidate="false" ref="richTextElement"></dataShow>
+       </dataType>
+       <dataType id="int" name="整型">
+           <dataShow mustValidate="true" ref="inputElement">
+              <validate>int</validate>
+           </dataShow>
+       </dataType>
+       <dataType id="float" name="浮点型">
+           <dataShow mustValidate="true" ref="inputElement">
+              <validate>float</validate>
+           </dataShow>
+       </dataType>
+       <dataType id="date" name="日期型">
+           <dataShow mustValidate="true" ref="dateElement"></dataShow>
+           <!--<dataShow mustValidate="true" ref="dateYyyyMmDdElement"></dataShow>-->
+           <dataShow mustValidate="true" ref="datetimeElement"></dataShow>
+           <dataShow mustValidate="true" ref="timeElement"></dataShow>
+       </dataType>
+       <dataType id="file" name="附件">
+           <dataShow mustValidate="false" ref="fileElement"></dataShow>
+       </dataType>
+    </dataTypes>
+    <!-- 定义控件展示类型,扩展规则:(1)根据AbstractHtmlElement编写扩展类.(2)定义dataShow，id为扩展类的beanId-->
+    <dataShows>
+        <dataShow id="inputElement" name="文本框"></dataShow>
+        <dataShow id="inputReadOnlyElement" name="只读文本框">
+               <ds>dataItem</ds>
+               <dataLength>length_1</dataLength>
+        </dataShow>
+        <dataShow id="selectElement" name="下拉框">
+            <ds>dataItem</ds>
+        </dataShow>
+        <dataShow id="radioElement" name="单选框">
+            <ds>dataItem</ds>
+        </dataShow>
+        <dataShow id="checkboxElement" name="复选框">
+            <ds>dataItem</ds>
+        </dataShow>
+        <dataShow id="textareaElement" name="大文本框">
+            <dataLength>length_3</dataLength>
+        </dataShow>
+        <dataShow id="richTextElement" name="HTML编辑器">
+            <dataLength>length_4</dataLength>
+        </dataShow>
+        <dataShow id="dateElement" name="yyyy-MM-dd"></dataShow>
+        <dataShow id="dateYyyyMmDdElement" name="yyyyMMdd"></dataShow>
+        <dataShow id="datetimeElement" name="yyyy-MM-dd HH:mm:ss"></dataShow>
+        <dataShow id="timeElement" name="HH:mm:ss"></dataShow>
+        <dataShow id="fileElement" name="附件上传"></dataShow>
+    </dataShows>
+    <!-- 扩展规则，根据dataShow的id，添加字符长度 -->
+    <dataLengths>
+        <dataLength id="length_1" name="32字节">32</dataLength>
+        <dataLength id="length_3" name="1000字节">1000</dataLength>
+        <dataLength id="length_4" name="4000字节">4000</dataLength>
+    </dataLengths>
+    <!-- 扩展规则，在jquery.ValidationEngine-cn中添加自定义校验方式，并添加到下面(id不能重复) -->
+    <validates>
+        <validate id="chinese" name="中文">custom[onlyChinses]</validate>
+        <validate id="mail" name="邮箱">custom[email]</validate>
+        <validate id="int" name="整数">custom[integer]</validate>
+        <validate id="english" name="英文">custom[onlyLetterSp]</validate>
+        <validate id="float" name="浮点数">custom[number]</validate>
+    </validates>
+    <!-- 扩展规则:基于AbstractDataSource编写扩展类；定义ds，id不能重复，bean为扩展类的beanId -->
+    <dataSource>
+        <ds id="dataItem" bean="bigClassDataSource" name="数据字典"></ds>
+        <ds id="baseTree" bean="treeDataSource" name="资源分类">
+            <!--<paras>
+                <para name="treeId">123</para>
+            </paras>-->
+        </ds>
+    </dataSource>
+</config>

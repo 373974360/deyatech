@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.deyatech.admin.mapper.MetadataMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.deyatech.admin.entity.Metadata">
+        <result column="id_" property="id" />
+        <result column="enable_" property="enable" />
+        <result column="remark_" property="remark" />
+        <result column="create_by" property="createBy" />
+        <result column="create_time" property="createTime" />
+        <result column="update_by" property="updateBy" />
+        <result column="update_time" property="updateTime" />
+        <result column="version_" property="version" />
+        <result column="name_" property="name" />
+        <result column="brief_name" property="briefName" />
+        <result column="en_name" property="enName" />
+        <result column="type_" property="type" />
+        <result column="data_type" property="dataType" />
+        <result column="control_type" property="controlType" />
+        <result column="data_length" property="dataLength" />
+        <result column="check_model" property="checkModel" />
+        <result column="data_source" property="dataSource" />
+        <result column="dictionary_id" property="dictionaryId" />
+        <result column="definition_" property="definition" />
+        <result column="field_" property="field" />
+        <result column="required_" property="required" />
+        <result column="mandatory_" property="mandatory" />
+        <result column="multi_flag" property="multiFlag" />
+        <result column="annotation_count" property="annotationCount" />
+        <result column="category_id" property="categoryId" />
+        <result column="relation_id" property="relationId" />
+    </resultMap>
+
+    <resultMap id="voResultMap" type="com.deyatech.admin.vo.MetadataVo">
+        <result column="am_id_" property="id" />
+        <result column="am_enable_" property="enable" />
+        <result column="am_remark_" property="remark" />
+        <result column="am_create_by" property="createBy" />
+        <result column="am_create_time" property="createTime" />
+        <result column="am_update_by" property="updateBy" />
+        <result column="am_update_time" property="updateTime" />
+        <result column="am_version_" property="version" />
+        <result column="am_name_" property="name" />
+        <result column="am_brief_name" property="briefName" />
+        <result column="am_en_name" property="enName" />
+        <result column="am_type_" property="type" />
+        <result column="am_data_type" property="dataType" />
+        <result column="am_control_type" property="controlType" />
+        <result column="am_data_length" property="dataLength" />
+        <result column="am_check_model" property="checkModel" />
+        <result column="am_data_source" property="dataSource" />
+        <result column="am_dictionary_id" property="dictionaryId" />
+        <result column="am_definition_" property="definition" />
+        <result column="am_field_" property="field" />
+        <result column="am_required_" property="required" />
+        <result column="am_mandatory_" property="mandatory" />
+        <result column="am_multi_flag" property="multiFlag" />
+        <result column="am_annotation_count" property="annotationCount" />
+        <result column="am_category_id" property="categoryId" />
+        <result column="am_relation_id" property="relationId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id_,
+        enable_,
+        remark_,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        version_,
+        name_, brief_name, en_name, type_, data_type, control_type, data_length, check_model, data_source, dictionary_id, definition_, field_, required_, mandatory_, multi_flag, annotation_count, category_id, relation_id
+    </sql>
+
+    <update id="unRelate">
+        update admin_metadata set relation_id = null where relation_id = #{id}
+    </update>
+
+    <select id="findCandidateRelation" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"></include>
+        FROM admin_metadata
+        WHERE category_id = #{categoryId} and enable_ = 1 and type_ = 1
+        <if test="id == null or id == ''">
+            and relation_id is null
+        </if>
+        <if test="id != null and id != ''">
+            and (relation_id is null or relation_id = #{id})
+        </if>
+    </select>
+</mapper>

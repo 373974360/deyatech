@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.deyatech.admin.mapper.MetadataCollectionMetadataMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.deyatech.admin.entity.MetadataCollectionMetadata">
+        <result column="id_" property="id" />
+        <result column="control_type" property="controlType" />
+        <result column="check_model" property="checkModel" />
+        <result column="data_source" property="dataSource" />
+        <result column="dictionary_id" property="dictionaryId" />
+        <result column="table_head" property="tableHead" />
+        <result column="advanced_query" property="advancedQuery" />
+        <result column="use_full_index" property="useFullIndex" />
+        <result column="use_index" property="useIndex" />
+        <result column="sort_no" property="sortNo" />
+        <result column="metadata_collection_id" property="metadataCollectionId" />
+        <result column="metadata_id" property="metadataId" />
+        <result column="relation_id" property="relationId" />
+        <result column="mdc_version" property="mdcVersion" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id_,
+        control_type, check_model, data_source, dictionary_id, table_head, advanced_query, use_full_index, use_index, sort_no, metadata_collection_id, metadata_id, relation_id, mdc_version
+    </sql>
+
+</mapper>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.deyatech.admin.mapper.MetadataCollectionMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.deyatech.admin.entity.MetadataCollection">
+        <result column="id_" property="id" />
+        <result column="enable_" property="enable" />
+        <result column="remark_" property="remark" />
+        <result column="create_by" property="createBy" />
+        <result column="create_time" property="createTime" />
+        <result column="update_by" property="updateBy" />
+        <result column="update_time" property="updateTime" />
+        <result column="version_" property="version" />
+        <result column="name_" property="name" />
+        <result column="en_name" property="enName" />
+        <result column="md_prefix" property="mdPrefix" />
+        <result column="mdc_prefix" property="mdcPrefix" />
+        <result column="source_" property="source" />
+        <result column="tenant_flag" property="tenantFlag" />
+        <result column="mdc_version" property="mdcVersion" />
+        <result column="main_version" property="mainVersion" />
+        <result column="parent_id" property="parentId" />
+    </resultMap>
+
+    <resultMap id="voResultMap" type="com.deyatech.admin.vo.MetadataCollectionVo">
+        <result column="amc_id_" property="id" />
+        <result column="amc_enable_" property="enable" />
+        <result column="amc_remark_" property="remark" />
+        <result column="amc_create_by" property="createBy" />
+        <result column="amc_create_time" property="createTime" />
+        <result column="amc_update_by" property="updateBy" />
+        <result column="amc_update_time" property="updateTime" />
+        <result column="amc_version_" property="version" />
+        <result column="amc_name_" property="name" />
+        <result column="amc_en_name" property="enName" />
+        <result column="amc_md_prefix" property="mdPrefix" />
+        <result column="amc_mdc_prefix" property="mdcPrefix" />
+        <result column="amc_source_" property="source" />
+        <result column="amc_tenant_flag" property="tenantFlag" />
+        <result column="amc_mdc_version" property="mdcVersion" />
+        <result column="amc_main_version" property="mainVersion" />
+        <result column="amc_parent_id" property="parentId" />
+        <collection property="metadataList" ofType="com.deyatech.admin.vo.MetadataCollectionMetadataVo">
+            <result column="amcm_id_" property="id" />
+            <result column="amcm_control_type" property="controlType" />
+            <result column="amcm_check_model" property="checkModel" />
+            <result column="amcm_data_source" property="dataSource" />
+            <result column="amcm_dictionary_id" property="dictionaryId" />
+            <result column="amcm_table_head" property="tableHead" />
+            <result column="amcm_advanced_query" property="advancedQuery" />
+            <result column="amcm_use_full_index" property="useFullIndex" />
+            <result column="amcm_use_index" property="useIndex" />
+            <result column="amcm_sort_no" property="sortNo" />
+            <result column="amcm_metadata_collection_id" property="metadataCollectionId" />
+            <result column="amcm_metadata_id" property="metadataId" />
+            <result column="amcm_relation_id" property="relationId" />
+            <result column="amcm_mdc_version" property="mdcVersion" />
+            <result column="amcm_field_name" property="fieldName" />
+            <association property="metadata" resultMap="com.deyatech.admin.mapper.MetadataMapper.voResultMap">
+            </association>
+        </collection>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id_,
+        enable_,
+        remark_,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        version_,
+        name_, en_name, md_prefix, mdc_prefix, source_, tenant_flag, mdc_version, main_version, parent_id
+    </sql>
+
+    <sql id="vo_column_list">
+        amc.id_ as amc_id_,
+        amc.enable_ as amc_enable_,
+        amc.remark_ as amc_remark_,
+        amc.create_by as amc_create_by,
+        amc.create_time as amc_create_time,
+        amc.update_by as amc_update_by,
+        amc.update_time as amc_update_time,
+        amc.version_ as amc_version_,
+        amc.name_ as amc_name_,
+        amc.en_name as amc_en_name,
+        amc.md_prefix as amc_md_prefix,
+        amc.mdc_prefix as amc_mdc_prefix,
+        amc.source_ as amc_source_,
+        amc.tenant_flag as amc_tenant_flag,
+        amc.mdc_version as amc_mdc_version,
+        amc.main_version as amc_main_version,
+        amc.parent_id as amc_parent_id,
+        amcm.id_ as amcm_id_,
+        amcm.control_type as amcm_control_type,
+        amcm.check_model as amcm_check_model,
+        amcm.data_source as amcm_data_source,
+        amcm.dictionary_id as amcm_dictionary_id,
+        amcm.table_head as amcm_table_head,
+        amcm.advanced_query as amcm_advanced_query,
+        amcm.use_full_index as amcm_use_full_index,
+        amcm.use_index as amcm_use_index,
+        amcm.sort_no as amcm_sort_no,
+        amcm.metadata_collection_id as amcm_metadata_collection_id,
+        amcm.metadata_id as amcm_metadata_id,
+        amcm.relation_id as amcm_relation_id,
+        amcm.mdc_version as amcm_mdc_version,
+        concat(amc.md_prefix, am.brief_name) as amcm_field_name,
+        am.id_ as am_id_,
+        am.enable_ as am_enable_,
+        am.remark_ as am_remark_,
+        am.create_by as am_create_by,
+        am.create_time as am_create_time,
+        am.update_by as am_update_by,
+        am.update_time as am_update_time,
+        am.version_ as am_version_,
+        am.name_ as am_name_,
+        am.brief_name as am_brief_name,
+        am.en_name as am_en_name,
+        am.type_ as am_type_,
+        am.data_type as am_data_type,
+        am.control_type as am_control_type,
+        am.data_length as am_data_length,
+        am.check_model as am_check_model,
+        am.data_source as am_data_source,
+        am.dictionary_id as am_dictionary_id,
+        am.definition_ as am_definition_,
+        am.field_ as am_field_,
+        am.required_ as am_required_,
+        am.mandatory_ as am_mandatory_,
+        am.multi_flag as am_multi_flag,
+        am.annotation_count as am_annotation_count,
+        am.category_id as am_category_id,
+        am.relation_id as am_relation_id
+    </sql>
+
+    <select id="findAllData" resultMap="voResultMap">
+        SELECT
+        <include refid="vo_column_list"></include>
+        FROM admin_metadata_collection amc
+        LEFT JOIN admin_metadata_collection_metadata amcm ON amc.id_ = amcm.metadata_collection_id
+        LEFT JOIN admin_metadata am ON amcm.metadata_id = am.id_
+        WHERE amc.enable_ = 1 AND am.enable_ = 1
+        <if test="id != null and id != ''">
+            AND amc.id_ = #{id}
+        </if>
+        <if test="enName != null and enName != ''">
+            and amc.en_name = #{enName}
+        </if>
+        ORDER BY amc.en_name, amc.mdc_version, amcm.sort_no
+    </select>
+
+    <update id="updateName">
+        UPDATE admin_metadata_collection SET name_ = #{name} WHERE en_name = #{enName}
+    </update>
+
+    <update id="removeMainVersion">
+        UPDATE admin_metadata_collection SET main_version = false WHERE en_name = #{enName}
+    </update>
+</mapper>
