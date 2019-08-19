@@ -55,7 +55,7 @@ public class CodeGenerator {
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
         dsc.setDriverName("com.mysql.cj.jdbc.Driver");
-        dsc.setUrl("jdbc:mysql://dev.mysql.deyatong.com:3306/deyatech?useUnicode=true&useSSL=false&characterEncoding=utf8");
+        dsc.setUrl("jdbc:mysql://mysql:3306/deyatech-cms?useUnicode=true&useSSL=false&characterEncoding=utf8");
         // dsc.setSchemaName("public");
         dsc.setUsername("root");
         dsc.setPassword("dyt@88352636");
@@ -163,7 +163,7 @@ public class CodeGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名
-                return "D:/workspace/webstorm/deyatech-zwfw-ui/src/api" + "/" + pc.getModuleName() +
+                return "/Users/kangdou/Downloads" + "/" + pc.getModuleName() +
                         "/" + StringUtils.firstCharToLower(tableInfo.getEntityName()) + ".js";
             }
         });
@@ -172,7 +172,7 @@ public class CodeGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名
-                return "D:/workspace/webstorm/deyatech-zwfw-ui/src/views" + "/" + pc.getModuleName() +
+                return "/Users/kangdou/Downloads" + "/" + pc.getModuleName() +
                         "/" + StringUtils.firstCharToLower(tableInfo.getEntityName()) + ".vue";
             }
         });

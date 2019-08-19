@@ -80,4 +80,12 @@ public interface UserService extends BaseService<User> {
      * @return
      */
     List<User> getUsersByWindowAndDepartment(String departmentIds, String windowIds);
+
+    /**
+     * 根据id列表查询用户信息
+     *
+     * @param ids
+     * @return
+     */
+    List<User> findByIds(List<String> ids);
 }

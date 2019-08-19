@@ -1,10 +1,7 @@
 package com.deyatech.admin.feign.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.deyatech.admin.entity.Dictionary;
-import com.deyatech.admin.entity.Holiday;
-import com.deyatech.admin.entity.Menu;
-import com.deyatech.admin.entity.User;
+import com.deyatech.admin.entity.*;
 import com.deyatech.admin.feign.AdminFeign;
 import com.deyatech.admin.service.*;
 import com.deyatech.admin.vo.DictionaryVo;
@@ -18,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -48,6 +46,9 @@ public class AdminFeignImpl implements AdminFeign {
 
     @Autowired
     HolidayService holidayService;
+
+    @Autowired
+    RoleUserService roleUserService;
 
     @Override
     public RestResult<String[]> getAllPermissionsByUserId(@RequestParam("userId") String userId) {
@@ -180,5 +181,33 @@ public class AdminFeignImpl implements AdminFeign {
     public RestResult<Boolean> isHoliday(@RequestBody Date date) {
         Boolean holiday = holidayService.isHoliday(date);
         return RestResult.ok(holiday);
+    }
+
+    @Override
+    public RestResult<List<String>> getUserIdsByRoleId(String roleId) {
+        List<String> userIds = new ArrayList<>();
+
+        RoleUser bean = new RoleUser();
+        bean.setRoleId(roleId);
+        Collection<RoleUser> list = roleUserService.listByBean(bean);
+        for (RoleUser ru : list) {
+            userIds.add(ru.getUserId());
+        }
+
+        return RestResult.ok(userIds);
+    }
+
+    @Override
+    public RestResult<List<String>> getRoleIdsByUserId(String userId) {
+        List<String> roleIds = new ArrayList<>();
+
+        RoleUser bean = new RoleUser();
+        bean.setUserId(userId);
+        Collection<RoleUser> list = roleUserService.listByBean(bean);
+        for (RoleUser ru : list) {
+            roleIds.add(ru.getRoleId());
+        }
+
+        return RestResult.ok(roleIds);
     }
 }

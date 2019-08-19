@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.deyatech.workflow.mapper.ProcessDefinitionMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.deyatech.workflow.entity.IProcessDefinition">
+        <result column="id_" property="id" />
+        <result column="enable_" property="enable" />
+        <result column="remark_" property="remark" />
+        <result column="create_by" property="createBy" />
+        <result column="create_time" property="createTime" />
+        <result column="update_by" property="updateBy" />
+        <result column="update_time" property="updateTime" />
+        <result column="version_" property="version" />
+        <result column="process_model_id" property="processModelId" />
+        <result column="act_deployment_id" property="actDeploymentId" />
+        <result column="act_definition_id" property="actDefinitionId" />
+        <result column="name_" property="name" />
+        <result column="act_definition_key" property="actDefinitionKey" />
+        <result column="deployment_time" property="deploymentTime" />
+        <result column="ver_" property="ver" />
+    </resultMap>
+
+    <resultMap id="voResultMap" type="com.deyatech.workflow.vo.ProcessDefinitionVo">
+        <result column="id_" property="id" />
+        <result column="enable_" property="enable" />
+        <result column="remark_" property="remark" />
+        <result column="create_by" property="createBy" />
+        <result column="create_time" property="createTime" />
+        <result column="update_by" property="updateBy" />
+        <result column="update_time" property="updateTime" />
+        <result column="version_" property="version" />
+        <result column="process_model_id" property="processModelId" />
+        <result column="act_deployment_id" property="actDeploymentId" />
+        <result column="act_definition_id" property="actDefinitionId" />
+        <result column="name_" property="name" />
+        <result column="act_definition_key" property="actDefinitionKey" />
+        <result column="deployment_time" property="deploymentTime" />
+        <result column="ver_" property="ver" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id_,
+        enable_,
+        remark_,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        version_,
+        process_model_id, act_deployment_id, act_definition_id, name_, act_definition_key, deployment_time, ver_
+    </sql>
+
+    <select id="findLastVersionPage" resultMap="voResultMap">
+        SELECT apd.*
+        FROM workflow_process_definition apd
+        JOIN (SELECT act_definition_key, max(ver_) ver_ FROM  workflow_process_definition GROUP BY act_definition_key) apdv
+        ON apd.act_definition_key = apdv.act_definition_key AND apd.ver_ = apdv.ver_
+        WHERE apd.enable_ = 1
+        <if test="processDefinition.name != null and processDefinition.name != ''">
+            AND (apd.name_ LIKE concat('%', #{processDefinition.name}, '%') or apd.act_definition_key LIKE concat('%', #{processDefinition.name}, '%'))
+        </if>
+        order by apd.deployment_time desc
+    </select>
+
+    <select id="getLastVersionByActDefinitionKey" resultMap="BaseResultMap">
+        SELECT *
+        FROM workflow_process_definition
+        WHERE act_definition_key = #{actDefinitionKey}
+        and ver_ &lt; #{version} and enable_ = 1
+        order by ver_ desc
+        limit 1
+    </select>
+</mapper>

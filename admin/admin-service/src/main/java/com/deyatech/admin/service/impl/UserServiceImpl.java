@@ -11,6 +11,7 @@ import com.deyatech.common.Constants;
 import com.deyatech.common.base.BaseServiceImpl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import com.deyatech.common.enums.EnableEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -126,5 +127,13 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
         map.put("departmentIds", departmentArr);
         map.put("windowIds", windowArr);
         return userMapper.getUsersByWindowAndDepartment(map);
+    }
+
+    @Override
+    public List<User> findByIds(List<String> ids) {
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.in("id_", ids);
+        wrapper.eq("enable_", EnableEnum.ENABLE.getCode());
+        return list(wrapper);
     }
 }

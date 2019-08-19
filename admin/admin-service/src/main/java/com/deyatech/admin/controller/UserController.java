@@ -1,8 +1,10 @@
 package com.deyatech.admin.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.deyatech.admin.entity.User;
 import com.deyatech.admin.vo.UserVo;
 import com.deyatech.admin.service.UserService;
+import com.deyatech.common.Constants;
 import com.deyatech.common.entity.RestResult;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +13,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -177,5 +181,22 @@ public class UserController extends BaseController {
                                                     @RequestParam(required = false) String windowIds) {
         List<User> users = userService.getUsersByWindowAndDepartment(departmentIds, windowIds);
         return RestResult.ok(users);
+    }
+
+    /**
+     * 根据id列表查询用户信息
+     *
+     * @param ids
+     * @return
+     */
+    @GetMapping("/findUserByIds")
+    @ApiOperation(value="根据id列表查询用户信息", notes="根据id列表查询用户信息")
+    @ApiImplicitParam(name = "ids", value = "系统用户信息对象ID集合", required = true, dataType = "String", paramType = "query")
+    public RestResult findUserByIds(String ids) {
+        List<User> list = new ArrayList<>();
+        if (StrUtil.isNotBlank(ids)) {
+            list = userService.findByIds(Arrays.asList(ids.split(",")));
+        }
+        return RestResult.ok(userService.setVoProperties(list));
     }
 }

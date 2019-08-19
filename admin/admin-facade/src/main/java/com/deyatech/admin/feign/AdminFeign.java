@@ -1,6 +1,5 @@
 package com.deyatech.admin.feign;
 
-import com.deyatech.admin.entity.Dictionary;
 import com.deyatech.admin.entity.Holiday;
 import com.deyatech.admin.entity.User;
 import com.deyatech.admin.vo.DictionaryVo;
@@ -150,4 +149,22 @@ public interface AdminFeign {
      */
     @RequestMapping(value = "/holiday/isHoliday", method = RequestMethod.POST)
     RestResult<Boolean> isHoliday(@RequestBody Date date);
+
+    /**
+     * 根据角色id获取用户id
+     *
+     * @param roleId
+     * @return
+     */
+    @RequestMapping(value = "/roleUser/getUserIdsByRoleId", method = RequestMethod.GET)
+    RestResult<List<String>> getUserIdsByRoleId(String roleId);
+
+    /**
+     * 根据用户id查询角色id
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping(value = "/roleUser/getRoleIdsByUserId", method = RequestMethod.GET)
+    RestResult<List<String>> getRoleIdsByUserId(String userId);
 }

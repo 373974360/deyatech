@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <!-- 
+       userRange 扩展自AbstractUserRange，目前支持：
+       
+	             userDeptLocationRange   表示按照用户部门所在的位置过滤
+   -->
+<flow>
+   <forms>
+   
+      <!--<form id="sxsc:kongjian" name="申请入驻空间">
+         <userRange>
+           <range step="userTask2" refRule="userAssignRange" field="assignUsers" ></range>
+         </userRange>
+      </form>
+
+      <form id="sxsc:KJSP" name="陕西双创空间审核">
+         <userRange>
+            <range step="quxian" refRule="userDeptLocationRange" field="location" ></range>
+         </userRange>
+      </form>-->
+
+   </forms>
+</flow>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.deyatech.workflow.mapper.ProcessModelMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.deyatech.workflow.entity.ProcessModel">
+        <result column="id_" property="id" />
+        <result column="enable_" property="enable" />
+        <result column="remark_" property="remark" />
+        <result column="create_by" property="createBy" />
+        <result column="create_time" property="createTime" />
+        <result column="update_by" property="updateBy" />
+        <result column="update_time" property="updateTime" />
+        <result column="version_" property="version" />
+        <result column="act_model_id" property="actModelId" />
+        <result column="name_" property="name" />
+        <result column="process_definition_id" property="processDefinitionId" />
+        <result column="ver_" property="ver" />
+    </resultMap>
+
+    <resultMap id="voResultMap" type="com.deyatech.workflow.vo.ProcessModelVo">
+        <result column="id_" property="id" />
+        <result column="enable_" property="enable" />
+        <result column="remark_" property="remark" />
+        <result column="create_by" property="createBy" />
+        <result column="create_time" property="createTime" />
+        <result column="update_by" property="updateBy" />
+        <result column="update_time" property="updateTime" />
+        <result column="version_" property="version" />
+        <result column="act_model_id" property="actModelId" />
+        <result column="name_" property="name" />
+        <result column="process_definition_id" property="processDefinitionId" />
+        <result column="ver_" property="ver" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id_,
+        enable_,
+        remark_,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        version_,
+        act_model_id, name_, process_definition_id, ver_
+    </sql>
+
+    <select id="findLastVersionPage" resultMap="voResultMap">
+        SELECT apm.*
+        FROM workflow_process_model apm
+        JOIN (SELECT act_model_id, max(ver_) ver_ FROM workflow_process_model GROUP BY act_model_id) apmv
+        ON apm.act_model_id = apmv.act_model_id AND apm.ver_ = apmv.ver_
+        WHERE apm.enable_ = 1
+        <if test="processModel.name != null and processModel.name != ''">
+            and apm.name_ LIKE concat('%', #{processModel.name}, '%')
+        </if>
+        order by apm.update_time desc
+    </select>
+
+    <select id="getLastByActModelId" resultMap="BaseResultMap">
+        SELECT *
+        FROM workflow_process_model
+        WHERE act_model_id = #{actModelId} and ver_ = (
+          select max(ver_) from workflow_process_model where act_model_id = #{actModelId}
+        )
+    </select>
+</mapper>
