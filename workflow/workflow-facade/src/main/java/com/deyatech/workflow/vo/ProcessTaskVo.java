@@ -37,4 +37,6 @@ public class ProcessTaskVo extends BaseEntity {
     private Map<String, Object> variables;
 
     private List<Map<String, Object>> queryOr;
+
+    private String titleOrAuthor;
 }
