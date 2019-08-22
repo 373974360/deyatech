@@ -68,7 +68,7 @@ public class ProcessTaskSettingServiceImpl extends BaseServiceImpl<ProcessTaskSe
         ProcessTaskSetting processTaskSetting = new ProcessTaskSetting();
         processTaskSetting.setActDefinitionId(actDefinitionId);
         processTaskSetting.setActTaskDefinitionId(actTaskDefinitionId);
-        processTaskSetting.setSource(source);
+//        processTaskSetting.setSource(source);
         return getByBean(processTaskSetting);
     }
 
