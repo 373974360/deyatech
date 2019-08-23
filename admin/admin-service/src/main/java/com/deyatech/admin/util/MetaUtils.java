@@ -3,6 +3,7 @@ package com.deyatech.admin.util;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.deyatech.admin.vo.MetadataCollectionMetadataVo;
 import com.deyatech.admin.vo.MetadataCollectionVo;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,12 @@ import java.util.*;
 public class MetaUtils {
 
     @Autowired
+    private JdbcUtils jdbcUtils;
+
+    @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    private static JdbcUtils staticJdbcUtils;
 
     private static JdbcTemplate staticJdbcTemplate;
 
@@ -36,6 +42,7 @@ public class MetaUtils {
 
     @PostConstruct
     public void init() {
+        staticJdbcUtils = jdbcUtils;
         staticJdbcTemplate = jdbcTemplate;
     }
 
@@ -43,9 +50,8 @@ public class MetaUtils {
      * 初始化元数据集对应的表
      *
      * @param metadataCollectionVoList
-     * @param databaseMetaData
      */
-    public static void initMetadataTable(List<MetadataCollectionVo> metadataCollectionVoList, DatabaseMetaData databaseMetaData) {
+    public static void initMetadataTable(List<MetadataCollectionVo> metadataCollectionVoList) {
         if (CollectionUtil.isEmpty(metadataCollectionVoList)) {
             return;
         }
@@ -54,7 +60,7 @@ public class MetaUtils {
             return;
         }
 
-        Map<String, Table> existTableMap = getExistTableFromDB(databaseMetaData, tableMap.keySet());
+        Map<String, Table> existTableMap = getExistTableFromDB(tableMap.keySet());
         for (Table table : tableMap.values()) {
             if (existTableMap.keySet().contains(table.getTableName())) {
                 alterTable(table, existTableMap.get(table.getTableName()));
@@ -65,14 +71,33 @@ public class MetaUtils {
     }
 
     /**
+     * 元数据集新增或者修改
+     *
+     * @param metadataCollectionVo
+     */
+    public static void metadataTableChange(MetadataCollectionVo metadataCollectionVo) {
+        Table table = parseTable(metadataCollectionVo);
+        Table oldTable = getTableFromDB(table.getTableName());
+        if (oldTable == null) {
+            createTable(table);
+        } else {
+            alterTable(table, oldTable);
+        }
+    }
+
+    /**
      * 插入一条数据
      *
      * @param metadataCollectionVo
      * @param values
      */
-    public static void insert(MetadataCollectionVo metadataCollectionVo, Map<String, Object> values) {
-        StringBuilder sb = new StringBuilder();
+    public static String insert(MetadataCollectionVo metadataCollectionVo, Map<String, Object> values) {
         String tableName = metadataCollectionVo.getMdcPrefix() + metadataCollectionVo.getEnName();
+
+        String id = IdWorker.getIdStr();
+        values.put("id_", id);
+
+        StringBuilder sb = new StringBuilder();
         sb.append("INSERT INTO `").append(tableName).append("` (");
         List<Object> params = new ArrayList<>();
         for (String columnName : values.keySet()) {
@@ -88,6 +113,37 @@ public class MetaUtils {
         } catch (Exception e) {
             throw new RuntimeException("保存数据出错", e);
         }
+        return id;
+    }
+
+    public static void deleteById(MetadataCollectionVo metadataCollectionVo, String id) {
+        Table table = parseTable(metadataCollectionVo);
+        String sql = "DELETE FROM " + table.getFullTableName()
+                + " WHERE `" + table.getPrimaryKeyColumn().getColumnName() + "` = ?;";
+        try {
+            staticJdbcTemplate.update(sql, id);
+        } catch (Exception e) {
+            throw new RuntimeException("执行SQL语句出错：", e);
+        }
+    }
+
+    public static void updateById(MetadataCollectionVo metadataCollectionVo, String id, Map<String, Object> values) {
+        Table table = parseTable(metadataCollectionVo);
+        StringBuilder sb = new StringBuilder();
+        sb.append("UPDATE ").append(table.getFullTableName()).append(" SET ");
+        List<Object> params = new ArrayList<>();
+        for (String columnName : values.keySet()) {
+            sb.append("`").append(columnName).append("` = ?,");
+            params.add(values.get(columnName));
+        }
+        sb.deleteCharAt(sb.length() - 1).append(" WHERE `")
+                .append(table.getPrimaryKeyColumn().getColumnName()).append("` = ?;");
+        params.add(id);
+        try {
+            staticJdbcTemplate.update(sb.toString(), params.toArray());
+        } catch (Exception e) {
+            throw new RuntimeException("执行SQL语句出错：", e);
+        }
     }
 
     /**
@@ -99,7 +155,8 @@ public class MetaUtils {
      */
     public static Map<String, Object> selectById(MetadataCollectionVo metadataCollectionVo, String id) {
         Table table = parseTable(metadataCollectionVo);
-        String sql = "SELECT * FROM " + table.getFullTableName() + " WHERE id_ = ?;";
+        String sql = "SELECT * FROM " + table.getFullTableName()
+                + " WHERE `" + table.getPrimaryKeyColumn().getColumnName() + "` = ?;";
         Map<String, Object> data = staticJdbcTemplate.queryForObject(sql, new ColumnMapRowMapper(), id);
         if (data == null) {
             return null;
@@ -162,7 +219,7 @@ public class MetaUtils {
                     exist = true;
                     if (!column.equals(oldColumn)) {
                         alterFlag = true;
-                        sb.append(" MODIFY ").append(columnDefinition(column, false)).append(",");
+                        sb.append(" MODIFY ").append(columnDefinition(column, true)).append(",");
                     }
                     break;
                 }
@@ -403,16 +460,27 @@ public class MetaUtils {
         return DataType.valueOf(typeName);
     }
 
-    private static Map<String, Table> getExistTableFromDB(DatabaseMetaData databaseMetaData, Collection<String> tableNameList) {
+    private static Table getTableFromDB(String tableName) {
+        Map<String, Table> tableMap = getExistTableFromDB(Collections.singletonList(tableName));
+        if (CollectionUtil.isEmpty(tableMap)) {
+            return null;
+        }
+        return tableMap.get(tableName);
+    }
+
+    private static Map<String, Table> getExistTableFromDB(Collection<String> tableNameList) {
         Map<String, Table> tableMap = new HashMap<>();
 
         try {
+            DatabaseMetaData databaseMetaData = staticJdbcUtils.getMetaData();
+
             ResultSet tableSet = databaseMetaData.getTables(databaseName, null, null, new String[]{"TABLE"});
             while(tableSet.next()) {
                 String tableName = tableSet.getString("TABLE_NAME");
                 if (tableNameList.contains(tableName)) {
                     Table table = new Table(tableName);
                     table.setComment(tableSet.getString("REMARKS"));
+
                     List<Column> columnList = new ArrayList<>();
                     ResultSet columnSet = databaseMetaData.getColumns(databaseName, null, tableName, null);
                     while (columnSet.next()) {
@@ -426,12 +494,29 @@ public class MetaUtils {
                         column.setComment(columnSet.getString("REMARKS"));
                         columnList.add(column);
                     }
+
+                    String primaryKeyName = null;
+                    ResultSet pkSet = databaseMetaData.getPrimaryKeys(databaseName, null, tableName);
+                    while (pkSet.next()) {
+                        primaryKeyName = pkSet.getString("COLUMN_NAME");
+                    }
+                    if (StrUtil.isNotBlank(primaryKeyName)) {
+                        for (Column column : columnList) {
+                            if (ObjectUtil.equal(primaryKeyName, column.getColumnName())) {
+                                column.setPrimaryKey(true);
+                                break;
+                            }
+                        }
+                    }
+
                     table.setColumnList(columnList);
                     tableMap.put(tableName, table);
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("查询表信息失败：", e);
+        } finally {
+            staticJdbcUtils.close();
         }
 
         return tableMap;

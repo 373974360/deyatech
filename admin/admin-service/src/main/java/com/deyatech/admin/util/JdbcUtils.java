@@ -53,6 +53,13 @@ public class JdbcUtils {
         return metaData;
     }
 
+    public void close() {
+        if (connection == null) {
+            return;
+        }
+        close(connection);
+    }
+
     public void close(Connection connection) {
         try {
             connection.close();

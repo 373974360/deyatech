@@ -1,7 +1,6 @@
 package com.deyatech.admin;
 
 import com.deyatech.admin.service.MetadataCollectionService;
-import com.deyatech.admin.util.JdbcUtils;
 import com.deyatech.admin.util.MetaUtils;
 import com.deyatech.admin.vo.MetadataCollectionVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +21,9 @@ public class InitMetadataTable implements ApplicationRunner {
     @Autowired
     private MetadataCollectionService metadataCollectionService;
 
-    @Autowired
-    private JdbcUtils jdbcUtils;
-
     @Override
     public void run(ApplicationArguments args) {
         List<MetadataCollectionVo> metadataCollectionVoList = metadataCollectionService.findAllData(null);
-        MetaUtils.initMetadataTable(metadataCollectionVoList, jdbcUtils.getMetaData());
+        MetaUtils.initMetadataTable(metadataCollectionVoList);
     }
 }
