@@ -4,6 +4,7 @@ import com.deyatech.admin.entity.Holiday;
 import com.deyatech.admin.entity.User;
 import com.deyatech.admin.vo.DictionaryVo;
 import com.deyatech.admin.vo.HolidayVo;
+import com.deyatech.admin.vo.MetadataCollectionVo;
 import com.deyatech.admin.vo.UserVo;
 import com.deyatech.common.entity.EnumsResult;
 import com.deyatech.common.entity.RestResult;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -167,4 +169,44 @@ public interface AdminFeign {
      */
     @RequestMapping(value = "/roleUser/getRoleIdsByUserId", method = RequestMethod.GET)
     RestResult<List<String>> getRoleIdsByUserId(String userId);
+
+    /**
+     * 获取所有元数据集（包括关联的元数据）信息
+     *
+     * @param metadataCollectionVo
+     * @return
+     */
+    @RequestMapping(value = "/metadataCollection/findAllData")
+    RestResult<List<MetadataCollectionVo>> findAllData(@RequestBody MetadataCollectionVo metadataCollectionVo);
+
+    /**
+     * 插入一条元数据信息
+     *
+     * @param metaDataCollectionId 元数据集id
+     * @param contentId 元数据记录id
+     * @param contentMap 元数据信息
+     * @return
+     */
+    @RequestMapping(value = "/metadataCollection/saveOrUpdateMetadata")
+    RestResult<String> saveOrUpdateMetadata(@RequestParam("metaDataCollectionId") String metaDataCollectionId,
+                                            @RequestParam(value = "contentId", required = false) String contentId, @RequestBody Map contentMap);
+
+    /**
+     * 根据id查询元数据记录
+     * @param metaDataCollectionId 元数据集id
+     * @param contentId 元数据记录id
+     * @return
+     */
+    @RequestMapping(value = "/metadataCollection/getMetadataById")
+    RestResult<Map> getMetadataById(@RequestParam("metaDataCollectionId") String metaDataCollectionId,
+                                    @RequestParam("contentId") String contentId);
+
+    /**
+     * 根据ids删除元数据记录
+     * @param mapList id集合
+     * @return
+     */
+    @RequestMapping(value = "/metadataCollection/removeMetadataById")
+    RestResult removeMetadataByIds(@RequestBody List<Map> mapList);
+
 }
