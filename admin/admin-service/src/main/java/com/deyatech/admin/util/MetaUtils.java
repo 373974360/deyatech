@@ -453,7 +453,7 @@ public class MetaUtils {
         } else if ("date".equals(t)) {
             typeName = "DATETIME";
         } else if ("file".equals(t)) {
-            typeName = "BLOB";
+            typeName = "VARCHAR";
         } else {
             typeName = t.toUpperCase();
         }
