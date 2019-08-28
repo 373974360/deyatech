@@ -27,4 +27,6 @@ public class FileUploadResult implements Serializable {
     private String url = "";
     @ApiModelProperty(value = "物理路径")
     private String filePath = "";
+    @ApiModelProperty(value = "系统存储文件对象")
+    private Object customData;
 }

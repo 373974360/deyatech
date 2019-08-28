@@ -1,11 +1,11 @@
 package com.deyatech.common.base;
 
-import cn.hutool.http.HttpStatus;
 import com.deyatech.common.Constants;
-import com.deyatech.common.exception.BusinessException;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.io.Closeable;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -33,6 +33,25 @@ public class BaseController {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 上传文件
+     *
+     * @param file
+     * @param filePath
+     * @param fileName
+     * @throws Exception
+     */
+    protected void uploadFile(byte[] file, String filePath, String fileName) throws Exception {
+        File targetFile = new File(filePath);
+        if (!targetFile.exists()) {
+            targetFile.mkdirs();
+        }
+        FileOutputStream out = new FileOutputStream(filePath + fileName);
+        out.write(file);
+        out.flush();
+        out.close();
     }
 
     protected void close(Closeable c) {

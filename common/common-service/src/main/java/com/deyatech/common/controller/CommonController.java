@@ -226,25 +226,6 @@ public class CommonController extends BaseController {
     }
 
     /**
-     * 上传文件
-     *
-     * @param file
-     * @param filePath
-     * @param fileName
-     * @throws Exception
-     */
-    private void uploadFile(byte[] file, String filePath, String fileName) throws Exception {
-        File targetFile = new File(filePath);
-        if (!targetFile.exists()) {
-            targetFile.mkdirs();
-        }
-        FileOutputStream out = new FileOutputStream(filePath + fileName);
-        out.write(file);
-        out.flush();
-        out.close();
-    }
-
-    /**
      * 获取短信模板列表
      */
     @GetMapping("/getSubMailMessageTemplates")
