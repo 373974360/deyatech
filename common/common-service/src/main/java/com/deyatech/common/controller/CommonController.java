@@ -212,6 +212,9 @@ public class CommonController extends BaseController {
         if (StrUtil.isBlank(basePath)) {
             basePath = uploadPath;
         }
+        if (!basePath.endsWith("/")) {
+            basePath += "/";
+        }
         FileInputStream in = null;
         OutputStream out = null;
         try {
@@ -255,6 +258,9 @@ public class CommonController extends BaseController {
     public void downloadFile(String basePath, String filePath, HttpServletRequest request, HttpServletResponse response) {
         if (StrUtil.isBlank(basePath)) {
             basePath = uploadPath;
+        }
+        if (!basePath.endsWith("/")) {
+            basePath += "/";
         }
         FileInputStream in = null;
         OutputStream out = null;
