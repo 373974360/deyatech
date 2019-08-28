@@ -7,6 +7,8 @@ import com.deyatech.admin.entity.MetadataCollectionMetadata;
 import com.deyatech.admin.mapper.MetadataCollectionMapper;
 import com.deyatech.admin.service.MetadataCollectionMetadataService;
 import com.deyatech.admin.service.MetadataCollectionService;
+import com.deyatech.admin.service.MetadataService;
+import com.deyatech.admin.util.MetaUtils;
 import com.deyatech.admin.vo.MetadataCollectionMetadataVo;
 import com.deyatech.admin.vo.MetadataCollectionVo;
 import com.deyatech.common.base.BaseServiceImpl;
@@ -32,6 +34,9 @@ public class MetadataCollectionServiceImpl extends BaseServiceImpl<MetadataColle
 
     @Autowired
     private MetadataCollectionMetadataService metadataCollectionMetadataService;
+
+    @Autowired
+    private MetadataService metadataService;
 
     /**
      * 单个将对象转换为vo
@@ -83,6 +88,8 @@ public class MetadataCollectionServiceImpl extends BaseServiceImpl<MetadataColle
         if (CollectionUtil.isNotEmpty(metadataVoList)) {
             List<MetadataCollectionMetadata> metadataList = new ArrayList<>();
             for (MetadataCollectionMetadataVo metadataVo : metadataVoList) {
+                metadataVo.setMetadata(metadataService.setVoProperties(metadataService.getById(metadataVo.getMetadataId())));
+
                 MetadataCollectionMetadata metadata = new MetadataCollectionMetadata();
                 BeanUtil.copyProperties(metadataVo, metadata);
                 metadata.setMetadataCollectionId(metadataCollection.getId());
@@ -91,6 +98,9 @@ public class MetadataCollectionServiceImpl extends BaseServiceImpl<MetadataColle
             }
             metadataCollectionMetadataService.saveBatch(metadataList);
         }
+
+        MetaUtils.metadataTableChange(metadataCollectionVo);
+
         return metadataCollection;
     }
 

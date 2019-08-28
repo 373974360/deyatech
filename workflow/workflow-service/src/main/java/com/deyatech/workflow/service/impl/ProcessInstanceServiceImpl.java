@@ -41,7 +41,7 @@ public class ProcessInstanceServiceImpl implements ProcessInstanceService {
     @Override
     public ProcessInstanceStatusEnum startInstance(ProcessInstanceVo processInstanceVo) {
         String key = processInstanceVo.getActDefinitionKey();
-        if (StrUtil.isNotBlank(key)) {
+        if (StrUtil.isBlank(key)) {
             throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "请选择流程");
         }
         long count = repositoryService.createProcessDefinitionQuery().processDefinitionKey(key).count();
