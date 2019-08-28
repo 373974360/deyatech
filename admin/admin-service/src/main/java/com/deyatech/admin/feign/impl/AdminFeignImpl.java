@@ -1,11 +1,15 @@
 package com.deyatech.admin.feign.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import com.deyatech.admin.entity.*;
+import com.deyatech.admin.entity.Dictionary;
 import com.deyatech.admin.feign.AdminFeign;
 import com.deyatech.admin.service.*;
+import com.deyatech.admin.util.MetaUtils;
 import com.deyatech.admin.vo.DictionaryVo;
 import com.deyatech.admin.vo.HolidayVo;
+import com.deyatech.admin.vo.MetadataCollectionVo;
 import com.deyatech.admin.vo.UserVo;
 import com.deyatech.common.entity.EnumsResult;
 import com.deyatech.common.entity.RestResult;
@@ -15,10 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -49,6 +50,12 @@ public class AdminFeignImpl implements AdminFeign {
 
     @Autowired
     RoleUserService roleUserService;
+
+    @Autowired
+    MetadataCollectionService metadataCollectionService;
+
+    @Autowired
+    MetaUtils metaUtils;
 
     @Override
     public RestResult<String[]> getAllPermissionsByUserId(@RequestParam("userId") String userId) {
@@ -210,4 +217,78 @@ public class AdminFeignImpl implements AdminFeign {
 
         return RestResult.ok(roleIds);
     }
+
+    /**
+     * 获取所有元数据集（包括关联的元数据）信息
+     *
+     * @param metadataCollectionVo
+     * @return
+     */
+    @Override
+    public RestResult<List<MetadataCollectionVo>> findAllData(MetadataCollectionVo metadataCollectionVo) {
+        List<MetadataCollectionVo> data = metadataCollectionService.findAllData(metadataCollectionVo);
+        return RestResult.ok(data);
+    }
+
+    /**
+     * 插入一条元数据信息
+     *
+     * @param metaDataCollectionId 元数据集id
+     * @param contentId 元数据记录id
+     * @param contentMap 元数据信息
+     * @return
+     */
+    @Override
+    public RestResult<String> saveOrUpdateMetadata(String metaDataCollectionId, String contentId, @RequestBody Map contentMap) {
+
+        MetadataCollectionVo metadataCollectionVo = this.getMetadataCollectionVoById(metaDataCollectionId);
+        // 插入数据
+        if (StrUtil.isEmpty(contentId)) {
+            contentId = MetaUtils.insert(metadataCollectionVo, contentMap);
+            return RestResult.ok(contentId);
+        } // 更新
+        else {
+            MetaUtils.updateById(metadataCollectionVo, contentId, contentMap);
+            return RestResult.ok();
+        }
+    }
+
+    /**
+     * 根据id查询元数据记录
+     * @param metaDataCollectionId 元数据集id
+     * @param contentId 元数据记录id
+     * @return
+     */
+    @Override
+    public RestResult<Map> getMetadataById(String metaDataCollectionId, String contentId) {
+        MetadataCollectionVo metadataCollectionVo = this.getMetadataCollectionVoById(metaDataCollectionId);
+        Map content = MetaUtils.selectById(metadataCollectionVo, contentId);
+        return RestResult.ok(content);
+    }
+
+    private MetadataCollectionVo getMetadataCollectionVoById(String metaDataCollectionId) {
+        MetadataCollectionVo metadataCollectionVo = new MetadataCollectionVo();
+        metadataCollectionVo.setId(metaDataCollectionId);
+        List<MetadataCollectionVo> data = metadataCollectionService.findAllData(metadataCollectionVo);
+        return data.get(0);
+    }
+
+    /**
+     * 根据id删除元数据记录
+     * @param mapList id集合
+     * @return
+     */
+    @Override
+    public RestResult removeMetadataByIds(List<Map> mapList) {
+        mapList.stream().forEach(m ->
+            this.removeMetadataById(m)
+        );
+        return RestResult.ok();
+    }
+
+    private void removeMetadataById(Map map) {
+        MetadataCollectionVo metadataCollectionVo = this.getMetadataCollectionVoById((String) map.get("metaDataCollectionId"));
+        MetaUtils.deleteById(metadataCollectionVo, (String) map.get("contentId"));
+    }
+
 }

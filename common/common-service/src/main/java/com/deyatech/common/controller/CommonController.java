@@ -208,12 +208,15 @@ public class CommonController extends BaseController {
     @GetMapping("/showPicImg")
     @ApiOperation(value = "查看图片", notes = "查看图片")
     @ApiImplicitParam(name = "filePath", value = "图片路径", required = true, dataType = "String", paramType = "query")
-    public void showPicImg(String filePath, HttpServletResponse response) {
+    public void showPicImg(String basePath, String filePath, HttpServletResponse response) {
+        if (StrUtil.isBlank(basePath)) {
+            basePath = uploadPath;
+        }
         FileInputStream in = null;
         OutputStream out = null;
         try {
             response.setContentType("image/jpeg");
-            in = new FileInputStream(uploadPath + filePath.replaceAll(Constants.UPLOAD_DEFAULT_PREFIX_URL,""));
+            in = new FileInputStream(basePath + filePath.replaceAll(Constants.UPLOAD_DEFAULT_PREFIX_URL,""));
             out = response.getOutputStream();
             IOUtils.copy(in, out);
         } catch (IOException e) {
@@ -223,25 +226,6 @@ public class CommonController extends BaseController {
             close(in);
             close(out);
         }
-    }
-
-    /**
-     * 上传文件
-     *
-     * @param file
-     * @param filePath
-     * @param fileName
-     * @throws Exception
-     */
-    private void uploadFile(byte[] file, String filePath, String fileName) throws Exception {
-        File targetFile = new File(filePath);
-        if (!targetFile.exists()) {
-            targetFile.mkdirs();
-        }
-        FileOutputStream out = new FileOutputStream(filePath + fileName);
-        out.write(file);
-        out.flush();
-        out.close();
     }
 
     /**
@@ -268,11 +252,14 @@ public class CommonController extends BaseController {
     @GetMapping("/download")
     @ApiOperation(value = "下载文件", notes = "下载文件")
     @ApiImplicitParam(name = "filePath", value = "文件路径", required = true, dataType = "String", paramType = "query")
-    public void downloadFile(String filePath, HttpServletRequest request, HttpServletResponse response) {
+    public void downloadFile(String basePath, String filePath, HttpServletRequest request, HttpServletResponse response) {
+        if (StrUtil.isBlank(basePath)) {
+            basePath = uploadPath;
+        }
         FileInputStream in = null;
         OutputStream out = null;
         try {
-            String fileName = uploadPath + filePath.replaceAll(Constants.UPLOAD_DEFAULT_PREFIX_URL,"");
+            String fileName = basePath + filePath.replaceAll(Constants.UPLOAD_DEFAULT_PREFIX_URL,"");
             response.setHeader("Content-Disposition", "attachment;filename=" + filePath.substring(filePath.lastIndexOf('/')));
             response.setContentType(request.getServletContext().getMimeType(fileName));
             in = new FileInputStream(fileName);
