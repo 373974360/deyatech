@@ -43,6 +43,7 @@ public class AuthRestFilter implements Filter {
         String gatewayHeader = request.getHeader(Constants.GATEWAY_HEADER);
         String path = request.getRequestURI().substring(request.getContextPath().length()).replaceAll("[/]+$", "");
         boolean allowedPath = ALLOWED_PATHS.contains(path);
+        if (path.startsWith("/websocket")) allowedPath = true;
         if (!allowedPath) {
             if (StrUtil.isBlank(gatewayHeader)) {
                 error(response);
