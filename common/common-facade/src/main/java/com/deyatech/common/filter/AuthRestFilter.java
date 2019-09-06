@@ -8,6 +8,7 @@ import com.deyatech.common.context.UserContextHelper;
 import com.deyatech.common.entity.RestResult;
 import com.deyatech.common.utils.AesUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -16,10 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <p>
@@ -33,8 +31,10 @@ import java.util.Set;
 @WebFilter(filterName = "authRestFilter", urlPatterns = {"/*"})
 public class AuthRestFilter implements Filter {
 
-    private static final Set<String> ALLOWED_PATHS = Collections.unmodifiableSet(new HashSet<>(
-            Arrays.asList("/health")));
+    @Value("${authRestFilterIgnore.startsWith:#{null}}")
+    private String authRestFilterIgnoreStartsWith;
+
+    private static final Set<String> ALLOWED_PATHS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList("/health")));
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -43,7 +43,17 @@ public class AuthRestFilter implements Filter {
         String gatewayHeader = request.getHeader(Constants.GATEWAY_HEADER);
         String path = request.getRequestURI().substring(request.getContextPath().length()).replaceAll("[/]+$", "");
         boolean allowedPath = ALLOWED_PATHS.contains(path);
-        if (path.startsWith("/websocket")) allowedPath = true;
+
+        if (!allowedPath && StrUtil.isNotEmpty(authRestFilterIgnoreStartsWith)) {
+            List<String> ignoreList = Arrays.asList(authRestFilterIgnoreStartsWith.split(","));
+            for (String ignore : ignoreList) {
+                if (path.startsWith(ignore)) {
+                    allowedPath = true;
+                    break;
+                }
+            }
+        }
+
         if (!allowedPath) {
             if (StrUtil.isBlank(gatewayHeader)) {
                 error(response);
