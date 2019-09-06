@@ -158,7 +158,7 @@ public interface AdminFeign {
      * @param roleId
      * @return
      */
-    @RequestMapping(value = "/roleUser/getUserIdsByRoleId", method = RequestMethod.GET)
+    @RequestMapping(value = "/roleUser/getUserIdsByRoleId")
     RestResult<List<String>> getUserIdsByRoleId(String roleId);
 
     /**
@@ -167,7 +167,7 @@ public interface AdminFeign {
      * @param userId
      * @return
      */
-    @RequestMapping(value = "/roleUser/getRoleIdsByUserId", method = RequestMethod.GET)
+    @RequestMapping(value = "/roleUser/getRoleIdsByUserId")
     RestResult<List<String>> getRoleIdsByUserId(String userId);
 
     /**
