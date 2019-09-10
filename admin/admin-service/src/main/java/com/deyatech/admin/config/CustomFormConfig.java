@@ -31,6 +31,8 @@ public class CustomFormConfig {
     private Map<String,DataSource> dataSource = Maps.newLinkedHashMap();
     
     private Map<String,DataLength> dataLength = Maps.newLinkedHashMap();
+
+    private Map<String, ControlLength> controlLength = Maps.newLinkedHashMap();
     
     /**
      * 构造函数
@@ -44,6 +46,7 @@ public class CustomFormConfig {
                 parseDataSource();
                 parseValidate();
                 parseDataLengths();
+                parseControlLength();
                 parseDataShow();
                 parseDataType();
                 
@@ -105,6 +108,24 @@ public class CustomFormConfig {
             }
         }
     }
+
+    /**
+     * 解析控件长度
+     */
+    @SuppressWarnings("unchecked")
+    public void parseControlLength() {
+        List<Element> dl = doc.selectNodes("/config/controlLengths/controlLength");
+        if (dl != null && dl.size() > 0) {
+            for (Element element : dl) {
+                ControlLength temp = new ControlLength();
+                temp.setId(element.attributeValue("id"));
+                temp.setName(element.attributeValue("name"));
+                temp.setValue(Integer.parseInt(element.getText()));
+                controlLength.put(temp.getId(), temp);
+            }
+        }
+    }
+
     /**
      * 解析校验
      */
@@ -159,6 +180,15 @@ public class CustomFormConfig {
                     for(String v:value){
                         if(dataLength.get(v) != null){
                             temp.getDataLengths().add(dataLength.get(v));
+                        }
+                    }
+                }
+                Node clElement = element.selectSingleNode("controlLength");
+                if (clElement != null) {
+                    String[] value = clElement.getText().split(",");
+                    for (String v : value) {
+                        if (controlLength.get(v) != null) {
+                            temp.getControlLengths().add(controlLength.get(v));
                         }
                     }
                 }

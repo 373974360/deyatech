@@ -87,6 +87,10 @@ public class Metadata extends BaseEntity {
     @TableField("annotation_count")
     private Integer annotationCount;
 
+    @ApiModelProperty(value = "控件长度", dataType = "Integer")
+    @TableField("control_length")
+    private Integer controlLength;
+
     @ApiModelProperty(value = "分类id", dataType = "String")
     @TableField("category_id")
     private String categoryId;

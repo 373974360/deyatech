@@ -28,6 +28,7 @@
         <result column="mandatory_" property="mandatory" />
         <result column="multi_flag" property="multiFlag" />
         <result column="annotation_count" property="annotationCount" />
+        <result column="control_length" property="controlLength" />
         <result column="category_id" property="categoryId" />
         <result column="relation_id" property="relationId" />
     </resultMap>
@@ -57,6 +58,7 @@
         <result column="am_mandatory_" property="mandatory" />
         <result column="am_multi_flag" property="multiFlag" />
         <result column="am_annotation_count" property="annotationCount" />
+        <result column="am_control_length" property="controlLength" />
         <result column="am_category_id" property="categoryId" />
         <result column="am_relation_id" property="relationId" />
     </resultMap>
@@ -71,7 +73,7 @@
         update_by,
         update_time,
         version_,
-        name_, brief_name, en_name, type_, data_type, control_type, data_length, check_model, data_source, dictionary_id, definition_, field_, required_, mandatory_, multi_flag, annotation_count, category_id, relation_id
+        name_, brief_name, en_name, type_, data_type, control_type, data_length, check_model, data_source, dictionary_id, definition_, field_, required_, mandatory_, multi_flag, annotation_count, control_length, category_id, relation_id
     </sql>
 
     <update id="unRelate">

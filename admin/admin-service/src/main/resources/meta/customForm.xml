@@ -42,13 +42,17 @@
     </dataTypes>
     <!-- 定义控件展示类型,扩展规则:(1)根据AbstractHtmlElement编写扩展类.(2)定义dataShow，id为扩展类的beanId-->
     <dataShows>
-        <dataShow id="inputElement" name="文本框"></dataShow>
+        <dataShow id="inputElement" name="文本框">
+            <controlLength>cl_half</controlLength>
+        </dataShow>
         <dataShow id="inputReadOnlyElement" name="只读文本框">
-               <ds>dataItem</ds>
-               <dataLength>length_1</dataLength>
+            <ds>dataItem</ds>
+            <dataLength>length_1</dataLength>
+            <controlLength>cl_half</controlLength>
         </dataShow>
         <dataShow id="selectElement" name="下拉框">
             <ds>dataItem</ds>
+            <controlLength>cl_half</controlLength>
         </dataShow>
         <dataShow id="radioElement" name="单选框">
             <ds>dataItem</ds>
@@ -58,15 +62,27 @@
         </dataShow>
         <dataShow id="textareaElement" name="大文本框">
             <dataLength>length_3</dataLength>
+            <controlLength>cl_whole</controlLength>
         </dataShow>
         <dataShow id="richTextElement" name="HTML编辑器">
             <dataLength>length_4</dataLength>
+            <controlLength>cl_whole</controlLength>
         </dataShow>
-        <dataShow id="dateElement" name="yyyy-MM-dd"></dataShow>
-        <dataShow id="dateYyyyMmDdElement" name="yyyyMMdd"></dataShow>
-        <dataShow id="datetimeElement" name="yyyy-MM-dd HH:mm:ss"></dataShow>
-        <dataShow id="timeElement" name="HH:mm:ss"></dataShow>
-        <dataShow id="fileElement" name="附件上传"></dataShow>
+        <dataShow id="dateElement" name="yyyy-MM-dd">
+            <controlLength>cl_half</controlLength>
+        </dataShow>
+        <dataShow id="dateYyyyMmDdElement" name="yyyyMMdd">
+            <controlLength>cl_half</controlLength>
+        </dataShow>
+        <dataShow id="datetimeElement" name="yyyy-MM-dd HH:mm:ss">
+            <controlLength>cl_half</controlLength>
+        </dataShow>
+        <dataShow id="timeElement" name="HH:mm:ss">
+            <controlLength>cl_half</controlLength>
+        </dataShow>
+        <dataShow id="fileElement" name="附件上传">
+            <controlLength>cl_whole</controlLength>
+        </dataShow>
     </dataShows>
     <!-- 扩展规则，根据dataShow的id，添加字符长度 -->
     <dataLengths>
@@ -74,6 +90,10 @@
         <dataLength id="length_3" name="1000字节">1000</dataLength>
         <dataLength id="length_4" name="4000字节">4000</dataLength>
     </dataLengths>
+    <controlLengths>
+        <controlLength id="cl_half" name="半行">1</controlLength>
+        <controlLength id="cl_whole" name="整行">2</controlLength>
+    </controlLengths>
     <!-- 扩展规则，在jquery.ValidationEngine-cn中添加自定义校验方式，并添加到下面(id不能重复) -->
     <validates>
         <validate id="chinese" name="中文">custom[onlyChinses]</validate>

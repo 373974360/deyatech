@@ -15,6 +15,8 @@ public class DataShow {
 	private List<DataSource> dataSource = Lists.newArrayList();
 	
 	private List<DataLength> dataLengths = Lists.newArrayList();
+
+	private List<ControlLength> controlLengths = Lists.newArrayList();
 	
 	private boolean mustValidate = false;
 
@@ -28,6 +30,7 @@ public class DataShow {
 		dataShow.setName(this.name);
 		dataShow.setDataSource(this.dataSource);
 		dataShow.setDataLengths(this.dataLengths);
+		dataShow.setControlLengths(this.controlLengths);
 		return dataShow;
 	}
 	
@@ -86,8 +89,6 @@ public class DataShow {
 	public void setDataSource(List<DataSource> dataSource) {
 		this.dataSource = dataSource;
 	}
-	
-	
 
 	public List<DataLength> getDataLengths() {
 		return dataLengths;
@@ -95,6 +96,14 @@ public class DataShow {
 
 	public void setDataLengths(List<DataLength> dataLengths) {
 		this.dataLengths = dataLengths;
+	}
+
+	public List<ControlLength> getControlLengths() {
+		return controlLengths;
+	}
+
+	public void setControlLengths(List<ControlLength> controlLengths) {
+		this.controlLengths = controlLengths;
 	}
 
 	/**

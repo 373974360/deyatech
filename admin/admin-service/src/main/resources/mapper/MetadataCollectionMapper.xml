@@ -132,6 +132,7 @@
         am.mandatory_ as am_mandatory_,
         am.multi_flag as am_multi_flag,
         am.annotation_count as am_annotation_count,
+        am.control_length as am_control_length,
         am.category_id as am_category_id,
         am.relation_id as am_relation_id
     </sql>

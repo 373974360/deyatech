@@ -11,8 +11,6 @@ public class DataType {
 	private String name;
 	
 	private List<DataShow> dataShow = Lists.newArrayList();
-	
-	
 
 	/**
 	 * @return the id
