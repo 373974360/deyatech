@@ -26,6 +26,10 @@ import java.util.Date;
 @ApiModel(value = "元数据集元数据关联对象", description = "元数据集元数据关联", parent = BaseEntity.class)
 public class MetadataCollectionMetadata extends BaseEntity {
 
+    @ApiModelProperty(value = "标签名称", dataType = "String")
+    @TableField("label_")
+    private String label;
+
     @ApiModelProperty(value = "控件类型", dataType = "String")
     @TableField("control_type")
     private String controlType;

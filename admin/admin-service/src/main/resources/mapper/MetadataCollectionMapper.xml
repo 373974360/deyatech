@@ -43,6 +43,7 @@
         <result column="amc_parent_id" property="parentId" />
         <collection property="metadataList" ofType="com.deyatech.admin.vo.MetadataCollectionMetadataVo">
             <result column="amcm_id_" property="id" />
+            <result column="amcm_label_" property="label" />
             <result column="amcm_control_type" property="controlType" />
             <result column="amcm_check_model" property="checkModel" />
             <result column="amcm_data_source" property="dataSource" />
@@ -94,6 +95,7 @@
         amc.main_version as amc_main_version,
         amc.parent_id as amc_parent_id,
         amcm.id_ as amcm_id_,
+        amcm.label_ as amcm_label_,
         amcm.control_type as amcm_control_type,
         amcm.check_model as amcm_check_model,
         amcm.data_source as amcm_data_source,

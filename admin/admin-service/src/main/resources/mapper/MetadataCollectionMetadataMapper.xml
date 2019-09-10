@@ -5,6 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.deyatech.admin.entity.MetadataCollectionMetadata">
         <result column="id_" property="id" />
+        <result column="label_" property="label" />
         <result column="control_type" property="controlType" />
         <result column="check_model" property="checkModel" />
         <result column="data_source" property="dataSource" />
@@ -23,7 +24,7 @@
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id_,
-        control_type, check_model, data_source, dictionary_id, table_head, advanced_query, use_full_index, use_index, sort_no, metadata_collection_id, metadata_id, relation_id, mdc_version
+        label_, control_type, check_model, data_source, dictionary_id, table_head, advanced_query, use_full_index, use_index, sort_no, metadata_collection_id, metadata_id, relation_id, mdc_version
     </sql>
 
 </mapper>
