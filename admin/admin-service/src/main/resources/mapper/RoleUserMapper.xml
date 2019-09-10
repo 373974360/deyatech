@@ -17,9 +17,9 @@
 
     <select id="pageByRoleUserVo" resultType="com.deyatech.admin.vo.RoleUserVo" parameterType="com.deyatech.admin.vo.RoleUserVo">
         SELECT
-        aur.id_ AS id,
+        max(aur.id_) AS id,
         au.id_ AS userId,
-        aur.role_id AS roleId,
+        max(aur.role_id) AS roleId,
         au.name_ AS name,
         au.gender_ AS gender,
         au.account_ AS account,
@@ -27,7 +27,7 @@
         FROM admin_user au
         LEFT JOIN admin_department ad ON au.department_id = ad.id_
         LEFT JOIN admin_role_user aur ON au.id_ = aur.user_id
-        WHERE au.enable_ != -1
+        WHERE au.enable_ = 1
         <if test="roleUserVo != null">
             <if test="roleUserVo.name != null and roleUserVo.name != ''">
                 and (au.name_ like concat('%', #{roleUserVo.name}, '%') or au.account_ like concat('%', #{roleUserVo.name}, '%'))
@@ -39,6 +39,7 @@
                 and aur.role_id = #{roleUserVo.roleId}
             </if>
         </if>
+        group by au.id_
         order by au.update_time desc
     </select>
 
