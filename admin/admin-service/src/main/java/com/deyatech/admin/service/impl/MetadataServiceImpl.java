@@ -1,6 +1,9 @@
 package com.deyatech.admin.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.deyatech.admin.entity.Metadata;
 import com.deyatech.admin.mapper.MetadataMapper;
 import com.deyatech.admin.service.MetadataService;
@@ -55,6 +58,18 @@ public class MetadataServiceImpl extends BaseServiceImpl<MetadataMapper, Metadat
             }
         }
         return metadataVos;
+    }
+
+    @Override
+    public IPage<Metadata> pageByBean(Metadata entity) {
+        QueryWrapper<Metadata> wrapper = new QueryWrapper<>();
+        if (StrUtil.isNotBlank(entity.getCategoryId())) {
+            wrapper.eq("category_id", entity.getCategoryId());
+        }
+        if (StrUtil.isNotBlank(entity.getName())) {
+            wrapper.like("name_", entity.getName());
+        }
+        return super.page(getPageByBean(entity), wrapper);
     }
 
     @Override
