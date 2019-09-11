@@ -1,9 +1,7 @@
 package com.deyatech.workflow.service.impl;
 
 import cn.hutool.http.HttpStatus;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.deyatech.common.enums.EnableEnum;
 import com.deyatech.common.exception.BusinessException;
 import com.deyatech.workflow.entity.IProcessDefinition;
 import com.deyatech.workflow.mapper.ProcessDefinitionMapper;
@@ -12,6 +10,7 @@ import com.deyatech.common.base.BaseServiceImpl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import com.deyatech.workflow.vo.ProcessDefinitionVo;
+import lombok.extern.slf4j.Slf4j;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -30,6 +29,7 @@ import java.util.Collection;
  * @Author lee.
  * @since 2019-07-31
  */
+@Slf4j
 @Service
 public class ProcessDefinitionServiceImpl extends BaseServiceImpl<ProcessDefinitionMapper, IProcessDefinition> implements ProcessDefinitionService {
 
@@ -101,46 +101,38 @@ public class ProcessDefinitionServiceImpl extends BaseServiceImpl<ProcessDefinit
     }
 
     @Override
-    public void active(List<String> actDefinitionIds) {
-        if (CollectionUtil.isNotEmpty(actDefinitionIds)) {
-            for (String id : actDefinitionIds) {
+    public void active(List<String> keys) {
+        if (CollectionUtil.isNotEmpty(keys)) {
+            for (String key : keys) {
                 try {
-                    repositoryService.activateProcessDefinitionById(id);
+                    repositoryService.activateProcessDefinitionByKey(key);
                 } catch (ActivitiException e) {
                     if (e.getMessage().contains("already in state 'active'")) {
-                        throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "流程已经是启用状态");
+                        log.warn("流程已经是启用状态");
                     } else {
                         throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "流程定义启用操作失败");
                     }
                 }
-                updateEnableByActDefinitionId(id, EnableEnum.ENABLE.getCode());
+                getBaseMapper().enableByActDefinitionKey(key);
             }
         }
     }
 
     @Override
-    public void suspend(List<String> actDefinitionIds) {
-        if (CollectionUtil.isNotEmpty(actDefinitionIds)) {
-            for (String id : actDefinitionIds) {
+    public void suspend(List<String> keys) {
+        if (CollectionUtil.isNotEmpty(keys)) {
+            for (String key : keys) {
                 try {
-                    repositoryService.suspendProcessDefinitionById(id);
+                    repositoryService.suspendProcessDefinitionByKey(key);
                 } catch (ActivitiException e) {
                     if (e.getMessage().contains("already in state 'suspended'")) {
-                        throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "流程已经是停用状态");
+                        log.warn("流程已经是停用状态");
                     } else {
                         throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "流程定义停用操作失败");
                     }
                 }
-                updateEnableByActDefinitionId(id, EnableEnum.DISABLE.getCode());
+                getBaseMapper().disableByActDefinitionKey(key);
             }
         }
-    }
-
-    private void updateEnableByActDefinitionId(String actDefinitionId, Integer enable) {
-        IProcessDefinition processDefinition = new IProcessDefinition();
-        processDefinition.setEnable(enable);
-        QueryWrapper<IProcessDefinition> wrapper = new QueryWrapper<>();
-        wrapper.eq("act_definition_id", actDefinitionId);
-        update(processDefinition, wrapper);
     }
 }

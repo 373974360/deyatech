@@ -57,7 +57,7 @@
         FROM workflow_process_definition apd
         JOIN (SELECT act_definition_key, max(ver_) ver_ FROM  workflow_process_definition GROUP BY act_definition_key) apdv
         ON apd.act_definition_key = apdv.act_definition_key AND apd.ver_ = apdv.ver_
-        WHERE apd.enable_ = 1
+        WHERE apd.enable_ != -1
         <if test="processDefinition.name != null and processDefinition.name != ''">
             AND (apd.name_ LIKE concat('%', #{processDefinition.name}, '%') or apd.act_definition_key LIKE concat('%', #{processDefinition.name}, '%'))
         </if>
@@ -68,8 +68,16 @@
         SELECT *
         FROM workflow_process_definition
         WHERE act_definition_key = #{actDefinitionKey}
-        and ver_ &lt; #{version} and enable_ = 1
+        and ver_ &lt; #{version} and enable_ != -1
         order by ver_ desc
         limit 1
     </select>
+
+    <update id="enableByActDefinitionKey">
+        UPDATE workflow_process_definition SET enable_ = 1 WHERE act_definition_key = #{actDefinitionKey} and enable_ = 0
+    </update>
+
+    <update id="disableByActDefinitionKey">
+        UPDATE workflow_process_definition SET enable_ = 0 WHERE act_definition_key = #{actDefinitionKey} and enable_ = 1
+    </update>
 </mapper>

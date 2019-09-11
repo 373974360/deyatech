@@ -19,4 +19,8 @@ public interface ProcessDefinitionMapper extends BaseMapper<IProcessDefinition> 
     IPage<ProcessDefinitionVo> findLastVersionPage(@Param("page") IPage<IProcessDefinition> page, @Param("processDefinition") IProcessDefinition processDefinition);
 
     IProcessDefinition getLastVersionByActDefinitionKey(@Param("actDefinitionKey") String actDefinitionKey, @Param("version") int version);
+
+    void enableByActDefinitionKey(@Param("actDefinitionKey") String actDefinitionKey);
+
+    void disableByActDefinitionKey(@Param("actDefinitionKey") String actDefinitionKey);
 }

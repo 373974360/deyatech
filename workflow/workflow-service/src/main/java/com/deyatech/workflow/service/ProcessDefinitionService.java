@@ -71,14 +71,14 @@ public interface ProcessDefinitionService extends BaseService<IProcessDefinition
     /**
      * 激活
      *
-     * @param actDefinitionIds
+     * @param keys
      */
-    void active(List<String> actDefinitionIds);
+    void active(List<String> keys);
 
     /**
      * 挂起
      *
-     * @param actDefinitionIds
+     * @param keys
      */
-    void suspend(List<String> actDefinitionIds);
+    void suspend(List<String> keys);
 }
