@@ -1,5 +1,6 @@
 package com.deyatech.admin.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.deyatech.admin.entity.Department;
 import com.deyatech.admin.vo.DepartmentVo;
 import com.deyatech.admin.mapper.DepartmentMapper;
@@ -10,6 +11,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.deyatech.common.Constants;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.deyatech.common.enums.EnableEnum;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Collection;
@@ -94,5 +96,14 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
             }
         }
         return departmentVos;
+    }
+
+    @Override
+    public List<Department> findByIds(List<String> ids) {
+        QueryWrapper<Department> wrapper = new QueryWrapper<>();
+        wrapper.in("id_", ids);
+        wrapper.eq("enable_", EnableEnum.ENABLE.getCode());
+        wrapper.orderByAsc("tree_position", "sort_no");
+        return list(wrapper);
     }
 }

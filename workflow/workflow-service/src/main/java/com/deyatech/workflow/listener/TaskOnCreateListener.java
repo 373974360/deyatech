@@ -60,6 +60,9 @@ public class TaskOnCreateListener implements ActivitiEventListener {
                 for (String candidateGroup : candidateGroups) {
                     taskService.addCandidateGroup(task.getId(), candidateGroup);
                 }
+            } else if (CandidateTypeEnum.DEPARTMENT.getCode().equals(taskSetting.getCandidateType())
+                    && StringUtils.isNotBlank(taskSetting.getCandidateDepartments())) {
+                taskService.setVariableLocal(task.getId(), Constants.VARIABLE_DEPARTMENT, taskSetting.getCandidateDepartments());
             }
 
             if (taskSetting.getAutoPass()) {
@@ -79,7 +82,19 @@ public class TaskOnCreateListener implements ActivitiEventListener {
 
                     List<String> candidateGroups = Arrays.asList(taskSetting.getCandidateGroups().split(","));
                     for (String candidateGroup : candidateGroups) {
-                        List<String> userIds = WorkFlowUtils.getValidUser(uniqueKey, candidateGroup, variables);
+                        List<String> userIds = WorkFlowUtils.getValidUser(uniqueKey, taskSetting.getCandidateType(), candidateGroup, variables);
+                        if (CollectionUtil.isNotEmpty(userIds)) {
+                            return;
+                        }
+                    }
+                } else if (CandidateTypeEnum.DEPARTMENT.getCode().equals(taskSetting.getCandidateType())
+                        && StringUtils.isNotBlank(taskSetting.getCandidateDepartments())) {
+                    String definitionKey = task.getProcessInstance().getProcessDefinitionKey();
+                    String uniqueKey = source + ":" + definitionKey + ":" + task.getTaskDefinitionKey();
+
+                    List<String> candidateGroups = Arrays.asList(taskSetting.getCandidateDepartments().split(","));
+                    for (String candidateGroup : candidateGroups) {
+                        List<String> userIds = WorkFlowUtils.getValidUser(uniqueKey, taskSetting.getCandidateType(), candidateGroup, variables);
                         if (CollectionUtil.isNotEmpty(userIds)) {
                             return;
                         }

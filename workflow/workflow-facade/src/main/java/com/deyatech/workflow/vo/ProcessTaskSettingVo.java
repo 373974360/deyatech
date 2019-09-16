@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.util.List;
+
 /**
  * <p>
  * 流程任务节点设置扩展对象
@@ -19,4 +21,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @ApiModel(value = "流程任务节点设置扩展对象", description = "流程任务节点设置扩展对象", parent = ProcessTaskSetting.class)
 public class ProcessTaskSettingVo extends ProcessTaskSetting {
+
+    private List<Object> departments;
 }

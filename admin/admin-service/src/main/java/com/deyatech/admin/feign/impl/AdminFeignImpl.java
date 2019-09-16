@@ -218,6 +218,19 @@ public class AdminFeignImpl implements AdminFeign {
         return RestResult.ok(roleIds);
     }
 
+    @Override
+    public RestResult<List<String>> findUserIdsByDepartmentId(String departmentId) {
+        List<String> userIds = new ArrayList<>();
+
+        User user = new User();
+        user.setDepartmentId(departmentId);
+        Collection<User> list = userService.listByBean(user);
+        for (User u : list) {
+            userIds.add(u.getId());
+        }
+        return RestResult.ok(userIds);
+    }
+
     /**
      * 获取所有元数据集（包括关联的元数据）信息
      *

@@ -2,12 +2,15 @@ package com.deyatech.workflow.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.http.HttpStatus;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.deyatech.admin.feign.AdminFeign;
+import com.deyatech.admin.vo.UserVo;
 import com.deyatech.common.Constants;
 import com.deyatech.common.entity.RestResult;
+import com.deyatech.common.enums.CandidateTypeEnum;
 import com.deyatech.common.enums.ProcessInstanceStatusEnum;
 import com.deyatech.common.exception.BusinessException;
 import com.deyatech.workflow.service.ProcessTaskService;
@@ -336,12 +339,21 @@ public class ProcessTaskServiceImpl implements ProcessTaskService {
                             break;
                         }
                         if (StringUtils.isNotBlank(identityLink.getGroupId())) {
-                            List<String> userIds = WorkFlowUtils.getValidUser(uniqueKey, identityLink.getGroupId(), variables);
+                            List<String> userIds = WorkFlowUtils.getValidUser(uniqueKey, CandidateTypeEnum.GROUP.getCode(), identityLink.getGroupId(), variables);
                             if (CollectionUtil.isNotEmpty(userIds) && userIds.contains(userId)) {
                                 list.add(task);
                                 break;
                             }
                         }
+                    }
+                }
+                String departmentIds = (String) taskService.getVariableLocal(task.getId(), Constants.VARIABLE_DEPARTMENT);
+                List<String> candidateGroups = Arrays.asList(departmentIds.split(","));
+                for (String candidateGroup : candidateGroups) {
+                    List<String> userIds = WorkFlowUtils.getValidUser(uniqueKey, CandidateTypeEnum.DEPARTMENT.getCode(), candidateGroup, variables);
+                    if (CollectionUtil.isNotEmpty(userIds) && userIds.contains(userId)) {
+                        list.add(task);
+                        break;
                     }
                 }
             }
@@ -372,6 +384,10 @@ public class ProcessTaskServiceImpl implements ProcessTaskService {
                 for (String roleId : roleResult.getData()) {
                     query.taskCandidateGroup(roleId);
                 }
+            }
+            RestResult<UserVo> userResult = adminFeign.getUserByUserId(processTaskDto.getCandidateUser());
+            if (userResult.isOk() && ObjectUtil.isNotNull(userResult.getData())) {
+                query.processVariableValueLike(Constants.VARIABLE_DEPARTMENT, userResult.getData().getDepartmentId());
             }
             query.endOr();
         }

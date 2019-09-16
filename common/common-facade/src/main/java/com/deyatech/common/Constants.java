@@ -217,5 +217,7 @@ public interface Constants {
 
     String VARIABLE_SOURCE = "source";
 
+    String VARIABLE_DEPARTMENT = "department";
+
     String WORKFLOW_RANG_KEY_SPLIT = ":";
 }

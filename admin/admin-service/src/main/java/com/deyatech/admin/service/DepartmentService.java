@@ -39,4 +39,12 @@ public interface DepartmentService extends BaseService<Department> {
      * @return
      */
     List<DepartmentVo> setVoProperties(Collection departments);
+
+    /**
+     * 根据部门id批量查询部门信息
+     *
+     * @param ids
+     * @return
+     */
+    List<Department> findByIds(List<String> ids);
 }

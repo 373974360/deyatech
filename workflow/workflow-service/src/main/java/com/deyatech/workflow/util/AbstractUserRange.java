@@ -11,5 +11,5 @@ public abstract class AbstractUserRange {
      * @param data
      * @return
      */
-    public abstract List<String> getValidUser(String roleId, Map<String, Object> data);
+    public abstract List<String> getValidUser(int candidateType, String groupId, Map<String, Object> data);
 }

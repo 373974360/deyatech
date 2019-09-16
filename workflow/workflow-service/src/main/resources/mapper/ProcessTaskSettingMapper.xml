@@ -19,6 +19,7 @@
         <result column="candidate_type" property="candidateType" />
         <result column="candidate_users" property="candidateUsers" />
         <result column="candidate_groups" property="candidateGroups" />
+        <result column="candidate_departments" property="candidateDepartments" />
         <result column="auto_pass" property="autoPass" />
     </resultMap>
 
@@ -32,7 +33,6 @@
         update_by,
         update_time,
         version_,
-        act_definition_id, act_task_definition_id, source_, assignee_, candidate_type, candidate_users, candidate_groups, auto_pass
+        act_definition_id, act_task_definition_id, source_, assignee_, candidate_type, candidate_users, candidate_groups, candidate_departments, auto_pass
     </sql>
-
 </mapper>

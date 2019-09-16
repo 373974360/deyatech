@@ -158,8 +158,8 @@ public interface AdminFeign {
      * @param roleId
      * @return
      */
-    @RequestMapping(value = "/roleUser/getUserIdsByRoleId")
-    RestResult<List<String>> getUserIdsByRoleId(String roleId);
+    @RequestMapping(value = "/roleUser/getUserIdsByRoleId", method = RequestMethod.GET)
+    RestResult<List<String>> getUserIdsByRoleId(@RequestParam("roleId") String roleId);
 
     /**
      * 根据用户id查询角色id
@@ -167,8 +167,17 @@ public interface AdminFeign {
      * @param userId
      * @return
      */
-    @RequestMapping(value = "/roleUser/getRoleIdsByUserId")
-    RestResult<List<String>> getRoleIdsByUserId(String userId);
+    @RequestMapping(value = "/roleUser/getRoleIdsByUserId", method = RequestMethod.GET)
+    RestResult<List<String>> getRoleIdsByUserId(@RequestParam("userId") String userId);
+
+    /**
+     * 根据部门id查询用户id
+     *
+     * @param departmentId
+     * @return
+     */
+    @RequestMapping(value = "findUserIdsByDepartmentId", method = RequestMethod.GET)
+    RestResult<List<String>> findUserIdsByDepartmentId(@RequestParam("departmentId") String departmentId);
 
     /**
      * 获取所有元数据集（包括关联的元数据）信息

@@ -104,6 +104,7 @@ public class ProcessTaskSettingServiceImpl extends BaseServiceImpl<ProcessTaskSe
                 processTaskSetting.setCandidateType(setting.getCandidateType());
                 processTaskSetting.setCandidateUsers(setting.getCandidateUsers());
                 processTaskSetting.setCandidateGroups(setting.getCandidateGroups());
+                processTaskSetting.setCandidateDepartments(setting.getCandidateDepartments());
                 processTaskSetting.setAutoPass(setting.getAutoPass());
                 processTaskSetting.setSource(setting.getSource());
                 saveOrUpdate(processTaskSetting);

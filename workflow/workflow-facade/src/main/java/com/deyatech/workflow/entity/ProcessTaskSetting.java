@@ -52,6 +52,10 @@ public class ProcessTaskSetting extends BaseEntity {
     @TableField("candidate_groups")
     private String candidateGroups;
 
+    @ApiModelProperty(value = "审核人部门", dataType = "String")
+    @TableField("candidate_departments")
+    private String candidateDepartments;
+
     @ApiModelProperty(value = "是否自动审批通过", dataType = "Boolean")
     @TableField("auto_pass")
     private Boolean autoPass;

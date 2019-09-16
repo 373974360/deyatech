@@ -8,7 +8,8 @@ package com.deyatech.common.enums;
 public enum CandidateTypeEnum implements IEnums<Integer> {
 
     USER(1, "用户"),
-    GROUP(2, "角色");
+    GROUP(2, "角色"),
+    DEPARTMENT(3, "部门");
 
     int code;
     String value;

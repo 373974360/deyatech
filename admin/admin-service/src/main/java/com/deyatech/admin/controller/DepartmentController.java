@@ -1,11 +1,15 @@
 package com.deyatech.admin.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.deyatech.admin.entity.Department;
 import com.deyatech.admin.vo.DepartmentVo;
 import com.deyatech.admin.service.DepartmentService;
 import com.deyatech.common.entity.RestResult;
 import com.deyatech.common.entity.CascaderResult;
 import com.deyatech.common.utils.CascaderUtil;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import cn.hutool.json.JSONUtil;
@@ -172,5 +176,16 @@ public class DepartmentController extends BaseController {
         List<CascaderResult> cascaderResults = CascaderUtil.getResult("Id", "Name","TreePosition", department.getId(), departmentVos);
         log.info(String.format("获取系统部门信息的级联对象: %s ",JSONUtil.toJsonStr(cascaderResults)));
         return RestResult.ok(cascaderResults);
+    }
+
+    @GetMapping("/findByIds")
+    @ApiOperation(value = "根据部门id批量查询部门信息", notes = "根据部门id批量查询部门信息")
+    @ApiImplicitParam(name = "ids", value = "部门id集合", required = true, dataType = "String", paramType = "query")
+    public RestResult<List<DepartmentVo>> findByIds(String ids) {
+        List<Department> list = new ArrayList<>();
+        if (StrUtil.isNotBlank(ids)) {
+            list = departmentService.findByIds(Arrays.asList(ids.split(",")));
+        }
+        return RestResult.ok(departmentService.setVoProperties(list));
     }
 }
