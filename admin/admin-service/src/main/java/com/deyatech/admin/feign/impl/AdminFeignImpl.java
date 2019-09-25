@@ -57,6 +57,9 @@ public class AdminFeignImpl implements AdminFeign {
     @Autowired
     MetaUtils metaUtils;
 
+    @Autowired
+    DepartmentService departmentService;
+
     @Override
     public RestResult<String[]> getAllPermissionsByUserId(@RequestParam("userId") String userId) {
         return RestResult.ok(menuService.getAllPermissionsByUserId(userId));
@@ -297,6 +300,11 @@ public class AdminFeignImpl implements AdminFeign {
             this.removeMetadataById(m)
         );
         return RestResult.ok();
+    }
+
+    @Override
+    public RestResult<Department> getDepartmentById(String id) {
+        return RestResult.ok(departmentService.getById(id));
     }
 
     private void removeMetadataById(Map map) {
