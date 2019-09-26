@@ -1,5 +1,6 @@
 package com.deyatech.admin.feign;
 
+import com.deyatech.admin.entity.Department;
 import com.deyatech.admin.entity.Holiday;
 import com.deyatech.admin.entity.User;
 import com.deyatech.admin.vo.DictionaryVo;
@@ -217,5 +218,13 @@ public interface AdminFeign {
      */
     @RequestMapping(value = "/metadataCollection/removeMetadataById")
     RestResult removeMetadataByIds(@RequestBody List<Map> mapList);
+
+    /**
+     * 根据ID获取部门对象
+     * @param id id集合
+     * @return
+     */
+    @RequestMapping(value = "/department/getDepartmentById")
+    RestResult<Department> getDepartmentById(@RequestParam("id") String id);
 
 }

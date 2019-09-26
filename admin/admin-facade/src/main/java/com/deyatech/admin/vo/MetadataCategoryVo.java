@@ -30,4 +30,7 @@ public class MetadataCategoryVo extends MetadataCategory {
 
     @ApiModelProperty(value = "树结构中的层级", dataType = "String")
     private Integer level;
+
+    @ApiModelProperty(value = "元数据件数", dataType = "Integer")
+    private Integer dataCount;
 }

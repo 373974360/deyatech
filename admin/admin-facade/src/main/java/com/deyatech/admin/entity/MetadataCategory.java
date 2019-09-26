@@ -1,5 +1,6 @@
 package com.deyatech.admin.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.deyatech.common.base.BaseEntity;
@@ -32,7 +33,7 @@ public class MetadataCategory extends BaseEntity {
     private String parentId;
 
     @ApiModelProperty(value = "树结构中的位置", dataType = "String")
-    @TableField("tree_position")
+    @TableField(value = "tree_position", strategy = FieldStrategy.IGNORED)
     private String treePosition;
 
     @ApiModelProperty(value = "排序", dataType = "Integer", example = "1")
