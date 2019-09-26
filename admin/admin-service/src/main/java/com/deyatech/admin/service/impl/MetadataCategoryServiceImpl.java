@@ -1,5 +1,6 @@
 package com.deyatech.admin.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.deyatech.admin.entity.Metadata;
 import com.deyatech.admin.entity.MetadataCategory;
 import com.deyatech.admin.mapper.MetadataCategoryMapper;
@@ -44,6 +45,9 @@ public class MetadataCategoryServiceImpl extends BaseServiceImpl<MetadataCategor
         List<MetadataCategoryVo> rootMetadataCategorys = CollectionUtil.newArrayList();
         if (CollectionUtil.isNotEmpty(metadataCategoryVos)) {
             for (MetadataCategoryVo metadataCategoryVo : metadataCategoryVos) {
+                QueryWrapper<Metadata> queryWrapper = new QueryWrapper<>();
+                queryWrapper.eq("category_id", metadataCategoryVo.getId());
+                metadataCategoryVo.setDataCount(metadataService.count(queryWrapper));
                 metadataCategoryVo.setLabel(metadataCategoryVo.getName());
                 if(StrUtil.isNotBlank(metadataCategoryVo.getTreePosition())){
                     String[] split = metadataCategoryVo.getTreePosition().split(Constants.DEFAULT_TREE_POSITION_SPLIT);
