@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 
+import java.util.Collection;
+
 /**
  * <p>
  * 电信webservice发送工具类
@@ -29,9 +31,7 @@ public class DianxinUtil {
 
     /**
      * 调用电信webservice接口发送电话
-     * @param calleeNumber 手机号
      * @param ttsCode 模板ID
-     * @param TmpParam 模板参数(多个用,隔开)：1,2,3
      * @param playCnt 播放次数
      * @return
      */
@@ -40,11 +40,19 @@ public class DianxinUtil {
         //创建动态客户端
         JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
         Client client = dcf.createClient(dianxinConfig.getWsdlUrl());
+        String params = "";
+        Collection<String> values = subMailMessage.getVars().values();
+        if(values.size() > 0){
+            for (String value : values) {
+                params = params.concat(value).concat(",");
+            }
+            params = params.substring(0,params.length() - 1);
+        }
         //需要密码的情况需要加上用户名和密码
-        Object[] objects = new Object[0];
+        Object[] objects = null;
         try {
             objects = client.invoke(dianxinConfig.getMethodName(), dianxinConfig.getAccountNumber(),subMailMessage.getTo(),ttsCode,
-                    JSONUtil.toJsonStr(subMailMessage.getVars()),playCnt);
+                    params,playCnt);
             log.info("电信接口返回信息:" + objects[0]);
         } catch (java.lang.Exception e) {
             log.error(StrUtil.format("电信接口返回信息失败：%s", JSONUtil.toJsonStr(e)));
