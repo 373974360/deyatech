@@ -1,7 +1,7 @@
 package com.deyatech.common.dianxin;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSON;
 import cn.hutool.json.JSONUtil;
 import com.deyatech.common.submail.SubMailMessage;
 import lombok.Data;
@@ -10,6 +10,7 @@ import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * <p>
@@ -52,7 +53,7 @@ public class DianxinUtil {
         Object[] objects = null;
         try {
             objects = client.invoke(dianxinConfig.getMethodName(), dianxinConfig.getAccountNumber(),subMailMessage.getTo(),ttsCode,
-                    params,playCnt);
+                    params,Integer.parseInt(playCnt));
             log.info("电信接口返回信息:" + objects[0]);
         } catch (java.lang.Exception e) {
             log.error(StrUtil.format("电信接口返回信息失败：%s", JSONUtil.toJsonStr(e)));
@@ -65,5 +66,19 @@ public class DianxinUtil {
             }
         }
         return true;
+    }
+
+    public static void main(String[] args) {
+        DianxinConfig dianxinConfig = new DianxinConfig();
+        dianxinConfig.setAccountNumber("02985992688");
+        dianxinConfig.setMethodName("playWavTmpFile");
+        dianxinConfig.setWsdlUrl("http://htjdzwzx.118399.cn/LogisticsService.asmx?WSDL");
+        DianxinUtil  dianxinUtil = new DianxinUtil(dianxinConfig);
+        SubMailMessage subMailMessage = new SubMailMessage();
+        subMailMessage.setTo("18682925636");
+        Map<String,String> params = MapUtil.newHashMap();
+        params.put("windowName", "测试窗口1");
+        subMailMessage.setVars(params);
+        dianxinUtil.sendVoice(subMailMessage,"AD7EC751-F01F-40A9-9FBD-3289CFD43660","1");
     }
 }
