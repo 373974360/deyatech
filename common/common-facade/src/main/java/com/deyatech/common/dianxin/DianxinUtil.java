@@ -52,11 +52,11 @@ public class DianxinUtil {
         //需要密码的情况需要加上用户名和密码
         Object[] objects = null;
         try {
-            log.info("电信接口发送语音消息:[%s][%s][%s][%s][%s][%s]：", subMailMessage.getTo(), params, ttsCode,
-                    dianxinConfig.getAccountNumber(), dianxinConfig.getMethodName(), dianxinConfig.getWsdlUrl());
+            log.info(String.format("电信接口发送语音消息:[%s][%s][%s][%s][%s][%s]：", subMailMessage.getTo(), params, ttsCode,
+                    dianxinConfig.getAccountNumber(), dianxinConfig.getMethodName(), dianxinConfig.getWsdlUrl()));
             objects = client.invoke(dianxinConfig.getMethodName(), dianxinConfig.getAccountNumber(), subMailMessage.getTo(), ttsCode,
                     params, Integer.parseInt(playCnt));
-            log.info("电信接口返回信息:[%s][%s]", subMailMessage.getTo(), objects[0]);
+            log.info(String.format("电信接口返回信息:[%s][%s]", subMailMessage.getTo(), objects[0]));
         } catch (java.lang.Exception e) {
             log.error(StrUtil.format("电信接口返回信息失败：%s", JSONUtil.toJsonStr(e)));
             return false;
