@@ -66,14 +66,14 @@
                 <el-row :gutter="20" :span="24">
                     <el-col :span="12">
                         <el-form-item :label="${dollar}t('table.parent')">
-                            <el-cascader :options="${lowerEntity}Cascader" v-model="${lowerEntity}TreePosition"
+                            <el-cascader :options="${lowerEntity}Cascader" v-model.trim="${lowerEntity}TreePosition"
                                          show-all-levels expand-trigger="click" clearable
                                          change-on-select></el-cascader>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item :label="${dollar}t('table.searchName')" prop="name">
-                            <el-input v-model="${lowerEntity}.name"/>
+                            <el-input v-model.trim="${lowerEntity}.name"/>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -85,13 +85,13 @@
                 <el-row :gutter="20" :span="24">
                     <el-col :span="12">
                         <el-form-item label="${column.comment}" prop="${column.propertyName}">
-                            <el-input v-model="${lowerEntity}.${column.propertyName}"></el-input>
+                            <el-input v-model.trim="${lowerEntity}.${column.propertyName}"></el-input>
                         </el-form-item>
                     </el-col>
             <#else>
                     <el-col :span="12">
                         <el-form-item label="${column.comment}" prop="${column.propertyName}">
-                            <el-input v-model="${lowerEntity}.${column.propertyName}"></el-input>
+                            <el-input v-model.trim="${lowerEntity}.${column.propertyName}"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -101,7 +101,7 @@
                 <el-row :gutter="20" :span="24">
                     <el-col :span="12">
                         <el-form-item label="${column.comment}" prop="${column.propertyName}">
-                            <el-input v-model="${lowerEntity}.${column.propertyName}"></el-input>
+                            <el-input v-model.trim="${lowerEntity}.${column.propertyName}"></el-input>
                         </el-form-item>
                     </el-col>
                 <#if count == column_index>
@@ -110,7 +110,7 @@
             <#else>
                     <el-col :span="12">
                         <el-form-item label="${column.comment}" prop="${column.propertyName}">
-                            <el-input v-model="${lowerEntity}.${column.propertyName}"></el-input>
+                            <el-input v-model.trim="${lowerEntity}.${column.propertyName}"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -121,7 +121,7 @@
                 <el-row :gutter="20" :span="24">
                     <el-col :span="24">
                         <el-form-item :label="${dollar}t('table.remark')">
-                            <el-input type="textarea" v-model="${lowerEntity}.remark" :rows="3"/>
+                            <el-input type="textarea" v-model.trim="${lowerEntity}.remark" :rows="3"/>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -350,7 +350,7 @@
             <div class="deyatech-header">
                 <el-form :inline="true" ref="searchForm">
                     <el-form-item>
-                        <el-input :size="searchSize" :placeholder="${dollar}t('table.searchName')" v-model="listQuery.name"></el-input>
+                        <el-input :size="searchSize" :placeholder="${dollar}t('table.searchName')" v-model.trim="listQuery.name"></el-input>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" icon="el-icon-search" :size="searchSize" @click="reloadList">{{${dollar}t('table.search')}}</el-button>
@@ -417,13 +417,13 @@
                     <el-row :gutter="20" :span="24">
                         <el-col :span="12">
                             <el-form-item label="${column.comment}" prop="${column.propertyName}">
-                                <el-input v-model="${lowerEntity}.${column.propertyName}"></el-input>
+                                <el-input v-model.trim="${lowerEntity}.${column.propertyName}"></el-input>
                             </el-form-item>
                         </el-col>
                 <#else>
                         <el-col :span="12">
                             <el-form-item label="${column.comment}" prop="${column.propertyName}">
-                                <el-input v-model="${lowerEntity}.${column.propertyName}"></el-input>
+                                <el-input v-model.trim="${lowerEntity}.${column.propertyName}"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -433,7 +433,7 @@
                     <el-row :gutter="20" :span="24">
                         <el-col :span="12">
                             <el-form-item label="${column.comment}" prop="${column.propertyName}">
-                                <el-input v-model="${lowerEntity}.${column.propertyName}"></el-input>
+                                <el-input v-model.trim="${lowerEntity}.${column.propertyName}"></el-input>
                             </el-form-item>
                         </el-col>
                     <#if count == column_index>
@@ -442,7 +442,7 @@
                 <#else>
                         <el-col :span="12">
                             <el-form-item label="${column.comment}" prop="${column.propertyName}">
-                                <el-input v-model="${lowerEntity}.${column.propertyName}"></el-input>
+                                <el-input v-model.trim="${lowerEntity}.${column.propertyName}"></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -452,7 +452,7 @@
                     <el-row :gutter="20" :span="24">
                         <el-col :span="24">
                             <el-form-item :label="${dollar}t('table.remark')">
-                                <el-input type="textarea" v-model="${lowerEntity}.remark" :rows="3"/>
+                                <el-input type="textarea" v-model.trim="${lowerEntity}.remark" :rows="3"/>
                             </el-form-item>
                         </el-col>
                     </el-row>

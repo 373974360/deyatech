@@ -1,5 +1,7 @@
 package com.deyatech.admin.util;
 
+import cn.hutool.http.HttpStatus;
+import com.deyatech.common.exception.BusinessException;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -30,15 +32,14 @@ public class JdbcUtils {
     private Connection connection;
 
     public Connection getConnection() {
-        if (connection != null) {
-            return connection;
-        }
-
         try {
-            Class.forName(driverClassName);
-            connection = DriverManager.getConnection(url, username, password);
+            if (connection == null || (connection != null && connection.isClosed())) {
+                Class.forName(driverClassName);
+                connection = DriverManager.getConnection(url, username, password);
+            }
         } catch (Exception e) {
             e.printStackTrace();
+            throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "数据库连接创建失败");
         }
         return connection;
     }
