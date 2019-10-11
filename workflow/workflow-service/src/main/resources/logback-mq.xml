@@ -3,6 +3,10 @@
 
     <!-- 定义日志文件名称-->
     <springProperty name="application.name" source="spring.application.name"/>
+    <springProperty scope="context" name="rabbitmqHost" source="spring.rabbitmq.host"/>
+    <springProperty scope="context" name="rabbitmqPort" source="spring.rabbitmq.port"/>
+    <springProperty scope="context" name="rabbitmqUsername" source="spring.rabbitmq.username"/>
+    <springProperty scope="context" name="rabbitmqPassword" source="spring.rabbitmq.password"/>
 
     <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->
     <property name="log.path" value="/deya/logs/app/"/>
@@ -52,6 +56,33 @@
         </encoder>
     </appender>
 
+    <appender name="amqp" class="org.springframework.amqp.rabbit.logback.AmqpAppender">
+        <layout>
+            <pattern>
+                {
+                "time": "%d{yyyy-MM-dd HH:mm:ss}",
+                "thread": "%-2thread",
+                "level": "%-2level",
+                "logger": "%-2logger{80}",
+                "message": "%-2replace(%msg){'\"', '\''}"
+                }
+            </pattern>
+        </layout>
+        <host>${rabbitmqHost}</host>
+        <port>${rabbitmqPort}</port>
+        <username>${rabbitmqUsername}</username>
+        <password>${rabbitmqPassword}</password>
+        <declareExchange>false</declareExchange>
+        <exchangeType>direct</exchangeType>
+        <exchangeName>logs-exchange</exchangeName>
+        <routingKeyPattern>logs-queue</routingKeyPattern>
+        <contentType>application/json</contentType>
+        <generateId>true</generateId>
+        <charset>UTF-8</charset>
+        <durable>false</durable>
+        <deliveryMode>NON_PERSISTENT</deliveryMode>
+    </appender>
+
     <!-- 特殊处理 -->
     <logger name="com.apache.ibatis" level="TRACE"/>
     <logger name="java.sql.Connection" level="DEBUG"/>
@@ -63,12 +94,14 @@
     <springProfile name="dev">
         <root level="info">
             <appender-ref ref="console"/>
+            <appender-ref ref="amqp"/>
         </root>
     </springProfile>
     <!-- 测试环境 正式环境 输出info及以上日志 -->
     <springProfile name="test,prod">
         <root level="info">
             <appender-ref ref="file"/>
+            <appender-ref ref="amqp"/>
         </root>
     </springProfile>
 </configuration>
