@@ -5,7 +5,7 @@ package com.deyatech.common.enums;
  *
  * @Author ycx.
  */
-public enum TemplateAuthority implements IEnums<String> {
+public enum TemplateAuthorityEnum implements IEnums<String> {
     /**
      * 全部
      */
@@ -21,7 +21,7 @@ public enum TemplateAuthority implements IEnums<String> {
 
     private String code;
     private String value;
-    TemplateAuthority(String code, String value) {
+    TemplateAuthorityEnum(String code, String value) {
         this.code = code;
         this.value = value;
     }

@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.deyatech.admin.entity.User;
+import com.deyatech.admin.service.DepartmentService;
 import com.deyatech.admin.vo.UserVo;
 import com.deyatech.admin.mapper.UserMapper;
 import com.deyatech.admin.service.UserService;
@@ -34,6 +35,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 
     @Autowired
     UserMapper userMapper;
+    @Autowired
+    DepartmentService departmentService;
 
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(Constants.PASSWORD_ENCORDER_SALT);
 
@@ -135,5 +138,20 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
         wrapper.in("id_", ids);
         wrapper.eq("enable_", EnableEnum.ENABLE.getCode());
         return list(wrapper);
+    }
+
+
+    /**
+     * 获取用户所在部门及子部门的所有用户ID
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<User> getAllUserIdInUserDepartment(String userId) {
+        User user = getById(userId);
+        List<String> departmentIds = departmentService.getAllChildrenDepartmentIds(user.getDepartmentId());
+        departmentIds.add(user.getDepartmentId());
+        return baseMapper.getAllUserIdInUserDepartment(departmentIds);
     }
 }

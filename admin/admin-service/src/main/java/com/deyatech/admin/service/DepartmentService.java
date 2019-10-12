@@ -47,4 +47,12 @@ public interface DepartmentService extends BaseService<Department> {
      * @return
      */
     List<Department> findByIds(List<String> ids);
+
+    /**
+     * 获取所有子部门ID
+     *
+     * @param departmentId
+     * @return
+     */
+    List<String> getAllChildrenDepartmentIds(String departmentId);
 }

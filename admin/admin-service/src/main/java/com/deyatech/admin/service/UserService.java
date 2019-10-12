@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.deyatech.admin.entity.User;
 import com.deyatech.admin.vo.UserVo;
 import com.deyatech.common.base.BaseService;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collection;
 import java.util.List;
@@ -88,4 +89,12 @@ public interface UserService extends BaseService<User> {
      * @return
      */
     List<User> findByIds(List<String> ids);
+
+    /**
+     * 获取用户所在部门及子部门的所有用户ID
+     *
+     * @param userId
+     * @return
+     */
+    List<User> getAllUserIdInUserDepartment(String userId);
 }

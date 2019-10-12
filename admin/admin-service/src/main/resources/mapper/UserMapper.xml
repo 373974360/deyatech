@@ -17,6 +17,7 @@
         <result column="gender_" property="gender" />
         <result column="phone_" property="phone" />
         <result column="avatar_" property="avatar" />
+        <result column="emp_no" property="empNo" />
         <result column="account_" property="account" />
         <result column="password_" property="password" />
     </resultMap>
@@ -31,7 +32,7 @@
         update_by,
         update_time,
         version_,
-        department_id, name_, gender_, phone_, avatar_, account_, password_
+        department_id, name_, gender_, phone_, avatar_, emp_no, account_, password_
     </sql>
 
     <select id="findList" resultType="com.deyatech.admin.vo.UserVo" parameterType="com.deyatech.admin.vo.UserVo">
@@ -145,6 +146,18 @@
             </foreach>
         </if>
         order by au.name_
+    </select>
+    <!--获取用户所在部门及子部门的所有用户-->
+    <select id="getAllUserIdInUserDepartment" resultType="com.deyatech.admin.entity.User">
+        select <include refid="Base_Column_List"></include>
+        from admin_user
+        where enable_ = '1'
+        <if test="list != null and list.size > 0">
+            and department_id in
+            <foreach index="index" item="item" collection="list" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
     </select>
 
 </mapper>
