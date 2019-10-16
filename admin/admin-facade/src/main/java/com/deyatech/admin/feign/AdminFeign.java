@@ -235,4 +235,11 @@ public interface AdminFeign {
      */
     @RequestMapping(value = "/department/getAllUserIdInUserDepartment")
     RestResult<List<User>> getAllUserIdInUserDepartment(@RequestParam("userId") String userId);
+
+    /**
+     * 检索所有的部门
+     * @return
+     */
+    @RequestMapping(value = "/department/getAllDepartments")
+    RestResult<List<Department>> getAllDepartments();
 }
