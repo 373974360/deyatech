@@ -13,6 +13,8 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.deyatech.common.enums.EnableEnum;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Collection;
 
@@ -105,5 +107,29 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
         wrapper.eq("enable_", EnableEnum.ENABLE.getCode());
         wrapper.orderByAsc("tree_position", "sort_no");
         return list(wrapper);
+    }
+
+    /**
+     * 获取所有子部门ID
+     *
+     * @param departmentId
+     * @return
+     */
+    @Override
+    public List<String> getAllChildrenDepartmentIds(String departmentId) {
+        List<Department> allDepartmentList = super.list();
+        List<String> childrenDepartmentIds = new ArrayList<>();
+        getChildrenDepartment(departmentId, allDepartmentList, childrenDepartmentIds);
+        return childrenDepartmentIds;
+    }
+
+    private void getChildrenDepartment(String departmentId, Collection<Department> allDepartmentList, List<String> childrenDepartmentIds) {
+        if (StrUtil.isEmpty(departmentId) || CollectionUtil.isEmpty(allDepartmentList) || childrenDepartmentIds == null) return;
+        for (Department d : allDepartmentList) {
+            if (departmentId.equals(d.getParentId())) {
+                childrenDepartmentIds.add(d.getId());
+                getChildrenDepartment(d.getId(), allDepartmentList, childrenDepartmentIds);
+            }
+        }
     }
 }

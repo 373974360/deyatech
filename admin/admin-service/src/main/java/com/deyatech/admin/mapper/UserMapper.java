@@ -48,4 +48,12 @@ public interface UserMapper extends BaseMapper<User> {
      * @return
      */
     List<User> getUsersByWindowAndDepartment(Map map);
+
+    /**
+     * 获取用户所在部门及子部门的所有用户
+     *
+     * @param list
+     * @return
+     */
+    List<User> getAllUserIdInUserDepartment(@Param("list") List<String> list);
 }

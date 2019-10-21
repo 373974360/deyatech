@@ -227,4 +227,19 @@ public interface AdminFeign {
     @RequestMapping(value = "/department/getDepartmentById")
     RestResult<Department> getDepartmentById(@RequestParam("id") String id);
 
+    /**
+     * 获取用户所在部门及子部门的所有用户ID
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping(value = "/department/getAllUserIdInUserDepartment")
+    RestResult<List<User>> getAllUserIdInUserDepartment(@RequestParam("userId") String userId);
+
+    /**
+     * 检索所有的部门
+     * @return
+     */
+    @RequestMapping(value = "/department/getAllDepartments")
+    RestResult<List<Department>> getAllDepartments();
 }
