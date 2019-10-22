@@ -312,4 +312,22 @@ public class AdminFeignImpl implements AdminFeign {
         MetaUtils.deleteById(metadataCollectionVo, (String) map.get("contentId"));
     }
 
+    /**
+     * 获取用户所在部门的所有用户
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public RestResult<List<User>> getAllUserIdInUserDepartment(@RequestParam("userId") String userId) {
+        return RestResult.ok(userService.getAllUserIdInUserDepartment(userId));
+    }
+
+    /**
+     * 检索所有的部门
+     * @return
+     */
+    public RestResult<List<Department>> getAllDepartments() {
+        return RestResult.ok(departmentService.list());
+    }
 }

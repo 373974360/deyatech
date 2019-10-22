@@ -39,4 +39,14 @@ public class UserVo extends User {
      * 部门树结构索引位置
      */
     private String departmentTreePosition;
+
+    /**
+     * 用户关联站群数量
+     */
+    private int stationGroupNumber;
+
+    /**
+     * 用户关联站群栏目数量
+     */
+    private int catalogNumber;
 }
