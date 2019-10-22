@@ -34,13 +34,15 @@ public class CookieUtils {
     }
 
     /**
-     * 将memberId放入cookie
-     * @param memberIdEncoded 加密的memberId
+     * 将信息放入cookie
+     *
+     * @param key 键
+     * @param value cookie值
      * @param domain 域
      * @return
      */
-    public static Cookie putMemberIdtoCookie(String memberIdEncoded, String domain){
-        Cookie cookie = new Cookie("member_id", memberIdEncoded);
+    public static Cookie putCookie(String key, String value, String domain){
+        Cookie cookie = new Cookie(key, value);
         cookie.setPath("/");
         cookie.setDomain(domain);
         return cookie;
