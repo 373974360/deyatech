@@ -11,13 +11,17 @@ public enum ContentStatusEnum implements IEnums<Integer> {
      */
     PUBLISH(2,"已发布"),
     /**
-     * 审核中
+     * 待审
      */
-    VERIFY(3,"审核中"),
+    VERIFY(3,"待审"),
     /**
      * 撤销
      */
     CANCEL(4, "撤销"),
+    /**
+     * 退稿
+     */
+    REJECT(5, "退稿"),
     /**
      * 草稿
      */
