@@ -15,7 +15,15 @@ public enum ChannelTypeEnum  implements IEnums<Integer> {
     /**
      * 表示未赴约
      */
-    ONEMORE(1, "最多跑一次平台");
+    ONEMORE(1, "最多跑一次平台"),
+    /**
+     * 表示未赴约
+     */
+    LOBBY(3, "线下大厅"),
+    /**
+     * 表示未赴约
+     */
+    TERMINAL(4, "自助终端");
 
 
 
