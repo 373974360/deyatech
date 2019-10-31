@@ -1,6 +1,7 @@
 package com.deyatech.admin.controller;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.deyatech.admin.entity.Department;
 import com.deyatech.admin.vo.DepartmentVo;
 import com.deyatech.admin.service.DepartmentService;
@@ -8,16 +9,13 @@ import com.deyatech.common.entity.RestResult;
 import com.deyatech.common.entity.CascaderResult;
 import com.deyatech.common.utils.CascaderUtil;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+
 import lombok.extern.slf4j.Slf4j;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collection;
 
 import com.deyatech.common.base.BaseController;
 import io.swagger.annotations.Api;
@@ -187,5 +185,18 @@ public class DepartmentController extends BaseController {
             list = departmentService.findByIds(Arrays.asList(ids.split(",")));
         }
         return RestResult.ok(departmentService.setVoProperties(list));
+    }
+
+    /**
+     * 下一个排序号
+     *
+     * @return
+     */
+    @RequestMapping("/getNextSortNo")
+    @ApiOperation(value = "下一个排序号", notes = "下一个排序号")
+    public RestResult<Integer> getNextSortNo() {
+        QueryWrapper queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("ifnull(max(sort_no), 0) + 1 as sortNo");
+        return RestResult.ok(departmentService.getMap(queryWrapper).get("sortNo"));
     }
 }
