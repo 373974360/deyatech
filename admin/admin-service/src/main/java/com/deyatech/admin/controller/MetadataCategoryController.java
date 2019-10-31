@@ -1,5 +1,6 @@
 package com.deyatech.admin.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.deyatech.admin.entity.MetadataCategory;
 import com.deyatech.admin.service.MetadataCategoryService;
 import com.deyatech.admin.vo.MetadataCategoryVo;
@@ -185,5 +186,18 @@ public class MetadataCategoryController extends BaseController {
     @ApiImplicitParam(name = "id", value = "元数据分类id", required = true, dataType = "String", paramType = "query")
     public RestResult checkMetadataExist(String id) {
         return RestResult.ok(metadataCategoryService.checkMetadataExist(id));
+    }
+
+    /**
+     * 下一个排序号
+     *
+     * @return
+     */
+    @RequestMapping("/getNextSortNo")
+    @ApiOperation(value = "下一个排序号", notes = "下一个排序号")
+    public RestResult<Integer> getNextSortNo() {
+        QueryWrapper queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("ifnull(max(sort_no), 0) + 1 as sortNo");
+        return RestResult.ok(metadataCategoryService.getMap(queryWrapper).get("sortNo"));
     }
 }

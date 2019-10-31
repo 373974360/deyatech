@@ -1,5 +1,7 @@
 package com.deyatech.admin.controller;
 
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.deyatech.admin.entity.Menu;
 import com.deyatech.admin.vo.MenuVo;
 import com.deyatech.admin.service.MenuService;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Map;
 
 import com.deyatech.common.base.BaseController;
 import io.swagger.annotations.Api;
@@ -173,5 +176,18 @@ public class MenuController extends BaseController {
         List<CascaderResult> cascaderResults = CascaderUtil.getResult("Id", "Name","TreePosition", menu.getId(), menuVos);
         log.info(String.format("获取系统菜单信息的级联对象: %s ",JSONUtil.toJsonStr(cascaderResults)));
         return RestResult.ok(cascaderResults);
+    }
+
+    /**
+     * 下一个排序号
+     *
+     * @return
+     */
+    @RequestMapping("/getNextSortNo")
+    @ApiOperation(value = "下一个排序号", notes = "下一个排序号")
+    public RestResult<Integer> getNextSortNo() {
+        QueryWrapper queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("ifnull(max(sort_no), 0) + 1 as sortNo");
+        return RestResult.ok(menuService.getMap(queryWrapper).get("sortNo"));
     }
 }
