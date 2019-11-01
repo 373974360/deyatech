@@ -24,4 +24,9 @@ public class RoleVo extends Role {
      * 角色用户关联个数
      */
     int roleUsersCount;
+
+    /**
+     * 角色菜单关联个数
+     */
+    int roleMenusCount;
 }

@@ -56,8 +56,8 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implement
             for (Object role : roles) {
                 RoleVo roleVo = new RoleVo();
                 BeanUtil.copyProperties(role, roleVo);
-                int count = roleMapper.getRoleUsersCountByRoleId(roleVo.getId());
-                roleVo.setRoleUsersCount(count);
+                roleVo.setRoleUsersCount(roleMapper.getRoleUsersCountByRoleId(roleVo.getId()));
+                roleVo.setRoleMenusCount(roleMapper.getRoleMenusCountByRoleId(roleVo.getId()));
                 roleVos.add(roleVo);
             }
         }

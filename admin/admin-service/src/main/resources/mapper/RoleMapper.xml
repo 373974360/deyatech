@@ -36,5 +36,11 @@
             ON au.id_ = aru.user_id AND ar.id_ = aru.role_id
         WHERE ar.id_ = #{roleId} AND au.enable_ = 1;
     </select>
-
+    <select id="getRoleMenusCountByRoleId" resultType="java.lang.Integer">
+        SELECT count(*)
+        FROM admin_role_menu rm
+          JOIN admin_menu m on m.id_ = rm.menu_id and m.enable_ = 1
+          JOIN admin_role r on r.id_ = rm.role_id and r.enable_ = 1
+        WHERE rm.role_id = #{roleId}
+    </select>
 </mapper>

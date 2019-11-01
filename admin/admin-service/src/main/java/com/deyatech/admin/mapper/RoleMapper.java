@@ -21,4 +21,6 @@ public interface RoleMapper extends BaseMapper<Role> {
      */
     int getRoleUsersCountByRoleId(String roleId);
 
+    int getRoleMenusCountByRoleId(String roleId);
+
 }
