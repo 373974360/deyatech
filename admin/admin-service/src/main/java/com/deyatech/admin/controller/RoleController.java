@@ -138,10 +138,10 @@ public class RoleController extends BaseController {
     @ApiOperation(value="根据Role对象属性分页检索系统角色信息", notes="根据Role对象属性分页检索系统角色信息信息")
     @ApiImplicitParam(name = "role", value = "系统角色信息对象", required = false, dataType = "Role", paramType = "query")
     public RestResult<IPage<RoleVo>> pageByRole(Role role) {
-        IPage<RoleVo> roles = roleService.pageByBean(role);
-        roles.setRecords(roleService.setVoProperties(roles.getRecords()));
-        log.info(String.format("根据Role对象属性分页检索系统角色信息: %s ",JSONUtil.toJsonStr(roles)));
-        return RestResult.ok(roles);
+//        IPage<RoleVo> roles = roleService.pageByBean(role);
+//        roles.setRecords(roleService.setVoProperties(roles.getRecords()));
+//        log.info(String.format("根据Role对象属性分页检索系统角色信息: %s ",JSONUtil.toJsonStr(roles)));
+        return RestResult.ok(roleService.pageByRole(role));
     }
     /**
      * 根据角色名统计件数

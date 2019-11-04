@@ -1,7 +1,10 @@
 package com.deyatech.admin.mapper;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.deyatech.admin.entity.Role;
+import com.deyatech.admin.vo.RoleVo;
 import com.deyatech.common.base.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -23,4 +26,12 @@ public interface RoleMapper extends BaseMapper<Role> {
 
     int getRoleMenusCountByRoleId(String roleId);
 
+    /**
+     * 翻页检索角色
+     *
+     * @param page
+     * @param role
+     * @return
+     */
+    IPage<RoleVo> selectpageByRole(@Param("page") IPage<Role> page, @Param("role") Role role);
 }

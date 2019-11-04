@@ -1,5 +1,6 @@
 package com.deyatech.admin.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.deyatech.admin.entity.Role;
 import com.deyatech.admin.vo.RoleVo;
 import com.deyatech.common.base.BaseService;
@@ -31,4 +32,12 @@ public interface RoleService extends BaseService<Role> {
      * @return
      */
     List<RoleVo> setVoProperties(Collection roles);
+
+    /**
+     * 翻页检索角色
+     *
+     * @param role
+     * @return
+     */
+    IPage<RoleVo> pageByRole(Role role);
 }

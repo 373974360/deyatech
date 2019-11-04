@@ -210,14 +210,14 @@ public class AdminFeignImpl implements AdminFeign {
     @Override
     public RestResult<List<String>> getRoleIdsByUserId(String userId) {
         List<String> roleIds = new ArrayList<>();
-
         RoleUser bean = new RoleUser();
         bean.setUserId(userId);
         Collection<RoleUser> list = roleUserService.listByBean(bean);
-        for (RoleUser ru : list) {
-            roleIds.add(ru.getRoleId());
+        if (CollectionUtil.isNotEmpty(list)) {
+            for (RoleUser ru : list) {
+                roleIds.add(ru.getRoleId());
+            }
         }
-
         return RestResult.ok(roleIds);
     }
 

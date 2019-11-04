@@ -55,9 +55,7 @@
         au.emp_no AS empNo,
         au.password_ AS password,
         ad.name_ AS departmentName,
-        ad.tree_position AS departmentTreePosition,
-        (SELECT count(*) FROM resource_station_group_user sgu JOIN resource_station_group sg ON sg.id_ = sgu.station_group_id  WHERE sg.enable_ != -1 AND sgu.user_id = au.id_) AS stationGroupNumber,
-        (SELECT count(*) FROM station_catalog_user cu JOIN station_catalog c ON c.id_ = cu.catalog_id WHERE c.enable_ != -1 AND cu.user_id = au.id_) as catalogNumber
+        ad.tree_position AS departmentTreePosition
         FROM admin_user au
         LEFT JOIN admin_department ad ON au.department_id = ad.id_
         WHERE au.enable_ != -1
