@@ -2,6 +2,7 @@ package com.deyatech.admin.feign.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.deyatech.admin.entity.*;
 import com.deyatech.admin.entity.Dictionary;
 import com.deyatech.admin.feign.AdminFeign;
@@ -329,5 +330,19 @@ public class AdminFeignImpl implements AdminFeign {
      */
     public RestResult<List<Department>> getAllDepartments() {
         return RestResult.ok(departmentService.list());
+    }
+
+    /**
+     * 获取字典数据
+     *
+     * @param indexId
+     * @return
+     */
+    @Override
+    public RestResult<List<DictionaryVo>> getDictionaryListByIndexId(String indexId) {
+        Dictionary dictionary = new Dictionary();
+        dictionary.setIndexId(indexId);
+        dictionary.setSortSql("sort_no asc");
+        return RestResult.ok(dictionaryService.setVoProperties(dictionaryService.listByBean(dictionary)));
     }
 }

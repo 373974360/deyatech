@@ -242,4 +242,13 @@ public interface AdminFeign {
      */
     @RequestMapping(value = "/department/getAllDepartments")
     RestResult<List<Department>> getAllDepartments();
+
+    /**
+     * 获取字典数据
+     *
+     * @param indexId
+     * @return
+     */
+    @RequestMapping(value = "/dictionary/getDictionaryListByIndexId")
+    RestResult<List<DictionaryVo>> getDictionaryListByIndexId(@RequestParam("indexId") String indexId);
 }
