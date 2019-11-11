@@ -112,6 +112,7 @@
         <validate id="positiveInteger" name="正整数">custom[positiveInteger]</validate>
         <validate id="english" name="英文">custom[onlyLetterSp]</validate>
         <validate id="float" name="浮点数">custom[number]</validate>
+        <validate id="url" name="连接">custom[url]</validate>
     </validates>
     <!-- 扩展规则:基于AbstractDataSource编写扩展类；定义ds，id不能重复，bean为扩展类的beanId -->
     <dataSource>
