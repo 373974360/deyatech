@@ -9,7 +9,7 @@
               show：是否显示，默认为true，可选
            -->
            <dataShow mustValidate="false" ref="inputElement">
-              <validate>chinese,mail,english</validate>
+              <validate>int,positiveInteger,chinese,mail,english</validate>
            </dataShow>
            <dataShow mustValidate="false" ref="selectElement"></dataShow>
            <dataShow mustValidate="false" ref="radioElement"></dataShow>
@@ -21,8 +21,9 @@
            <dataShow mustValidate="false" ref="richTextElement"></dataShow>
        </dataType>
        <dataType id="int" name="整型">
+           <dataShow mustValidate="false" ref="switchElement"></dataShow>
            <dataShow mustValidate="true" ref="inputElement">
-              <validate>int</validate>
+              <validate>int,positiveInteger</validate>
            </dataShow>
        </dataType>
        <dataType id="float" name="浮点型">
@@ -32,13 +33,15 @@
        </dataType>
        <dataType id="date" name="日期型">
            <dataShow mustValidate="true" ref="dateElement"></dataShow>
-           <!--<dataShow mustValidate="true" ref="dateYyyyMmDdElement"></dataShow>-->
            <dataShow mustValidate="true" ref="datetimeElement"></dataShow>
            <dataShow mustValidate="true" ref="timeElement"></dataShow>
        </dataType>
        <dataType id="file" name="附件">
            <dataShow mustValidate="false" ref="fileElement"></dataShow>
        </dataType>
+        <dataType id="image" name="图片">
+            <dataShow mustValidate="false" ref="imageElement"></dataShow>
+        </dataType>
     </dataTypes>
     <!-- 定义控件展示类型,扩展规则:(1)根据AbstractHtmlElement编写扩展类.(2)定义dataShow，id为扩展类的beanId-->
     <dataShows>
@@ -60,6 +63,9 @@
         <dataShow id="checkboxElement" name="复选框">
             <ds>dataItem</ds>
         </dataShow>
+        <dataShow id="switchElement" name="开关">
+            <controlLength>cl_half</controlLength>
+        </dataShow>
         <dataShow id="textareaElement" name="大文本框">
             <dataLength>length_3</dataLength>
             <controlLength>cl_whole</controlLength>
@@ -71,9 +77,6 @@
         <dataShow id="dateElement" name="yyyy-MM-dd">
             <controlLength>cl_half</controlLength>
         </dataShow>
-        <dataShow id="dateYyyyMmDdElement" name="yyyyMMdd">
-            <controlLength>cl_half</controlLength>
-        </dataShow>
         <dataShow id="datetimeElement" name="yyyy-MM-dd HH:mm:ss">
             <controlLength>cl_half</controlLength>
         </dataShow>
@@ -81,6 +84,9 @@
             <controlLength>cl_half</controlLength>
         </dataShow>
         <dataShow id="fileElement" name="附件上传">
+            <controlLength>cl_whole</controlLength>
+        </dataShow>
+        <dataShow id="imageElement" name="图片上传">
             <controlLength>cl_whole</controlLength>
         </dataShow>
     </dataShows>
@@ -99,16 +105,13 @@
         <validate id="chinese" name="中文">custom[onlyChinses]</validate>
         <validate id="mail" name="邮箱">custom[email]</validate>
         <validate id="int" name="整数">custom[integer]</validate>
+        <validate id="positiveInteger" name="正整数">custom[positiveInteger]</validate>
         <validate id="english" name="英文">custom[onlyLetterSp]</validate>
         <validate id="float" name="浮点数">custom[number]</validate>
+        <validate id="url" name="连接">custom[url]</validate>
     </validates>
     <!-- 扩展规则:基于AbstractDataSource编写扩展类；定义ds，id不能重复，bean为扩展类的beanId -->
     <dataSource>
         <ds id="dataItem" bean="bigClassDataSource" name="数据字典"></ds>
-        <ds id="baseTree" bean="treeDataSource" name="资源分类">
-            <!--<paras>
-                <para name="treeId">123</para>
-            </paras>-->
-        </ds>
     </dataSource>
 </config>

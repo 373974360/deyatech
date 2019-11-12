@@ -446,14 +446,10 @@ public class MetaUtils {
      */
     private static DataType parseDataType(String t) {
         String typeName = null;
-        if ("string".equals(t)) {
-            typeName = "VARCHAR";
-        } else if ("text".equals(t)) {
+        if ("string".equals(t) || "text".equals(t) || "file".equals(t) || "image".equals(t)) {
             typeName = "VARCHAR";
         } else if ("date".equals(t)) {
             typeName = "DATETIME";
-        } else if ("file".equals(t)) {
-            typeName = "VARCHAR";
         } else {
             typeName = t.toUpperCase();
         }

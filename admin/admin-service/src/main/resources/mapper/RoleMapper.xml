@@ -14,6 +14,25 @@
         <result column="version_" property="version"/>
         <result column="name_" property="name"/>
         <result column="type_" property="type"/>
+        <result column="type_" property="type"/>
+        <result column="type_" property="type"/>
+    </resultMap>
+
+    <resultMap id="BaseResultVoMap" type="com.deyatech.admin.vo.RoleVo">
+        <result column="id_" property="id"/>
+        <result column="enable_" property="enable"/>
+        <result column="remark_" property="remark"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version_" property="version"/>
+        <result column="name_" property="name"/>
+        <result column="type_" property="type"/>
+        <result column="type_" property="type"/>
+        <result column="type_" property="type"/>
+        <result column="roleUsersCount" property="roleUsersCount"/>
+        <result column="roleMenusCount" property="roleMenusCount"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -43,4 +62,36 @@
           JOIN admin_role r on r.id_ = rm.role_id and r.enable_ = 1
         WHERE rm.role_id = #{roleId}
     </select>
+    <!--翻页检索角色-->
+    <select id="selectpageByRole" resultMap="BaseResultVoMap">
+        select
+        role.id_,
+        role.enable_,
+        role.remark_,
+        role.create_by,
+        role.create_time,
+        role.update_by,
+        role.update_time,
+        role.version_,
+        role.name_,
+        role.type_,
+        (
+        SELECT COUNT(*)
+        FROM admin_role_user ru
+           JOIN admin_user u ON u.id_ = ru.user_id AND u.enable_ = 1
+             JOIN admin_role r ON r.id_ = ru.role_id AND r.enable_ = 1
+        WHERE ru.role_id = role.id_
+        ) as roleUsersCount,
+        (
+        SELECT count(*)
+        FROM admin_role_menu rm
+          JOIN admin_menu m on m.id_ = rm.menu_id and m.enable_ = 1
+          JOIN admin_role r on r.id_ = rm.role_id and r.enable_ = 1
+        WHERE rm.role_id = role.id_
+        ) as roleMenusCount
+        from admin_role role
+        where role.enable_ = 1
+    </select>
+
+
 </mapper>

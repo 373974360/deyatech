@@ -79,4 +79,15 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implement
         }
         return super.page(getPageByBean(entity), queryWrapper);
     }
+
+    /**
+     * 翻页检索角色
+     *
+     * @param role
+     * @return
+     */
+    @Override
+    public IPage<RoleVo> pageByRole(Role role) {
+         return  baseMapper.selectpageByRole(getPageByBean(role), role);
+    }
 }

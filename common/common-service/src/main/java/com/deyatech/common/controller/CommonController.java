@@ -260,15 +260,15 @@ public class CommonController extends BaseController {
         if (StrUtil.isBlank(basePath)) {
             basePath = uploadPath;
         }
-        String fileSeparator = System.getProperty("file.separator");
-        if (!basePath.endsWith(fileSeparator)) {
-            basePath += fileSeparator;
+        basePath = basePath.replace("\\\\", "/");
+        if (!basePath.endsWith("/")) {
+            basePath += "/";
         }
         FileInputStream in = null;
         OutputStream out = null;
         try {
             String fileName = basePath + filePath.replaceAll(Constants.UPLOAD_DEFAULT_PREFIX_URL,"");
-            response.setHeader("Content-Disposition", "attachment;filename=" + filePath.substring(filePath.lastIndexOf(fileSeparator)));
+            response.setHeader("Content-Disposition", "attachment;filename=" + filePath.replaceAll(Constants.UPLOAD_DEFAULT_PREFIX_URL,""));
             response.setContentType(request.getServletContext().getMimeType(fileName));
             in = new FileInputStream(fileName);
             out = response.getOutputStream();

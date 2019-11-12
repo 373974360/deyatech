@@ -33,6 +33,11 @@ public class JwtConfig {
     private String tokenHeader;
 
     /**
+     * member - token头部标记名称
+     */
+    private String memberTokenHeader;
+
+    /**
      * 缓存时间
      */
     private Integer buffer;
