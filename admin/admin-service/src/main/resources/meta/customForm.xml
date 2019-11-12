@@ -14,7 +14,6 @@
            <dataShow mustValidate="false" ref="selectElement"></dataShow>
            <dataShow mustValidate="false" ref="radioElement"></dataShow>
            <dataShow mustValidate="false" ref="checkboxElement"></dataShow>
-           <dataShow mustValidate="false" ref="tagElement"></dataShow>
            <dataShow ref="inputReadOnlyElement"></dataShow>
        </dataType>
        <dataType id="text" name="大文本">
@@ -22,10 +21,10 @@
            <dataShow mustValidate="false" ref="richTextElement"></dataShow>
        </dataType>
        <dataType id="int" name="整型">
+           <dataShow mustValidate="false" ref="switchElement"></dataShow>
            <dataShow mustValidate="true" ref="inputElement">
               <validate>int,positiveInteger</validate>
            </dataShow>
-           <dataShow mustValidate="false" ref="switchElement"></dataShow>
        </dataType>
        <dataType id="float" name="浮点型">
            <dataShow mustValidate="true" ref="inputElement">
@@ -66,9 +65,6 @@
         </dataShow>
         <dataShow id="switchElement" name="开关">
             <controlLength>cl_half</controlLength>
-        </dataShow>
-        <dataShow id="tagElement" name="标签">
-            <controlLength>cl_whole</controlLength>
         </dataShow>
         <dataShow id="textareaElement" name="大文本框">
             <dataLength>length_3</dataLength>
