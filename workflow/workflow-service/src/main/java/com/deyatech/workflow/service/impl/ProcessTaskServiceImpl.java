@@ -3,6 +3,7 @@ package com.deyatech.workflow.service.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpStatus;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -348,12 +349,14 @@ public class ProcessTaskServiceImpl implements ProcessTaskService {
                     }
                 }
                 String departmentIds = (String) taskService.getVariableLocal(task.getId(), Constants.VARIABLE_DEPARTMENT);
-                List<String> candidateGroups = Arrays.asList(departmentIds.split(","));
-                for (String candidateGroup : candidateGroups) {
-                    List<String> userIds = WorkFlowUtils.getValidUser(uniqueKey, CandidateTypeEnum.DEPARTMENT.getCode(), candidateGroup, variables);
-                    if (CollectionUtil.isNotEmpty(userIds) && userIds.contains(userId)) {
-                        list.add(task);
-                        break;
+                if (StrUtil.isNotEmpty(departmentIds)) {
+                    List<String> candidateGroups = Arrays.asList(departmentIds.split(","));
+                    for (String candidateGroup : candidateGroups) {
+                        List<String> userIds = WorkFlowUtils.getValidUser(uniqueKey, CandidateTypeEnum.DEPARTMENT.getCode(), candidateGroup, variables);
+                        if (CollectionUtil.isNotEmpty(userIds) && userIds.contains(userId)) {
+                            list.add(task);
+                            break;
+                        }
                     }
                 }
             }
