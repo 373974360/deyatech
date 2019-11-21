@@ -176,7 +176,7 @@ public class CommonController extends BaseController {
                 return RestResult.build(HttpStatus.HTTP_INTERNAL_ERROR, "文件类型无法识别");
             }
             String filePath = uploadPath;
-            filePath = filePath.replace("\\\\", "/");
+            filePath = filePath.replace("\\", "/");
             if (!filePath.endsWith("/")) {
                 filePath += "/";
             }
@@ -222,7 +222,7 @@ public class CommonController extends BaseController {
         OutputStream out = null;
         try {
             response.setContentType("image/jpeg");
-            in = new FileInputStream(basePath + filePath.replaceAll(Constants.UPLOAD_DEFAULT_PREFIX_URL,""));
+            in = new FileInputStream(basePath + filePath.replace(Constants.UPLOAD_DEFAULT_PREFIX_URL,""));
             out = response.getOutputStream();
             IOUtils.copy(in, out);
         } catch (IOException e) {
@@ -263,8 +263,8 @@ public class CommonController extends BaseController {
         FileInputStream in = null;
         OutputStream out = null;
         try {
-            String fileName = basePath + filePath.replaceAll(Constants.UPLOAD_DEFAULT_PREFIX_URL,"");
-            response.setHeader("Content-Disposition", "attachment;filename=" + filePath.replaceAll(Constants.UPLOAD_DEFAULT_PREFIX_URL,""));
+            String fileName = basePath + filePath.replace(Constants.UPLOAD_DEFAULT_PREFIX_URL,"");
+            response.setHeader("Content-Disposition", "attachment;filename=" + filePath.replace(Constants.UPLOAD_DEFAULT_PREFIX_URL,""));
             response.setContentType(request.getServletContext().getMimeType(fileName));
             in = new FileInputStream(fileName);
             out = response.getOutputStream();
@@ -282,7 +282,7 @@ public class CommonController extends BaseController {
         if (StrUtil.isBlank(basePath)) {
             basePath = uploadPath;
         }
-        basePath = basePath.replace("\\\\", "/");
+        basePath = basePath.replace("\\", "/");
         if (!basePath.endsWith("/")) {
             basePath += "/";
         }
