@@ -286,9 +286,7 @@ public class CommonController extends BaseController {
         if (!basePath.endsWith("/")) {
             basePath += "/";
         }
-        if ("editor".equals(editor)) {
-            basePath += "editor/";
-        }
+        if ("editor".equals(editor)) basePath += "editor/";
         return basePath;
     }
 }
