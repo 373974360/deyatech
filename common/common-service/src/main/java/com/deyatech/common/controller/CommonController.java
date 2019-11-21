@@ -157,7 +157,7 @@ public class CommonController extends BaseController {
     @PostMapping("/upload")
     @ApiOperation(value = "上传文件", notes = "上传文件")
     @ApiImplicitParam(name = "file", value = "验证码", required = true, dataType = "MultipartFile", paramType = "query")
-    public RestResult uploadFile(@RequestParam("file") MultipartFile file) {
+    public RestResult uploadFile(@RequestParam("file") MultipartFile file, @RequestParam(value = "editor", required = false) String editor) {
         FileUploadResult result = new FileUploadResult();
         //判断图片是否为空
         if (file.isEmpty()) {
@@ -175,9 +175,17 @@ public class CommonController extends BaseController {
                 log.error("文件类型无法识别");
                 return RestResult.build(HttpStatus.HTTP_INTERNAL_ERROR, "文件类型无法识别");
             }
+            String filePath = uploadPath;
+            filePath = filePath.replace("\\\\", "/");
+            if (!filePath.endsWith("/")) {
+                filePath += "/";
+            }
+            if ("editor".equals(editor)) {
+                filePath += "editor/";
+            }
             String fileName = DateUtil.format(new Date(), DatePattern.PURE_DATETIME_FORMAT) + RandomUtil.randomNumbers(4) + extName;
             //调用文件处理类FileUtil，处理文件，将文件写入指定位置
-            uploadFile(file.getBytes(), uploadPath, fileName);
+            uploadFile(file.getBytes(), filePath, fileName);
             String url = Constants.UPLOAD_DEFAULT_PREFIX_URL.concat(fileName);
             if (StrUtil.isNotBlank(url)) {
                 //转存文件
@@ -185,7 +193,7 @@ public class CommonController extends BaseController {
                 result.setOriginal(originalFilename);
                 result.setTitle(originalFilename);
                 result.setUrl(url);
-                result.setFilePath(uploadPath+fileName);
+                result.setFilePath(filePath + fileName);
                 return RestResult.build(HttpStatus.HTTP_OK, "上传成功", result);
             } else {
                 result.setState("ERROR");
@@ -208,14 +216,8 @@ public class CommonController extends BaseController {
     @GetMapping("/showPicImg")
     @ApiOperation(value = "查看图片", notes = "查看图片")
     @ApiImplicitParam(name = "filePath", value = "图片路径", required = true, dataType = "String", paramType = "query")
-    public void showPicImg(String basePath, String filePath, HttpServletResponse response) {
-        if (StrUtil.isBlank(basePath)) {
-            basePath = uploadPath;
-        }
-        String fileSeparator = System.getProperty("file.separator");
-        if (!basePath.endsWith(fileSeparator)) {
-            basePath += fileSeparator;
-        }
+    public void showPicImg(String basePath, String filePath, HttpServletResponse response, @RequestParam(value = "editor", required = false) String editor) {
+        basePath = getBasePath(basePath, editor);
         FileInputStream in = null;
         OutputStream out = null;
         try {
@@ -256,14 +258,8 @@ public class CommonController extends BaseController {
     @GetMapping("/download")
     @ApiOperation(value = "下载文件", notes = "下载文件")
     @ApiImplicitParam(name = "filePath", value = "文件路径", required = true, dataType = "String", paramType = "query")
-    public void downloadFile(String basePath, String filePath, HttpServletRequest request, HttpServletResponse response) {
-        if (StrUtil.isBlank(basePath)) {
-            basePath = uploadPath;
-        }
-        basePath = basePath.replace("\\\\", "/");
-        if (!basePath.endsWith("/")) {
-            basePath += "/";
-        }
+    public void downloadFile(String basePath, String filePath, HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "editor", required = false) String editor) {
+        basePath = getBasePath(basePath, editor);
         FileInputStream in = null;
         OutputStream out = null;
         try {
@@ -280,5 +276,19 @@ public class CommonController extends BaseController {
             close(in);
             close(out);
         }
+    }
+
+    private String getBasePath(String basePath, String editor) {
+        if (StrUtil.isBlank(basePath)) {
+            basePath = uploadPath;
+        }
+        basePath = basePath.replace("\\\\", "/");
+        if (!basePath.endsWith("/")) {
+            basePath += "/";
+        }
+        if ("editor".equals(editor)) {
+            basePath += "editor/";
+        }
+        return basePath;
     }
 }
