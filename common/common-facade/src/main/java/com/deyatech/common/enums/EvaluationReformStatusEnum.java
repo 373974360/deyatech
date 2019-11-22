@@ -8,9 +8,15 @@ package com.deyatech.common.enums;
 public enum EvaluationReformStatusEnum implements IEnums<Integer> {
 
     Default(0, "默认"),
-    Changing(1, "整改中"),
-    Changed(2, "整改完成"),
-    Unchanged(3, "无法整改");
+    PoorInvalidApply(10, "差评无效申请"),
+    PoorInvalidPass(11,  "差评无效审核通过"),
+    PoorInvalidReject(12, "差评无效审核驳回"),
+    Changing(20, "整改"),
+    Changed(21, "整改完成"),
+    UnchangedApply(220, "无法整改申请"),
+    UnchangedPass(221, "无法整改审核通过"),
+    UnchangedReject(222, "无法整改审核驳回"),
+    Delay(3, "延期");
 
     private Integer code;
 
