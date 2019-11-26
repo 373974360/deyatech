@@ -76,7 +76,7 @@ public class AdminFeignImpl implements AdminFeign {
         Collection<Menu> menus = menuService.listByBean(null);
         String[] requests = null;
         if (CollectionUtil.isNotEmpty(menus)) {
-            requests = menus.stream().map(Menu::getRequest).collect(Collectors.toList()).toArray(new String[menus.size()]);
+            requests = menus.stream().map(Menu::getRequest).distinct().filter(m -> StrUtil.isNotEmpty(m)).collect(Collectors.toList()).toArray(new String[0]);
         }
         return RestResult.ok(requests);
     }
