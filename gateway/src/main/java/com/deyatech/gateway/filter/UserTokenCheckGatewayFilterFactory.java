@@ -50,30 +50,30 @@ public class UserTokenCheckGatewayFilterFactory extends AbstractGatewayFilterFac
     @Override
     public GatewayFilter apply(Object config) {
         return (exchange, chain) -> {
-            if (checkRequestIsNeedValidate(exchange)) {
-                String userToken = getToken(exchange);
-                ServerHttpResponse response = exchange.getResponse();
-                JwtInfo jwtInfo;
-                if (StrUtil.isBlank(userToken)) {
+            String userToken = getToken(exchange);
+            ServerHttpResponse response = exchange.getResponse();
+            JwtInfo jwtInfo;
+            if (StrUtil.isBlank(userToken)) {
+                return tokenError(response, "登录信息过期，请重新登录！");
+            }
+            try {
+                jwtInfo = JwtUtil.getInfoFromToken(userToken, jwtConfig.getPubKeyPath());
+                Object invlideToken = redisTemplate.opsForValue().get(Constants.TOKEN.concat(jwtInfo.getId()));
+                if (ObjectUtil.isNotNull(invlideToken) && userToken.equals(invlideToken.toString())) {
                     return tokenError(response, "登录信息过期，请重新登录！");
                 }
-                try {
-                    jwtInfo = JwtUtil.getInfoFromToken(userToken, jwtConfig.getPubKeyPath());
-                    Object invlideToken = redisTemplate.opsForValue().get(Constants.TOKEN.concat(jwtInfo.getId()));
-                    if (ObjectUtil.isNotNull(invlideToken) && userToken.equals(invlideToken.toString())) {
-                        return tokenError(response, "登录信息过期，请重新登录！");
-                    }
+                if (checkRequestIsNeedValidate(exchange)) {
                     if (!checkRequestIsAllow(exchange, jwtInfo.getId())) {
                         return permissionError(response, "权限不足，请联系管理员！");
                     }
-                    ServerHttpRequest request = exchange.getRequest().mutate().header(Constants.CONTEXT_KEY_USER_ID, jwtInfo.getId()).build();
-                    exchange = exchange.mutate().request(request).build();
-                    if (jwtInfo.getBuffer() <= jwtConfig.getBuffer()) {
-                        exchange.getResponse().getHeaders().add(Constants.REFRESH_TOKEN, "true");
-                    }
-                } catch (BusinessException e) {
-                    return tokenError(response, "登录信息过期，请重新登录！");
                 }
+                ServerHttpRequest request = exchange.getRequest().mutate().header(Constants.CONTEXT_KEY_USER_ID, jwtInfo.getId()).build();
+                exchange = exchange.mutate().request(request).build();
+                if (jwtInfo.getBuffer() <= jwtConfig.getBuffer()) {
+                    exchange.getResponse().getHeaders().add(Constants.REFRESH_TOKEN, "true");
+                }
+            } catch (BusinessException e) {
+                return tokenError(response, "登录信息过期，请重新登录！");
             }
             return chain.filter(exchange);
         };
