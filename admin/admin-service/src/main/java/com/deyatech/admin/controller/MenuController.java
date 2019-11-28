@@ -154,7 +154,7 @@ public class MenuController extends BaseController {
      * @param menu
      * @return
      */
-    @GetMapping("/getTree")
+    @GetMapping({"/getTree", "notCheckGetTree"})
     @ApiOperation(value="获取系统菜单信息的tree对象", notes="获取系统菜单信息的tree对象")
     public RestResult<Collection<MenuVo>> getMenuTree(Menu menu) {
         Collection<MenuVo> menuTree = menuService.getMenuTree(menu);
