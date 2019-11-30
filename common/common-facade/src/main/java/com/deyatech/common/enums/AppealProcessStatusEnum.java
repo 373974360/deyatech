@@ -7,15 +7,14 @@ package com.deyatech.common.enums;
  * @Date: 2019/10/29 11:10
  */
 public enum AppealProcessStatusEnum implements IEnums<Integer>  {
-    P1(1,"受理信件"),
-    P2(2,"不予受理"),
-    P3(3,"置为无效"),
-    P4(4,"申请延期"),
-    P5(5,"延期审核"),
-    P6(6,"信件转办"),
-    P7(7,"回复信件"),
-    P8(8,"退回信件"),
-    P9(9,"发布信件");
+    P1(1,"转办"),
+    P2(2,"回复"),
+    P3(3,"发布"),
+    P4(4,"退回"),
+    P5(5,"判重"),
+    P6(6,"置为无效"),
+    P7(7,"延期"),
+    P8(8,"不予受理");
 
     private Integer code;
     private String value;
