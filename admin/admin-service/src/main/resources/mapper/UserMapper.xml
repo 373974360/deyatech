@@ -52,7 +52,6 @@
         au.avatar_ AS avatar,
         au.emp_no AS empNo,
         au.account_ AS account,
-        au.emp_no AS empNo,
         au.password_ AS password,
         ad.name_ AS departmentName,
         ad.tree_position AS departmentTreePosition
