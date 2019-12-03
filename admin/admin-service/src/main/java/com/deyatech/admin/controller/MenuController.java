@@ -1,8 +1,11 @@
 package com.deyatech.admin.controller;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.deyatech.admin.entity.Menu;
+import com.deyatech.admin.entity.RoleMenu;
+import com.deyatech.admin.service.RoleMenuService;
 import com.deyatech.admin.vo.MenuVo;
 import com.deyatech.admin.service.MenuService;
 import com.deyatech.common.entity.RestResult;
@@ -38,7 +41,8 @@ import io.swagger.annotations.ApiOperation;
 public class MenuController extends BaseController {
     @Autowired
     MenuService menuService;
-
+    @Autowired
+    RoleMenuService roleMenuService;
     /**
      * 单个保存或者更新系统菜单信息
      *
@@ -81,6 +85,11 @@ public class MenuController extends BaseController {
     public RestResult<Boolean> removeByMenu(Menu menu) {
         log.info(String.format("根据Menu对象属性逻辑删除系统菜单信息: %s ", menu));
         boolean result = menuService.removeByBean(menu);
+        if (result) {
+            RoleMenu roleMenu = new RoleMenu();
+            roleMenu.setMenuId(menu.getId());
+            roleMenuService.removeByBean(roleMenu);
+        }
         return RestResult.ok(result);
     }
 
@@ -97,6 +106,13 @@ public class MenuController extends BaseController {
     public RestResult<Boolean> removeByIds(@RequestParam(value="ids[]") List<String>  ids) {
         log.info(String.format("根据id批量删除系统菜单信息: %s ", JSONUtil.toJsonStr(ids)));
         boolean result = menuService.removeByIds(ids);
+        if (result && CollectionUtil.isNotEmpty(ids)) {
+            for (String menuId : ids) {
+                RoleMenu roleMenu = new RoleMenu();
+                roleMenu.setMenuId(menuId);
+                roleMenuService.removeByBean(roleMenu);
+            }
+        }
         return RestResult.ok(result);
     }
 

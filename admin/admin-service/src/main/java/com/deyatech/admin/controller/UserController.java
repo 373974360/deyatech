@@ -1,7 +1,10 @@
 package com.deyatech.admin.controller;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import com.deyatech.admin.entity.RoleUser;
 import com.deyatech.admin.entity.User;
+import com.deyatech.admin.service.RoleUserService;
 import com.deyatech.admin.vo.UserVo;
 import com.deyatech.admin.service.UserService;
 import com.deyatech.common.Constants;
@@ -37,7 +40,8 @@ import io.swagger.annotations.ApiOperation;
 public class UserController extends BaseController {
     @Autowired
     UserService userService;
-
+    @Autowired
+    RoleUserService roleUserService;
     /**
      * 单个保存或者更新系统用户信息
      *
@@ -80,6 +84,11 @@ public class UserController extends BaseController {
     public RestResult<Boolean> removeByUser(User user) {
         log.info(String.format("根据User对象属性逻辑删除系统用户信息: %s ", user));
         boolean result = userService.removeByBean(user);
+        if (result) {
+            RoleUser roleUser = new RoleUser();
+            roleUser.setUserId(user.getId());
+            roleUserService.removeByBean(roleUser);
+        }
         return RestResult.ok(result);
     }
 
@@ -96,6 +105,13 @@ public class UserController extends BaseController {
     public RestResult<Boolean> removeByIds(@RequestParam("ids[]") List<String> ids) {
         log.info(String.format("根据id批量删除系统用户信息: %s ", JSONUtil.toJsonStr(ids)));
         boolean result = userService.removeByIds(ids);
+        if (result && CollectionUtil.isNotEmpty(ids)) {
+            for(String userId : ids) {
+                RoleUser roleUser = new RoleUser();
+                roleUser.setUserId(userId);
+                roleUserService.removeByBean(roleUser);
+            }
+        }
         return RestResult.ok(result);
     }
 

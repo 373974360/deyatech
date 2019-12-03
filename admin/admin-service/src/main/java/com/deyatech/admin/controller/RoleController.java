@@ -1,8 +1,13 @@
 package com.deyatech.admin.controller;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.deyatech.admin.entity.Role;
+import com.deyatech.admin.entity.RoleMenu;
+import com.deyatech.admin.entity.RoleUser;
+import com.deyatech.admin.service.RoleMenuService;
+import com.deyatech.admin.service.RoleUserService;
 import com.deyatech.admin.vo.RoleVo;
 import com.deyatech.admin.service.RoleService;
 import com.deyatech.common.entity.RestResult;
@@ -34,6 +39,10 @@ import io.swagger.annotations.ApiOperation;
 public class RoleController extends BaseController {
     @Autowired
     RoleService roleService;
+    @Autowired
+    RoleUserService roleUserService;
+    @Autowired
+    RoleMenuService roleMenuService;
 
     /**
      * 单个保存或者更新系统角色信息
@@ -77,6 +86,14 @@ public class RoleController extends BaseController {
     public RestResult<Boolean> removeByRole(Role role) {
         log.info(String.format("根据Role对象属性逻辑删除系统角色信息: %s ", role));
         boolean result = roleService.removeByBean(role);
+        if (result) {
+            RoleUser roleUser = new RoleUser();
+            roleUser.setRoleId(role.getId());
+            roleUserService.removeByBean(roleUser);
+            RoleMenu roleMenu = new RoleMenu();
+            roleMenu.setRoleId(role.getId());
+            roleMenuService.removeByBean(roleMenu);
+        }
         return RestResult.ok(result);
     }
 
@@ -93,6 +110,16 @@ public class RoleController extends BaseController {
     public RestResult<Boolean> removeByIds(@RequestParam("ids[]") List<String> ids) {
         log.info(String.format("根据id批量删除系统角色信息: %s ", JSONUtil.toJsonStr(ids)));
         boolean result = roleService.removeByIds(ids);
+        if (result && CollectionUtil.isNotEmpty(ids)) {
+            for(String roleId : ids) {
+                RoleUser roleUser = new RoleUser();
+                roleUser.setRoleId(roleId);
+                roleUserService.removeByBean(roleUser);
+                RoleMenu roleMenu = new RoleMenu();
+                roleMenu.setRoleId(roleId);
+                roleMenuService.removeByBean(roleMenu);
+            }
+        }
         return RestResult.ok(result);
     }
 
