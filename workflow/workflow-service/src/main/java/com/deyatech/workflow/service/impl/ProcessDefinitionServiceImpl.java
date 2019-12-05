@@ -17,9 +17,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * <p>
@@ -101,11 +99,11 @@ public class ProcessDefinitionServiceImpl extends BaseServiceImpl<ProcessDefinit
     }
 
     @Override
-    public void active(List<String> keys) {
-        if (CollectionUtil.isNotEmpty(keys)) {
-            for (String key : keys) {
+    public void active(List<String> actDefinitionIdList) {
+        if (CollectionUtil.isNotEmpty(actDefinitionIdList)) {
+            for (String id : actDefinitionIdList) {
                 try {
-                    repositoryService.activateProcessDefinitionByKey(key);
+                    repositoryService.activateProcessDefinitionById(id);
                 } catch (ActivitiException e) {
                     if (e.getMessage().contains("already in state 'active'")) {
                         log.warn("流程已经是启用状态");
@@ -113,17 +111,17 @@ public class ProcessDefinitionServiceImpl extends BaseServiceImpl<ProcessDefinit
                         throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "流程定义启用操作失败");
                     }
                 }
-                getBaseMapper().enableByActDefinitionKey(key);
+                getBaseMapper().enableByActDefinitionId(id);
             }
         }
     }
 
     @Override
-    public void suspend(List<String> keys) {
-        if (CollectionUtil.isNotEmpty(keys)) {
-            for (String key : keys) {
+    public void suspend(List<String> actDefinitionIdList) {
+        if (CollectionUtil.isNotEmpty(actDefinitionIdList)) {
+            for (String id : actDefinitionIdList) {
                 try {
-                    repositoryService.suspendProcessDefinitionByKey(key);
+                    repositoryService.suspendProcessDefinitionById(id);
                 } catch (ActivitiException e) {
                     if (e.getMessage().contains("already in state 'suspended'")) {
                         log.warn("流程已经是停用状态");
@@ -131,8 +129,19 @@ public class ProcessDefinitionServiceImpl extends BaseServiceImpl<ProcessDefinit
                         throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "流程定义停用操作失败");
                     }
                 }
-                getBaseMapper().disableByActDefinitionKey(key);
+                getBaseMapper().disableByActDefinitionId(id);
             }
         }
+    }
+
+    /**
+     * 根据就ID获取新ID
+     *
+     * @param oldActDefinitionId
+     * @return
+     */
+    @Override
+    public IProcessDefinition getActDefinitionIdAndKey(String oldActDefinitionId) {
+        return baseMapper.getActDefinitionByOldId(oldActDefinitionId);
     }
 }

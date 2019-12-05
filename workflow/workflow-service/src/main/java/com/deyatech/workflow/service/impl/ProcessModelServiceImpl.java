@@ -30,6 +30,7 @@ import org.activiti.engine.impl.persistence.entity.ModelEntity;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.Model;
+import org.activiti.engine.repository.ModelQuery;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
@@ -102,7 +103,11 @@ public class ProcessModelServiceImpl extends BaseServiceImpl<ProcessModelMapper,
 
     @Override
     public ProcessModel add(ProcessModelVo processModelVo) {
-        // todo 校验名称重复
+        long count = repositoryService.createModelQuery().modelName(processModelVo.getName()).count();
+        if (count > 0) {
+            throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "模型名称已经被使用");
+        }
+
         Model model = new ModelEntity();
         model.setName(processModelVo.getName());
         model.setMetaInfo(processModelVo.getMetaInfo());
@@ -163,6 +168,16 @@ public class ProcessModelServiceImpl extends BaseServiceImpl<ProcessModelMapper,
     @Override
     public void saveModel(String modelId, MultiValueMap<String, String> values) {
         try {
+            List<Model> modelList = repositoryService.createModelQuery().modelName(values.getFirst("name")).list();
+            if (CollectionUtil.isNotEmpty(modelList)) {
+                for (Model m : modelList) {
+                    // 存在同名ID不相同
+                    if (!m.getId().equals(modelId)) {
+                        throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "模型名称已经被使用");
+                    }
+                }
+            }
+
             Model model = repositoryService.getModel(modelId);
             ObjectNode modelJson = objectMapper.createObjectNode();
             if (StrUtil.isNotBlank(model.getMetaInfo())) {
@@ -176,8 +191,6 @@ public class ProcessModelServiceImpl extends BaseServiceImpl<ProcessModelMapper,
             repositoryService.saveModel(model);
 
             ProcessModel old = getLastByActModelId(modelId);
-
-            // todo 校验名称重复
 
             ProcessModel processModel = new ProcessModel();
             if (old.getUpdateTime().equals(old.getCreateTime()) && old.getVer() == 1) {

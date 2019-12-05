@@ -1,5 +1,8 @@
 package com.deyatech.workflow.controller;
 
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpStatus;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.deyatech.workflow.entity.ProcessModel;
 import com.deyatech.workflow.service.ProcessModelService;
 import com.deyatech.workflow.vo.ProcessModelVo;
@@ -48,8 +51,38 @@ public class ProcessModelController extends BaseController {
     @ApiImplicitParam(name = "processModelVo", value = "流程模型对象", required = true, dataType = "ProcessModelVo", paramType = "query")
     public RestResult<ProcessModelVo> saveOrUpdate(ProcessModelVo processModelVo) {
         log.info(String.format("新建流程模型: %s ", JSONUtil.toJsonStr(processModelVo)));
+
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("name_", processModelVo.getName());
+        if (StrUtil.isNotEmpty(processModelVo.getId())) {
+            queryWrapper.ne("id_", processModelVo.getId());
+        }
+        int count = processModelService.count(queryWrapper);
+        if (count > 0) {
+            return RestResult.error("模型名称已经被使用");
+        }
+
         ProcessModel processModel = processModelService.add(processModelVo);
         return RestResult.ok(processModelService.setVoProperties(processModel));
+    }
+
+    /**
+     * 检查模型名称
+     *
+     * @param name
+     * @param id
+     * @return
+     */
+    @RequestMapping("/checkModelName")
+    @ApiOperation(value="新建流程模型", notes="新建流程模型")
+    public RestResult checkModelName(String name, @RequestParam(value="id", required = false) String id) {
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("name_", name);
+        if (StrUtil.isNotEmpty(id)) {
+            queryWrapper.ne("id_", id);
+        }
+        int count = processModelService.count(queryWrapper);
+        return RestResult.build(HttpStatus.HTTP_OK, count > 0 ? "模型名称已经被使用" : "", count);
     }
 
     /**

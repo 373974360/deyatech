@@ -53,15 +53,14 @@
     </sql>
 
     <select id="findLastVersionPage" resultMap="voResultMap">
-        SELECT apd.*
-        FROM workflow_process_definition apd
-        JOIN (SELECT act_definition_key, max(ver_) ver_ FROM  workflow_process_definition GROUP BY act_definition_key) apdv
-        ON apd.act_definition_key = apdv.act_definition_key AND apd.ver_ = apdv.ver_
-        WHERE apd.enable_ != -1
+        SELECT d.*
+        FROM workflow_process_definition d
+        join workflow_process_model m on d.process_model_id = m.id_ and m.enable_ = 1
+        WHERE d.enable_ != -1
         <if test="processDefinition.name != null and processDefinition.name != ''">
-            AND (apd.name_ LIKE concat('%', #{processDefinition.name}, '%') or apd.act_definition_key LIKE concat('%', #{processDefinition.name}, '%'))
+            AND (d.name_ LIKE concat('%', #{processDefinition.name}, '%') or d.act_definition_key LIKE concat('%', #{processDefinition.name}, '%'))
         </if>
-        order by apd.deployment_time desc
+        order by d.deployment_time desc
     </select>
 
     <select id="getLastVersionByActDefinitionKey" resultMap="BaseResultMap">
@@ -73,11 +72,25 @@
         limit 1
     </select>
 
-    <update id="enableByActDefinitionKey">
-        UPDATE workflow_process_definition SET enable_ = 1 WHERE act_definition_key = #{actDefinitionKey} and enable_ = 0
+
+    <update id="enableByActDefinitionId">
+        UPDATE workflow_process_definition SET enable_ = 1 WHERE act_definition_id = #{actDefinitionId} and enable_ = 0
     </update>
 
-    <update id="disableByActDefinitionKey">
-        UPDATE workflow_process_definition SET enable_ = 0 WHERE act_definition_key = #{actDefinitionKey} and enable_ = 1
+    <update id="disableByActDefinitionId">
+        UPDATE workflow_process_definition SET enable_ = 0 WHERE act_definition_id = #{actDefinitionId} and enable_ = 1
     </update>
+
+    <select id="getActDefinitionByOldId" resultType="com.deyatech.workflow.entity.IProcessDefinition">
+        select dd.* from workflow_process_definition dd where dd.id_ in
+        (
+            select mm.process_definition_id from workflow_process_model mm where mm.enable_ = 1 and mm.act_model_id in
+            (
+                select m.act_model_id from workflow_process_model m where m.id_ in
+                (
+                    select d.process_model_id from workflow_process_definition d where d.act_definition_id = #{oldActDefinitionId}
+                )
+            )
+        )
+    </select>
 </mapper>

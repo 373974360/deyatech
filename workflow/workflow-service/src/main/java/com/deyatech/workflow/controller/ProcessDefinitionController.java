@@ -145,17 +145,17 @@ public class ProcessDefinitionController extends BaseController {
 
     @PostMapping("/activate")
     @ApiOperation(value="流程激活", notes="流程激活")
-    @ApiImplicitParam(name = "keys", value = "流程定义key", required = true, allowMultiple = true, dataType = "String", paramType = "query")
-    public RestResult activate(@RequestParam("keys[]")List<String> keys) {
-        processDefinitionService.active(keys);
+    @ApiImplicitParam(name = "actDefinitionIdList", value = "流程定义id", required = true, allowMultiple = true, dataType = "List", paramType = "query")
+    public RestResult activate(@RequestParam("actDefinitionIdList[]")List<String> actDefinitionIdList) {
+        processDefinitionService.active(actDefinitionIdList);
         return RestResult.ok();
     }
 
     @PostMapping("/suspend")
     @ApiOperation(value="流程挂起", notes="流程挂起")
-    @ApiImplicitParam(name = "keys", value = "流程定义key", required = true, allowMultiple = true, dataType = "String", paramType = "query")
-    public RestResult suspend(@RequestParam("keys[]")List<String> keys) {
-        processDefinitionService.suspend(keys);
+    @ApiImplicitParam(name = "actDefinitionIdList", value = "流程定义id", required = true, allowMultiple = true, dataType = "List", paramType = "query")
+    public RestResult suspend(@RequestParam("actDefinitionIdList[]")List<String> actDefinitionIdList) {
+        processDefinitionService.suspend(actDefinitionIdList);
         return RestResult.ok();
     }
 }
