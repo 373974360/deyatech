@@ -16,7 +16,8 @@ public enum EvaluationReformStatusEnum implements IEnums<Integer> {
     UnchangedApply(220, "无法整改申请"),
     UnchangedPass(221, "无法整改审核通过"),
     UnchangedReject(222, "无法整改审核驳回"),
-    Delay(3, "延期");
+    Delay(3, "延期"),
+    Revisit(999, "回访");
 
     private Integer code;
 
