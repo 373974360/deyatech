@@ -8,10 +8,7 @@ import com.deyatech.admin.entity.Dictionary;
 import com.deyatech.admin.feign.AdminFeign;
 import com.deyatech.admin.service.*;
 import com.deyatech.admin.util.MetaUtils;
-import com.deyatech.admin.vo.DictionaryVo;
-import com.deyatech.admin.vo.HolidayVo;
-import com.deyatech.admin.vo.MetadataCollectionVo;
-import com.deyatech.admin.vo.UserVo;
+import com.deyatech.admin.vo.*;
 import com.deyatech.common.entity.EnumsResult;
 import com.deyatech.common.entity.RestResult;
 import com.deyatech.common.enums.EnableEnum;
@@ -60,6 +57,8 @@ public class AdminFeignImpl implements AdminFeign {
 
     @Autowired
     DepartmentService departmentService;
+    @Autowired
+    RoleService roleService;
 
     @Override
     public RestResult<String[]> getAllPermissionsByUserId(@RequestParam("userId") String userId) {
@@ -344,5 +343,16 @@ public class AdminFeignImpl implements AdminFeign {
         dictionary.setIndexId(indexId);
         dictionary.setSortSql("sort_no asc");
         return RestResult.ok(dictionaryService.setVoProperties(dictionaryService.listByBean(dictionary)));
+    }
+
+    /**
+     * 根据条件查询角色列表
+     *
+     * @param role
+     * @return
+     */
+    @Override
+    public RestResult<List<Role>> getRoleList(Role role) {
+        return RestResult.ok(roleService.listByBean(role));
     }
 }
