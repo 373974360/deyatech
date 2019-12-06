@@ -2,11 +2,13 @@ package com.deyatech.workflow.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.deyatech.common.base.BaseService;
+import com.deyatech.common.entity.RestResult;
 import com.deyatech.workflow.entity.IProcessDefinition;
 import com.deyatech.workflow.vo.ProcessDefinitionVo;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -71,14 +73,22 @@ public interface ProcessDefinitionService extends BaseService<IProcessDefinition
     /**
      * 激活
      *
-     * @param keys
+     * @param actDefinitionIdList
      */
-    void active(List<String> keys);
+    void active(List<String> actDefinitionIdList);
 
     /**
      * 挂起
      *
-     * @param keys
+     * @param actDefinitionIdList
      */
-    void suspend(List<String> keys);
+    void suspend(List<String> actDefinitionIdList);
+
+    /**
+     * 根据就ID获取新ID
+     *
+     * @param oldActDefinitionId
+     * @return
+     */
+    IProcessDefinition getActDefinitionIdAndKey(String oldActDefinitionId);
 }
