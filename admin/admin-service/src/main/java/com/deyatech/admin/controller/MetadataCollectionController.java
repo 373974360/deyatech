@@ -1,8 +1,14 @@
 package com.deyatech.admin.controller;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import com.deyatech.admin.entity.Metadata;
 import com.deyatech.admin.entity.MetadataCollection;
+import com.deyatech.admin.entity.MetadataCollectionMetadata;
 import com.deyatech.admin.service.MetadataCollectionService;
+import com.deyatech.admin.service.MetadataService;
+import com.deyatech.admin.util.MetaUtils;
 import com.deyatech.admin.vo.MetadataCollectionMetadataVo;
 import com.deyatech.admin.vo.MetadataCollectionVo;
 import com.deyatech.common.entity.RestResult;
@@ -12,6 +18,9 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.sql.Struct;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,7 +44,8 @@ public class MetadataCollectionController extends BaseController {
 
     @Autowired
     MetadataCollectionService metadataCollectionService;
-
+    @Autowired
+    private MetadataService metadataService;
     /**
      * 单个保存或者更新
      *
@@ -46,12 +56,48 @@ public class MetadataCollectionController extends BaseController {
     @ApiOperation(value="单个保存或者更新", notes="根据对象保存或者更新信息")
     @ApiImplicitParam(name = "metadataCollection", value = "对象", required = true, dataType = "MetadataCollection", paramType = "query")
     public RestResult saveOrUpdate(MetadataCollectionVo metadataCollectionVo, String metadataCollectionMetadataJson) {
+        log.info(String.format("保存或者更新: %s ", JSONUtil.toJsonStr(metadataCollectionVo)));
         if (StrUtil.isNotBlank(metadataCollectionMetadataJson)) {
             List<MetadataCollectionMetadataVo> metadataVoList =
                     JSONUtil.toList(JSONUtil.parseArray(metadataCollectionMetadataJson), MetadataCollectionMetadataVo.class);
             metadataCollectionVo.setMetadataList(metadataVoList);
         }
-        log.info(String.format("保存或者更新: %s ", JSONUtil.toJsonStr(metadataCollectionVo)));
+        // 编辑时检查元数据有没有变更
+        if (StrUtil.isNotEmpty(metadataCollectionVo.getId())) {
+            StringBuilder errorMsg = new StringBuilder();
+            List<MetadataCollectionMetadataVo> metadataVoList = metadataCollectionVo.getMetadataList();
+            if (CollectionUtil.isNotEmpty(metadataVoList)) {
+                for (MetadataCollectionMetadataVo metadataVo : metadataVoList) {
+                    Metadata md = metadataService.setVoProperties(metadataService.getById(metadataVo.getMetadataId()));
+                    String msg = "";
+                    // 类型不相等
+                    if (!metadataVo.getDataType().equals(md.getDataType())) {
+                        msg = ",类型改变";
+                    }
+                    // 控件不等
+                    if (!metadataVo.getControlType().equals(md.getControlType())) {
+                        msg += ",控件改变";
+                    }
+                    int len1 = Integer.parseInt(md.getDataLength());
+                    int len2 = Integer.parseInt(metadataVo.getDataLength());
+                    // 长度不等
+                    if (len1 < len2) {
+                        msg += ",长度变小";
+                    }
+                    if (StrUtil.isNotEmpty(msg)) {
+                        errorMsg.append("【");
+                        errorMsg.append(md.getName());
+                        errorMsg.append(md.getBriefName());
+                        errorMsg.append("】");
+                        errorMsg.append(msg.substring(1));
+                    }
+                }
+            }
+            if (errorMsg.length() > 0) {
+                errorMsg.append("不能保存。");
+                return RestResult.error(errorMsg.toString());
+            }
+        }
         MetadataCollection collection = metadataCollectionService.save(metadataCollectionVo);
         return RestResult.ok(metadataCollectionService.setVoProperties(collection));
     }

@@ -161,6 +161,17 @@ public class MetadataController extends BaseController {
     }
 
     /**
+     * 获取所有控件类型信息
+     *
+     * @return
+     */
+    @GetMapping("/controlType")
+    @ApiOperation(value = "获取所有控件类型信息", notes = "获取所有控件类型信息")
+    public RestResult controlType() {
+        return RestResult.ok(CustomFormConfig.getDataShow());
+    }
+
+    /**
      * 根据复合类型元数据id和分类id查询可关联的基本类型元数据
      *
      * @param id

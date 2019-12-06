@@ -31,6 +31,16 @@ public class JdbcUtils {
 
     private Connection connection;
 
+    public String getDatabaseName() {
+        // "jdbc:mysql://mysql.deyatong.com:3306/deyatech-cms?characterEncoding=utf8&autoReConnect=true&useSSL=false"
+        String name = url.substring(url.lastIndexOf("/") + 1);
+        int index = name.lastIndexOf("?");
+        if (index > -1) {
+            name = name.substring(0, index);
+        }
+        return name;
+    }
+
     public Connection getConnection() {
         try {
             if (connection == null || (connection != null && connection.isClosed())) {

@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.deyatech.admin.vo.MetadataCollectionMetadataVo;
 import com.deyatech.admin.vo.MetadataCollectionVo;
+import com.deyatech.admin.vo.MetadataVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,50 +39,77 @@ public class MetaUtils {
 
     private static JdbcTemplate staticJdbcTemplate;
 
-    private static String databaseName = "deyatech-cms";
+    private static String databaseName;
 
     @PostConstruct
     public void init() {
         staticJdbcUtils = jdbcUtils;
         staticJdbcTemplate = jdbcTemplate;
+        databaseName = jdbcUtils.getDatabaseName();
     }
 
-    /**
-     * 初始化元数据集对应的表
-     *
-     * @param metadataCollectionVoList
-     */
-    public static void initMetadataTable(List<MetadataCollectionVo> metadataCollectionVoList) {
-        if (CollectionUtil.isEmpty(metadataCollectionVoList)) {
-            return;
-        }
-        Map<String, Table> tableMap = parseTable(metadataCollectionVoList);
-        if (CollectionUtil.isEmpty(tableMap)) {
-            return;
-        }
-
-        Map<String, Table> existTableMap = getExistTableFromDB(tableMap.keySet());
-        for (Table table : tableMap.values()) {
-            if (existTableMap.keySet().contains(table.getTableName())) {
-                alterTable(table, existTableMap.get(table.getTableName()));
-            } else {
-                createTable(table);
-            }
-        }
-    }
+//    /**
+//     * 初始化元数据集对应的表
+//     *
+//     * @param metadataCollectionVoList
+//     */
+//    public static void initMetadataTable(List<MetadataCollectionVo> metadataCollectionVoList) {
+//        if (CollectionUtil.isEmpty(metadataCollectionVoList)) {
+//            return;
+//        }
+//        Map<String, Table> tableMap = parseTable(metadataCollectionVoList);
+//        if (CollectionUtil.isEmpty(tableMap)) {
+//            return;
+//        }
+//
+//        Map<String, Table> existTableMap = getExistTableFromDB(tableMap.keySet());
+//        for (Table table : tableMap.values()) {
+//            if (existTableMap.keySet().contains(table.getTableName())) {
+//                alterTable(table, existTableMap.get(table.getTableName()));
+//            } else {
+//                createTable(table);
+//            }
+//        }
+//    }
 
     /**
      * 元数据集新增或者修改
      *
      * @param metadataCollectionVo
      */
-    public static void metadataTableChange(MetadataCollectionVo metadataCollectionVo) {
+    public static void metadataTableChange(MetadataCollectionVo metadataCollectionVo, boolean isUpdate) {
         Table table = parseTable(metadataCollectionVo);
-        Table oldTable = getTableFromDB(table.getTableName());
-        if (oldTable == null) {
-            createTable(table);
+        if (isUpdate) {
+            String sql = "SELECT COUNT(*) AS cnt FROM " + table.getFullTableName();
+            Map<String, Object> data;
+            try {
+                data = staticJdbcTemplate.queryForObject(sql, new ColumnMapRowMapper(), null);
+                if (data == null) {
+                    throw new RuntimeException("检查" + table.getTableName() + "表是否存在");
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("检查" + table.getTableName() + "表是否存在");
+            }
+            long count = (long) data.get("cnt");
+            if (count > 0) {
+                Table oldTable = getTableFromDB(table.getTableName());
+                if (oldTable == null) {
+                    throw new RuntimeException("检查" + table.getTableName() + "表是否存在");
+                }
+                List<MetadataCollectionMetadataVo> oldMetadataList = metadataCollectionVo.getOldMetadataList();
+                List<Column> oldColumnList = oldTable.getColumnList();
+                for (Column oldColumn : oldColumnList) {
+                    for (MetadataCollectionMetadataVo cmd : oldMetadataList) {
+                        if (oldColumn.columnName.equals(cmd.getFieldName())) {
+                            oldColumn.setId(cmd.getMetadataId());
+                            break;
+                        }
+                    }
+                }
+                alterTable(table, oldTable);
+            }
         } else {
-            alterTable(table, oldTable);
+            createTable(table);
         }
     }
 
@@ -92,7 +120,7 @@ public class MetaUtils {
      * @param values
      */
     public static String insert(MetadataCollectionVo metadataCollectionVo, Map<String, Object> values) {
-        String tableName = metadataCollectionVo.getMdcPrefix() + metadataCollectionVo.getEnName();
+        String tableName = metadataCollectionVo.getMdcPrefix() + metadataCollectionVo.getEnName() + metadataCollectionVo.getMdcVersion();
 
         String id = IdWorker.getIdStr();
         values.put("id_", id);
@@ -169,6 +197,24 @@ public class MetaUtils {
     }
 
     /**
+     * 删除表
+     *
+     * @param tableName
+     */
+    private static void dropTable(String tableName) {
+        if (StrUtil.isEmpty(tableName)) {
+            return;
+        }
+        String sql = "DROP TABLE IF EXISTS `" + tableName.toLowerCase() + "`;";
+        log.info("执行SQL语句：" + sql);
+        try {
+            staticJdbcTemplate.update(sql);
+        } catch (Exception e) {
+            throw new RuntimeException("公用方法删除表时错误", e);
+        }
+    }
+
+    /**
      * 创建表
      *
      * @param table
@@ -199,6 +245,41 @@ public class MetaUtils {
         }
     }
 
+    private static String checkTableType(Table table, Table oldTable) {
+        StringBuilder message = new StringBuilder();
+        if (CollectionUtil.isNotEmpty(table.getColumnList())) {
+            for (Column column : table.getColumnList()) {
+                if (CollectionUtil.isNotEmpty(oldTable.getColumnList())) {
+                    for (Column oldColumn : oldTable.getColumnList()) {
+                        // 相同字段
+                        if (ObjectUtil.equal(column.getColumnName(), oldColumn.getColumnName())) {
+                            // 类型变更
+                            if (!column.dataType.name().equals(oldColumn.dataType.name())) {
+                                message.append("【");
+                                message.append(column.comment);
+                                message.append(column.columnName);
+                                message.append("】类型被变更、");
+                            } else {
+                                // 新长度小于旧长度
+                                if (column.length < oldColumn.length) {
+                                    message.append("【");
+                                    message.append(column.comment);
+                                    message.append(column.columnName);
+                                    message.append("】长度被减小、");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (message.length() > 0) {
+            return "数据已存在，请修改元数据后重试。原因：" + message.substring(0, message.length() - 1);
+        } else {
+            return "";
+        }
+    }
+
     /**
      * 修改表
      *
@@ -207,26 +288,57 @@ public class MetaUtils {
      * @return
      */
     private static void alterTable(Table table, Table oldTable) {
+        if (CollectionUtil.isEmpty(table.getColumnList()) && CollectionUtil.isEmpty(oldTable.getColumnList())) {
+            return;
+        }
         StringBuilder sb = new StringBuilder();
         boolean alterFlag = false;
 
         sb.append("ALTER TABLE ").append(table.getFullTableName());
 
-        for (Column column : table.getColumnList()) {
-            boolean exist = false;
-            for (Column oldColumn : oldTable.getColumnList()) {
-                if (ObjectUtil.equal(column.getColumnName(), oldColumn.getColumnName())) {
-                    exist = true;
-                    if (!column.equals(oldColumn)) {
-                        alterFlag = true;
-                        sb.append(" MODIFY ").append(columnDefinition(column, true)).append(",");
+        if (CollectionUtil.isNotEmpty(table.getColumnList())) {
+            for (Column column : table.getColumnList()) {
+                boolean exist = false;
+                if (CollectionUtil.isNotEmpty(oldTable.getColumnList())) {
+                    for (Column oldColumn : oldTable.getColumnList()) {
+                        // ID相等
+                        if (ObjectUtil.equal(column.getId(), oldColumn.getId())) {
+                            exist = true;
+                            if (!column.equals(oldColumn)) {
+                                alterFlag = true;
+                                if (column.columnName.equals(oldColumn.columnName)) {
+                                    sb.append(" MODIFY ").append(columnDefinition(column, true)).append(",");
+                                } else {
+                                    sb.append(" CHANGE COLUMN ").append("`" + oldColumn.columnName + "` ").append(columnDefinition(column, true)).append(",");
+                                }
+                            }
+                            break;
+                        }
                     }
-                    break;
+                }
+                if (!exist) {
+                    alterFlag = true;
+                    sb.append(" ADD COLUMN ").append(columnDefinition(column, false)).append(",");
                 }
             }
-            if (!exist) {
-                alterFlag = true;
-                sb.append(" ADD ").append(columnDefinition(column, false)).append(",");
+        }
+
+        // 处理删除字段
+        if (CollectionUtil.isNotEmpty(oldTable.getColumnList())) {
+            for (Column oldColumn : oldTable.getColumnList()) {
+                boolean exist = false;
+                if (CollectionUtil.isNotEmpty(table.getColumnList())) {
+                    for (Column column : table.getColumnList()) {
+                        if (ObjectUtil.equal(column.getId(), oldColumn.getId())) {
+                            exist = true;
+                            break;
+                        }
+                    }
+                }
+                if (!exist) {
+                    alterFlag = true;
+                    sb.append(" DROP COLUMN ").append("`").append(oldColumn.getColumnName()).append("`").append(",");
+                }
             }
         }
 
@@ -340,7 +452,7 @@ public class MetaUtils {
     }
 
     private static Table parseTable(MetadataCollectionVo metadataCollectionVo) {
-        String tableName = metadataCollectionVo.getMdcPrefix() + metadataCollectionVo.getEnName();
+        String tableName = metadataCollectionVo.getMdcPrefix() + metadataCollectionVo.getEnName() + metadataCollectionVo.getMdcVersion();
         Table table = new Table(tableName);
         table.setComment(metadataCollectionVo.getName());
 
@@ -373,7 +485,7 @@ public class MetaUtils {
         }
 
         for (MetadataCollectionVo collectionVo : metadataCollectionVoList) {
-            String tableName = collectionVo.getMdcPrefix() + collectionVo.getEnName();
+            String tableName = collectionVo.getMdcPrefix() + collectionVo.getEnName() + collectionVo.getMdcVersion();
             Table table = new Table(tableName);
             table.setComment(collectionVo.getName());
             tableMap.put(tableName, table);
@@ -391,9 +503,15 @@ public class MetaUtils {
             }
 
             for (MetadataCollectionMetadataVo metadataVo : collectionVo.getMetadataList()) {
-                columnsMap.get(tableName).put(metadataVo.getFieldName(), parseColumn(metadataVo));
+                Column column = parseColumn(metadataVo);
+                if (Objects.nonNull(column)) {
+                    columnsMap.get(tableName).put(metadataVo.getFieldName(), column);
+                }
                 if (metadataVo.getUseIndex()) {
-                    indexMap.get(tableName).put(metadataVo.getFieldName(), parseIndex(metadataVo));
+                    Index index = parseIndex(metadataVo);
+                    if (Objects.nonNull(index)) {
+                        indexMap.get(tableName).put(metadataVo.getFieldName(), index);
+                    }
                 }
             }
         }
@@ -407,21 +525,25 @@ public class MetaUtils {
     }
 
     private static Column parseColumn(MetadataCollectionMetadataVo metadataVo) {
+        MetadataVo metadata = metadataVo.getMetadata();
+        if (Objects.isNull(metadata)) {
+            return null;
+        }
         // 数据类型
-        DataType dataType = parseDataType(metadataVo.getMetadata().getDataType());
+        DataType dataType = parseDataType(metadata.getDataType());
 
         // 根据是否必填判断notNull：因不同版本间字段可能存在差异，数据库不做此类限制
         Column column = new Column(metadataVo.getFieldName(), dataType, false);
-
+        column.setId(metadataVo.getMetadataId());
         // 数据长度
-        String length = metadataVo.getMetadata().getDataLength();
+        String length = metadata.getDataLength();
         if (StrUtil.isNotBlank(length)) {
             column.setLength(Integer.parseInt(length));
         } else if (column.typeHasLength()) {
             column.setDefaultLength();
         }
 
-        column.setComment(metadataVo.getMetadata().getName());
+        column.setComment(metadata.getName());
 
         // todo 默认值
 
@@ -466,7 +588,6 @@ public class MetaUtils {
 
     private static Map<String, Table> getExistTableFromDB(Collection<String> tableNameList) {
         Map<String, Table> tableMap = new HashMap<>();
-
         try {
             DatabaseMetaData databaseMetaData = staticJdbcUtils.getMetaData();
 
@@ -735,6 +856,7 @@ public class MetaUtils {
      */
     private static class Column {
 
+        private String id;
         private String columnName;
         private DataType dataType;
         private boolean primaryKey;
@@ -770,6 +892,12 @@ public class MetaUtils {
             this.notNull = notNull;
         }
 
+        public void setId(String id) {
+            this.id = id;
+        }
+        public String getId() {
+            return this.id;
+        }
         public boolean isUnsigned() {
             return unsigned;
         }

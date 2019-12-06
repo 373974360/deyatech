@@ -44,10 +44,16 @@
         <collection property="metadataList" ofType="com.deyatech.admin.vo.MetadataCollectionMetadataVo">
             <result column="amcm_id_" property="id" />
             <result column="amcm_label_" property="label" />
+            <result column="amcm_brief_name" property="briefName" />
+            <result column="amcm_data_type" property="dataType" />
+            <result column="amcm_data_length" property="dataLength" />
             <result column="amcm_control_type" property="controlType" />
+            <result column="amcm_control_length" property="controlLength" />
             <result column="amcm_check_model" property="checkModel" />
             <result column="amcm_data_source" property="dataSource" />
             <result column="amcm_dictionary_id" property="dictionaryId" />
+            <result column="amcm_required_" property="required" />
+            <result column="amcm_mandatory_" property="mandatory" />
             <result column="amcm_table_head" property="tableHead" />
             <result column="amcm_advanced_query" property="advancedQuery" />
             <result column="amcm_use_full_index" property="useFullIndex" />
@@ -96,10 +102,16 @@
         amc.parent_id as amc_parent_id,
         amcm.id_ as amcm_id_,
         amcm.label_ as amcm_label_,
+        amcm.brief_name as amcm_brief_name,
+        amcm.data_type as amcm_data_type,
+        amcm.data_length as amcm_data_length,
         amcm.control_type as amcm_control_type,
+        amcm.control_length as amcm_control_length,
         amcm.check_model as amcm_check_model,
         amcm.data_source as amcm_data_source,
         amcm.dictionary_id as amcm_dictionary_id,
+        amcm.required_ as amcm_required_,
+        amcm.mandatory_ as amcm_mandatory_,
         amcm.table_head as amcm_table_head,
         amcm.advanced_query as amcm_advanced_query,
         amcm.use_full_index as amcm_use_full_index,
@@ -144,8 +156,8 @@
         <include refid="vo_column_list"></include>
         FROM admin_metadata_collection amc
         LEFT JOIN admin_metadata_collection_metadata amcm ON amc.id_ = amcm.metadata_collection_id
-        LEFT JOIN admin_metadata am ON amcm.metadata_id = am.id_
-        WHERE amc.enable_ = 1 AND am.enable_ = 1
+        LEFT JOIN admin_metadata am ON amcm.metadata_id = am.id_ AND am.enable_ = 1
+        WHERE amc.enable_ = 1
         <if test="id != null and id != ''">
             AND amc.id_ = #{id}
         </if>

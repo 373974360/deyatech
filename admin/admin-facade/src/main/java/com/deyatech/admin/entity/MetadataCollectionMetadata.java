@@ -30,9 +30,25 @@ public class MetadataCollectionMetadata extends BaseEntity {
     @TableField("label_")
     private String label;
 
+    @ApiModelProperty(value = "字段名", dataType = "String")
+    @TableField("brief_name")
+    private String briefName;
+
+    @ApiModelProperty(value = "数据类型", dataType = "String")
+    @TableField("data_type")
+    private String dataType;
+
+    @ApiModelProperty(value = "数据长度", dataType = "String")
+    @TableField("data_length")
+    private String dataLength;
+
     @ApiModelProperty(value = "控件类型", dataType = "String")
     @TableField("control_type")
     private String controlType;
+
+    @ApiModelProperty(value = "控件长度", dataType = "Integer")
+    @TableField("control_length")
+    private Integer controlLength;
 
     @ApiModelProperty(value = "校验方式", dataType = "String")
     @TableField("check_model")
@@ -45,6 +61,14 @@ public class MetadataCollectionMetadata extends BaseEntity {
     @ApiModelProperty(value = "数据字典id", dataType = "String")
     @TableField("dictionary_id")
     private String dictionaryId;
+
+    @ApiModelProperty(value = "必填", dataType = "Boolean")
+    @TableField("required_")
+    private Boolean required;
+
+    @ApiModelProperty(value = "强制字段，必选", dataType = "Boolean")
+    @TableField("mandatory_")
+    private Boolean mandatory;
 
     @ApiModelProperty(value = "是否表头", dataType = "Boolean")
     @TableField("table_head")

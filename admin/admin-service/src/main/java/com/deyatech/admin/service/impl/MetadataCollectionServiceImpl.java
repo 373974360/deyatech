@@ -4,6 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.deyatech.admin.entity.Metadata;
 import com.deyatech.admin.entity.MetadataCollection;
 import com.deyatech.admin.entity.MetadataCollectionMetadata;
 import com.deyatech.admin.mapper.MetadataCollectionMapper;
@@ -13,15 +14,17 @@ import com.deyatech.admin.service.MetadataService;
 import com.deyatech.admin.util.MetaUtils;
 import com.deyatech.admin.vo.MetadataCollectionMetadataVo;
 import com.deyatech.admin.vo.MetadataCollectionVo;
+import com.deyatech.admin.vo.MetadataVo;
 import com.deyatech.common.base.BaseServiceImpl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collection;
+import java.util.*;
+import java.util.logging.Handler;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -85,7 +88,13 @@ public class MetadataCollectionServiceImpl extends BaseServiceImpl<MetadataColle
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public MetadataCollection save(MetadataCollectionVo metadataCollectionVo) {
+
+        boolean isUpdate = false;
+        if (StrUtil.isNotEmpty(metadataCollectionVo.getId())) {
+            isUpdate = true;
+        }
         MetadataCollection metadataCollection = new MetadataCollection();
         BeanUtil.copyProperties(metadataCollectionVo, metadataCollection);
         saveOrUpdate(metadataCollection);
@@ -96,24 +105,40 @@ public class MetadataCollectionServiceImpl extends BaseServiceImpl<MetadataColle
         MetadataCollectionMetadata wrapperBean = new MetadataCollectionMetadata();
         wrapperBean.setMetadataCollectionId(metadataCollection.getId());
         wrapperBean.setMdcVersion(metadataCollectionVo.getMdcVersion());
+        // 检索旧的数据
+        Collection<MetadataCollectionMetadata> oldMetadataList = metadataCollectionMetadataService.listByBean(wrapperBean);
+        if (CollectionUtil.isNotEmpty(oldMetadataList)) {
+            List<MetadataCollectionMetadataVo> oldMetadataVoList = new ArrayList<>();
+            for (MetadataCollectionMetadata cmd : oldMetadataList) {
+                MetadataCollectionMetadataVo cmdVo = metadataCollectionMetadataService.setVoProperties(cmd);
+                cmdVo.setFieldName(metadataCollectionVo.getMdPrefix() + cmd.getBriefName());
+                oldMetadataVoList.add(cmdVo);
+            }
+            metadataCollectionVo.setOldMetadataList(oldMetadataVoList);
+        }
+        // 删除旧的数据
         metadataCollectionMetadataService.removeByBean(wrapperBean);
 
         List<MetadataCollectionMetadataVo> metadataVoList = metadataCollectionVo.getMetadataList();
         if (CollectionUtil.isNotEmpty(metadataVoList)) {
-            List<MetadataCollectionMetadata> metadataList = new ArrayList<>();
-            for (MetadataCollectionMetadataVo metadataVo : metadataVoList) {
-                metadataVo.setMetadata(metadataService.setVoProperties(metadataService.getById(metadataVo.getMetadataId())));
+            List<MetadataCollectionMetadata> collectionMetadataList = new ArrayList<>();
+            for (MetadataCollectionMetadataVo collectionMetadataVo : metadataVoList) {
+                MetadataVo md = metadataService.setVoProperties(metadataService.getById(collectionMetadataVo.getMetadataId()));
+                md.setName(collectionMetadataVo.getLabel());
+                md.setCheckModel(collectionMetadataVo.getCheckModel());
+                collectionMetadataVo.setMetadata(md);
 
-                MetadataCollectionMetadata metadata = new MetadataCollectionMetadata();
-                BeanUtil.copyProperties(metadataVo, metadata);
-                metadata.setMetadataCollectionId(metadataCollection.getId());
-                metadata.setMdcVersion(metadataCollectionVo.getMdcVersion());
-                metadataList.add(metadata);
+                MetadataCollectionMetadata collectionMetadata = new MetadataCollectionMetadata();
+                BeanUtil.copyProperties(collectionMetadataVo, collectionMetadata);
+                collectionMetadata.setBriefName(md.getBriefName());
+                collectionMetadata.setMetadataCollectionId(metadataCollection.getId());
+                collectionMetadata.setMdcVersion(metadataCollectionVo.getMdcVersion());
+                collectionMetadataList.add(collectionMetadata);
             }
-            metadataCollectionMetadataService.saveBatch(metadataList);
+            metadataCollectionMetadataService.saveBatch(collectionMetadataList);
         }
 
-        MetaUtils.metadataTableChange(metadataCollectionVo);
+        MetaUtils.metadataTableChange(metadataCollectionVo, isUpdate);
 
         return metadataCollection;
     }
