@@ -2,11 +2,9 @@ package com.deyatech.admin.feign;
 
 import com.deyatech.admin.entity.Department;
 import com.deyatech.admin.entity.Holiday;
+import com.deyatech.admin.entity.Role;
 import com.deyatech.admin.entity.User;
-import com.deyatech.admin.vo.DictionaryVo;
-import com.deyatech.admin.vo.HolidayVo;
-import com.deyatech.admin.vo.MetadataCollectionVo;
-import com.deyatech.admin.vo.UserVo;
+import com.deyatech.admin.vo.*;
 import com.deyatech.common.entity.EnumsResult;
 import com.deyatech.common.entity.RestResult;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -251,4 +249,13 @@ public interface AdminFeign {
      */
     @RequestMapping(value = "/dictionary/getDictionaryListByIndexId")
     RestResult<List<DictionaryVo>> getDictionaryListByIndexId(@RequestParam("indexId") String indexId);
+
+    /**
+     * 根据条件查询角色列表
+     *
+     * @param role
+     * @return
+     */
+    @RequestMapping(value = "/role/getRoleList")
+    RestResult<List<Role>> getRoleList(@RequestBody Role role);
 }
