@@ -103,8 +103,11 @@ public class WeChatUtil {
             }
         }
         try {
-            return wxMpService.getTemplateMsgService().sendTemplateMsg(templateMessage);
+            String s = wxMpService.getTemplateMsgService().sendTemplateMsg(templateMessage);
+            log.info("******************:"+s);
+            return s;
         } catch (WxErrorException e) {
+            log.info("******************"+String.valueOf(e));
             log.error(StrUtil.format("发送模板消息失败[%s]", JSONUtil.toJsonStr(templateMessage)));
             e.printStackTrace();
             return null;
