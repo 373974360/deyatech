@@ -118,9 +118,6 @@ public class MetaUtils {
         Map<String, Object> data;
         try {
             data = staticJdbcTemplate.queryForObject(sql, new ColumnMapRowMapper(), null);
-            if (data == null) {
-                throw new RuntimeException("检查" + tableName + "表是否存在");
-            }
         } catch (Exception e) {
             throw new RuntimeException("检查" + tableName + "表是否存在");
         }
@@ -197,12 +194,14 @@ public class MetaUtils {
      */
     public static Map<String, Object> selectById(MetadataCollectionVo metadataCollectionVo, String id) {
         Table table = parseTable(metadataCollectionVo);
-        String sql = "SELECT * FROM " + table.getFullTableName()
-                + " WHERE `" + table.getPrimaryKeyColumn().getColumnName() + "` = ?;";
-        Map<String, Object> data = staticJdbcTemplate.queryForObject(sql, new ColumnMapRowMapper(), id);
-        if (data == null) {
+        String cnt = "SELECT COUNT(*) AS cnt FROM " + table.getFullTableName() + " WHERE `" + table.getPrimaryKeyColumn().getColumnName() + "` = ?;";
+        Map<String, Object> cntObj =  staticJdbcTemplate.queryForObject(cnt, new ColumnMapRowMapper(), id);
+        long count = (long) cntObj.get("cnt");
+        if (count == 0) {
             return null;
         }
+        String sql = "SELECT * FROM " + table.getFullTableName() + " WHERE `" + table.getPrimaryKeyColumn().getColumnName() + "` = ?;";
+        Map<String, Object> data = staticJdbcTemplate.queryForObject(sql, new ColumnMapRowMapper(), id);
         Map<String, Object> result = new HashMap<>();
         for (Column column : table.getColumnList()) {
             result.put(column.getColumnName(), data.get(column.getColumnName()));
