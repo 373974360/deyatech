@@ -28,4 +28,5 @@ public class MetadataCollectionVo extends MetadataCollection {
      */
     List<MetadataCollectionMetadataVo> metadataList;
     List<MetadataCollectionMetadataVo> oldMetadataList;
+    private boolean beUsed;
 }

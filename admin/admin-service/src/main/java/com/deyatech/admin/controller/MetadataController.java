@@ -1,8 +1,10 @@
 package com.deyatech.admin.controller;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.deyatech.admin.config.CustomFormConfig;
 import com.deyatech.admin.entity.Metadata;
+import com.deyatech.admin.service.MetadataCollectionMetadataService;
 import com.deyatech.admin.service.MetadataService;
 import com.deyatech.admin.vo.MetadataVo;
 import com.deyatech.common.entity.RestResult;
@@ -14,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+
 import org.springframework.web.bind.annotation.RestController;
 import com.deyatech.common.base.BaseController;
 import io.swagger.annotations.Api;
@@ -35,6 +39,8 @@ public class MetadataController extends BaseController {
 
     @Autowired
     MetadataService metadataService;
+    @Autowired
+    MetadataCollectionMetadataService metadataCollectionMetadataService;
 
     /**
      * 单个保存或者更新
@@ -81,6 +87,13 @@ public class MetadataController extends BaseController {
     @ApiImplicitParam(name = "metadata", value = "对象", required = true, dataType = "Metadata", paramType = "query")
     public RestResult<Boolean> removeByMetadata(Metadata metadata) {
         log.info(String.format("根据Metadata对象属性逻辑删除: %s ", metadata));
+        Metadata md = metadataService.getByBean(metadata);
+        if (Objects.nonNull(md)) {
+            int count = metadataCollectionMetadataService.count(metadata.getId());
+            if (count > 0) {
+                return RestResult.error("元数据已经被使用不能删除");
+            }
+        }
         boolean result = metadataService.removeByBean(metadata);
         return RestResult.ok(result);
     }
@@ -97,6 +110,14 @@ public class MetadataController extends BaseController {
     @ApiImplicitParam(name = "ids", value = "对象ID集合", required = true, allowMultiple = true, dataType = "Serializable", paramType = "query")
     public RestResult<Boolean> removeByIds(@RequestParam("ids[]") List<String> ids) {
         log.info(String.format("根据id批量删除: %s ", JSONUtil.toJsonStr(ids)));
+        if (CollectionUtil.isNotEmpty(ids)) {
+            for (String id : ids) {
+                int count = metadataCollectionMetadataService.count(id);
+                if (count > 0) {
+                    return RestResult.error("元数据已经被使用不能删除");
+                }
+            }
+        }
         boolean result = metadataService.removeByIds(ids);
         return RestResult.ok(result);
     }

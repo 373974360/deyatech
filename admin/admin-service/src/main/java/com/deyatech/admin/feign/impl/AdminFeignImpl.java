@@ -355,4 +355,10 @@ public class AdminFeignImpl implements AdminFeign {
     public RestResult<List<Role>> getRoleList(Role role) {
         return RestResult.ok(roleService.listByBean(role));
     }
+
+    @Override
+    public RestResult<Boolean> checkMetadataCollectionById(String id) {
+        int count = metadataCollectionService.count(id);
+        return RestResult.ok(count > 0 ? true : false);
+    }
 }

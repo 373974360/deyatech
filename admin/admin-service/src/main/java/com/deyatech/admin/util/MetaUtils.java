@@ -113,6 +113,20 @@ public class MetaUtils {
         }
     }
 
+    public static long countTotal(String tableName) {
+        String sql = "SELECT COUNT(*) AS cnt FROM `" + tableName + "`";
+        Map<String, Object> data;
+        try {
+            data = staticJdbcTemplate.queryForObject(sql, new ColumnMapRowMapper(), null);
+            if (data == null) {
+                throw new RuntimeException("检查" + tableName + "表是否存在");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("检查" + tableName + "表是否存在");
+        }
+        return (long) data.get("cnt");
+    }
+
     /**
      * 插入一条数据
      *
@@ -201,11 +215,11 @@ public class MetaUtils {
      *
      * @param tableName
      */
-    private static void dropTable(String tableName) {
+    public static void dropTable(String tableName) {
         if (StrUtil.isEmpty(tableName)) {
             return;
         }
-        String sql = "DROP TABLE IF EXISTS `" + tableName.toLowerCase() + "`;";
+        String sql = "DROP TABLE IF EXISTS `" + tableName + "`;";
         log.info("执行SQL语句：" + sql);
         try {
             staticJdbcTemplate.update(sql);

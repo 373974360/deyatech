@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.deyatech.admin.entity.Metadata;
 import com.deyatech.admin.mapper.MetadataMapper;
+import com.deyatech.admin.service.MetadataCollectionMetadataService;
 import com.deyatech.admin.service.MetadataService;
 import com.deyatech.admin.vo.MetadataVo;
 import com.deyatech.common.Constants;
@@ -13,6 +14,7 @@ import com.deyatech.common.base.BaseServiceImpl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import com.deyatech.common.enums.MetadataTypeEnum;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -27,7 +29,8 @@ import java.util.*;
  */
 @Service
 public class MetadataServiceImpl extends BaseServiceImpl<MetadataMapper, Metadata> implements MetadataService {
-
+    @Autowired
+    MetadataCollectionMetadataService metadataCollectionMetadataService;
     /**
      * 单个将对象转换为vo
      *
@@ -54,6 +57,8 @@ public class MetadataServiceImpl extends BaseServiceImpl<MetadataMapper, Metadat
             for (Object metadata : metadatas) {
                 MetadataVo metadataVo = new MetadataVo();
                 BeanUtil.copyProperties(metadata, metadataVo);
+                int count = metadataCollectionMetadataService.count(metadataVo.getId());
+                metadataVo.setBeUsed(count > 0 ? true : false);
                 metadataVos.add(metadataVo);
             }
         }

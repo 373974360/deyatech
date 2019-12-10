@@ -258,4 +258,14 @@ public interface AdminFeign {
      */
     @RequestMapping(value = "/role/getRoleList")
     RestResult<List<Role>> getRoleList(@RequestBody Role role);
+
+    /**
+     * 检查元数据集是否存在
+     * true 存在， false 不存在
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/metadataCollection/checkMetadataCollectionById")
+    RestResult<Boolean> checkMetadataCollectionById(@RequestParam("id") String id);
 }

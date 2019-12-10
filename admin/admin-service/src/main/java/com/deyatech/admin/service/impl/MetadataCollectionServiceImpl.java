@@ -69,6 +69,9 @@ public class MetadataCollectionServiceImpl extends BaseServiceImpl<MetadataColle
             for (Object metadataCollection : metadataCollections) {
                 MetadataCollectionVo metadataCollectionVo = new MetadataCollectionVo();
                 BeanUtil.copyProperties(metadataCollection, metadataCollectionVo);
+                String tableName = metadataCollectionVo.getMdcPrefix() + metadataCollectionVo.getEnName() + metadataCollectionVo.getMdcVersion();
+                long count = MetaUtils.countTotal(tableName);
+                metadataCollectionVo.setBeUsed(count > 0 ? true : false);
                 metadataCollectionVos.add(metadataCollectionVo);
             }
         }
@@ -148,6 +151,9 @@ public class MetadataCollectionServiceImpl extends BaseServiceImpl<MetadataColle
         List<MetadataCollectionVo> data = getBaseMapper().findAllData(metadataCollectionVo);
         if (CollectionUtil.isNotEmpty(data)) {
             for (MetadataCollectionVo collection : data) {
+                String tableName = collection.getMdcPrefix() + collection.getEnName() + collection.getMdcVersion();
+                long count = MetaUtils.countTotal(tableName);
+                collection.setBeUsed(count > 0 ? true : false);
                 List<MetadataCollectionMetadataVo> metadataVoList = collection.getMetadataList();
                 if (CollectionUtil.isNotEmpty(metadataVoList)) {
                     collection.setMetadataList(buildRelationTree(metadataVoList));
@@ -164,6 +170,33 @@ public class MetadataCollectionServiceImpl extends BaseServiceImpl<MetadataColle
         collection.setMainVersion(true);
         saveOrUpdate(collection);
     }
+
+    /**
+     * 设置主版本
+     *
+     * @param enName
+     */
+    @Override
+    public void setMainVersionByEnName(String enName) {
+        MetadataCollection bean = new MetadataCollection();
+        bean.setEnName(enName);
+        Collection<MetadataCollection> list = listByBean(bean);
+        if (CollectionUtil.isNotEmpty(list)) {
+            boolean hasMainVersion = false;
+            for (MetadataCollection mc : list) {
+                if (mc.getMainVersion()) {
+                    hasMainVersion = true;
+                }
+            }
+            if (!hasMainVersion) {
+                Optional<MetadataCollection> optional = list.stream().sorted(Comparator.comparing(MetadataCollection::getId).reversed()).findFirst();
+                MetadataCollection collection = optional.get();
+                collection.setMainVersion(true);
+                super.saveOrUpdate(collection);
+            }
+        }
+    }
+
 
     @Override
     public boolean checkNameExist(String enName, String name) {
@@ -236,5 +269,18 @@ public class MetadataCollectionServiceImpl extends BaseServiceImpl<MetadataColle
             }
         }
         return tree;
+    }
+
+    /**
+     * 统计件数
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public int count(String id) {
+        QueryWrapper<MetadataCollection> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id_", id);
+        return super.count(queryWrapper);
     }
 }

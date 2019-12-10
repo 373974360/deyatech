@@ -1,5 +1,6 @@
 package com.deyatech.admin.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.deyatech.admin.entity.MetadataCollectionMetadata;
 import com.deyatech.admin.service.MetadataCollectionMetadataService;
 import com.deyatech.admin.vo.MetadataCollectionMetadataVo;
@@ -141,5 +142,4 @@ public class MetadataCollectionMetadataController extends BaseController {
         log.info(String.format("根据MetadataCollectionMetadata对象属性分页检索: %s ",JSONUtil.toJsonStr(metadataCollectionMetadatas)));
         return RestResult.ok(metadataCollectionMetadatas);
     }
-
 }
