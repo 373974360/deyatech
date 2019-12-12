@@ -11,11 +11,17 @@ public enum UploadFileTypeEnum implements IEnums<String>{
     PNG("png", "png"),
     GIF("gif", "gif"),
     BMP("bmp", "bmp"),
+    TXT("txt", "txt"),
+    RAR("rar", "rar"),
+    TAR("tar", "tar"),
+    ZIP("zip", "zip"),
+    GZ("gz", "gz"),
     DOC("doc", "doc"),
     DOCX("docx", "docx"),
     XLS("xls", "xls"),
     XLSX("xlsx", "xlsx"),
-    TXT("txt", "txt");
+    PPT("ppt", "ppt"),
+    PPTX("pptx", "pptx");
 
     private String code;
     private String value;

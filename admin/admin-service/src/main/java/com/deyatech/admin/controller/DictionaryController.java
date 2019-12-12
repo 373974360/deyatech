@@ -1,6 +1,7 @@
 package com.deyatech.admin.controller;
 
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.deyatech.admin.entity.Dictionary;
 import com.deyatech.admin.service.DictionaryService;
@@ -145,4 +146,17 @@ public class DictionaryController extends BaseController {
         return RestResult.ok(dictionarys);
     }
 
+    /**
+     * 下一个排序号
+     *
+     * @return
+     */
+    @RequestMapping("/getNextSortNo")
+    @ApiOperation(value = "下一个排序号", notes = "下一个排序号")
+    public RestResult<Integer> getNextSortNo(String indexId) {
+        QueryWrapper queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("index_id", indexId);
+        queryWrapper.select("ifnull(max(sort_no), 0) + 1 as sortNo");
+        return RestResult.ok(dictionaryService.getMap(queryWrapper).get("sortNo"));
+    }
 }

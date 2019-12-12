@@ -34,8 +34,12 @@
            </dataShow>
        </dataType>
        <dataType id="date" name="日期型">
-           <dataShow mustValidate="true" ref="dateElement"></dataShow>
-           <dataShow mustValidate="true" ref="datetimeElement"></dataShow>
+           <dataShow mustValidate="true" ref="dateElement">
+               <validate>lessThanNow</validate>
+           </dataShow>
+           <dataShow mustValidate="true" ref="datetimeElement">
+               <validate>lessThanNow</validate>
+           </dataShow>
            <dataShow mustValidate="true" ref="timeElement"></dataShow>
        </dataType>
        <dataType id="file" name="附件">
@@ -121,7 +125,8 @@
         <validate id="positiveInteger" name="正整数">custom[positiveInteger]</validate>
         <validate id="english" name="英文">custom[onlyLetterSp]</validate>
         <validate id="float" name="浮点数">custom[number]</validate>
-        <validate id="url" name="连接">custom[url]</validate>
+        <validate id="url" name="链接">custom[url]</validate>
+        <validate id="lessThanNow" name="小于当前时间">custom[url]</validate>
     </validates>
     <!-- 扩展规则:基于AbstractDataSource编写扩展类；定义ds，id不能重复，bean为扩展类的beanId -->
     <dataSource>

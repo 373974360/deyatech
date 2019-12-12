@@ -69,8 +69,7 @@ public class MetadataCollectionServiceImpl extends BaseServiceImpl<MetadataColle
             for (Object metadataCollection : metadataCollections) {
                 MetadataCollectionVo metadataCollectionVo = new MetadataCollectionVo();
                 BeanUtil.copyProperties(metadataCollection, metadataCollectionVo);
-                String tableName = metadataCollectionVo.getMdcPrefix() + metadataCollectionVo.getEnName() + metadataCollectionVo.getMdcVersion();
-                long count = MetaUtils.countTotal(tableName);
+                long count = MetaUtils.countTotal(MetaUtils.getTableName(metadataCollectionVo));
                 metadataCollectionVo.setBeUsed(count > 0 ? true : false);
                 metadataCollectionVos.add(metadataCollectionVo);
             }
@@ -127,13 +126,24 @@ public class MetadataCollectionServiceImpl extends BaseServiceImpl<MetadataColle
             List<MetadataCollectionMetadata> collectionMetadataList = new ArrayList<>();
             for (MetadataCollectionMetadataVo collectionMetadataVo : metadataVoList) {
                 MetadataVo md = metadataService.setVoProperties(metadataService.getById(collectionMetadataVo.getMetadataId()));
+                // 画面变更的部分
                 md.setName(collectionMetadataVo.getLabel());
                 md.setCheckModel(collectionMetadataVo.getCheckModel());
                 collectionMetadataVo.setMetadata(md);
 
                 MetadataCollectionMetadata collectionMetadata = new MetadataCollectionMetadata();
+                // 保存画面上的数据
                 BeanUtil.copyProperties(collectionMetadataVo, collectionMetadata);
+                // 不能变更的部分用元数据覆盖
                 collectionMetadata.setBriefName(md.getBriefName());
+                collectionMetadata.setDataType(md.getDataType());
+                collectionMetadata.setDataLength(md.getDataLength());
+                collectionMetadata.setControlType(md.getControlType());
+                collectionMetadata.setControlLength(md.getControlLength());
+                collectionMetadata.setDataSource(md.getDataSource());
+                collectionMetadata.setDictionaryId(md.getDictionaryId());
+                collectionMetadata.setRequired(md.getRequired());
+                collectionMetadata.setMandatory(md.getMandatory());
                 collectionMetadata.setMetadataCollectionId(metadataCollection.getId());
                 collectionMetadata.setMdcVersion(metadataCollectionVo.getMdcVersion());
                 collectionMetadataList.add(collectionMetadata);
@@ -151,8 +161,7 @@ public class MetadataCollectionServiceImpl extends BaseServiceImpl<MetadataColle
         List<MetadataCollectionVo> data = getBaseMapper().findAllData(metadataCollectionVo);
         if (CollectionUtil.isNotEmpty(data)) {
             for (MetadataCollectionVo collection : data) {
-                String tableName = collection.getMdcPrefix() + collection.getEnName() + collection.getMdcVersion();
-                long count = MetaUtils.countTotal(tableName);
+                long count = MetaUtils.countTotal(MetaUtils.getTableName(collection));
                 collection.setBeUsed(count > 0 ? true : false);
                 List<MetadataCollectionMetadataVo> metadataVoList = collection.getMetadataList();
                 if (CollectionUtil.isNotEmpty(metadataVoList)) {

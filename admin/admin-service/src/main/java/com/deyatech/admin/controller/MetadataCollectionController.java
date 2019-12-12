@@ -67,32 +67,34 @@ public class MetadataCollectionController extends BaseController {
             List<MetadataCollectionMetadataVo> metadataVoList = metadataCollectionVo.getMetadataList();
             if (CollectionUtil.isNotEmpty(metadataVoList)) {
                 for (MetadataCollectionMetadataVo metadataVo : metadataVoList) {
-                    Metadata md = metadataService.setVoProperties(metadataService.getById(metadataVo.getMetadataId()));
+                    // 数据库中
+                    Metadata db = metadataService.setVoProperties(metadataService.getById(metadataVo.getMetadataId()));
                     String msg = "";
                     // 类型不相等
-                    if (!metadataVo.getDataType().equals(md.getDataType())) {
+                    if (!metadataVo.getDataType().equals(db.getDataType())) {
                         msg = ",类型改变";
                     }
                     // 控件不等
-                    if (!metadataVo.getControlType().equals(md.getControlType())) {
+                    if (!metadataVo.getControlType().equals(db.getControlType())) {
                         msg += ",控件改变";
                     }
-                    int len1 = Integer.parseInt(md.getDataLength());
-                    int len2 = Integer.parseInt(metadataVo.getDataLength());
+                    int len1 = Integer.parseInt(metadataVo.getDataLength());
+                    int len2 = Integer.parseInt(db.getDataLength());
                     // 长度不等
                     if (len1 < len2) {
                         msg += ",长度变小";
                     }
                     if (StrUtil.isNotEmpty(msg)) {
                         errorMsg.append("【");
-                        errorMsg.append(md.getName());
-                        errorMsg.append(md.getBriefName());
+                        errorMsg.append(db.getName());
+                        errorMsg.append(db.getBriefName());
                         errorMsg.append("】");
                         errorMsg.append(msg.substring(1));
                     }
                 }
             }
-            if (errorMsg.length() > 0) {
+            long count = MetaUtils.countTotal(MetaUtils.getTableName(metadataCollectionVo));
+            if (errorMsg.length() > 0 && count > 0) {
                 errorMsg.append("不能保存。");
                 return RestResult.error(errorMsg.toString());
             }
@@ -128,17 +130,17 @@ public class MetadataCollectionController extends BaseController {
     public RestResult<Boolean> removeByMetadataCollection(MetadataCollection metadataCollection) {
         log.info(String.format("根据MetadataCollection对象属性逻辑删除: %s ", metadataCollection));
         MetadataCollection mc = metadataCollectionService.getByBean(metadataCollection);
+        MetadataCollectionVo mcvo = metadataCollectionService.setVoProperties(mc);
         if (Objects.nonNull(mc)) {
-            String tableName = mc.getMdcPrefix() + mc.getEnName() + mc.getMdcVersion();
-            long count = MetaUtils.countTotal(tableName);
+            long count = MetaUtils.countTotal(MetaUtils.getTableName(mcvo));
             if (count > 0) {
-                return RestResult.error(tableName + "表有数据不能删除");
+                return RestResult.error(MetaUtils.getTableName(mcvo) + "表有数据不能删除");
             }
         }
         boolean result = metadataCollectionService.removeByBean(metadataCollection);
         if (result && Objects.nonNull(mc)) {
             // 删除数据库表
-            MetaUtils.dropTable(mc.getMdcPrefix() + mc.getEnName() + mc.getMdcVersion());
+            MetaUtils.dropTable(MetaUtils.getTableName(mcvo));
         }
         return RestResult.ok(result);
     }
@@ -158,10 +160,10 @@ public class MetadataCollectionController extends BaseController {
         if (CollectionUtil.isNotEmpty(ids)) {
             for (String id :ids) {
                 MetadataCollection mc = metadataCollectionService.getById(id);
-                String tableName = mc.getMdcPrefix() + mc.getEnName() + mc.getMdcVersion();
-                long count = MetaUtils.countTotal(tableName);
+                MetadataCollectionVo mcvo = metadataCollectionService.setVoProperties(mc);
+                long count = MetaUtils.countTotal(MetaUtils.getTableName(mcvo));
                 if (count > 0) {
-                    return RestResult.error(tableName + "表有数据不能删除");
+                    return RestResult.error(MetaUtils.getTableName(mcvo) + "表有数据不能删除");
                 }
             }
         }
@@ -175,8 +177,9 @@ public class MetadataCollectionController extends BaseController {
         if (result) {
             for (MetadataCollection mc : list) {
                 metadataCollectionService.setMainVersionByEnName(mc.getEnName());
+                MetadataCollectionVo mcvo = metadataCollectionService.setVoProperties(mc);
                 // 删除数据库表
-                MetaUtils.dropTable(mc.getMdcPrefix() + mc.getEnName() + mc.getMdcVersion());
+                MetaUtils.dropTable(MetaUtils.getTableName(mcvo));
             }
         }
         return RestResult.ok(result);
