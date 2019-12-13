@@ -11,12 +11,12 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.deyatech.common.Constants;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.deyatech.common.entity.CascaderResult;
 import com.deyatech.common.enums.EnableEnum;
+import com.deyatech.common.utils.CascaderUtil;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * <p>
@@ -28,6 +28,33 @@ import java.util.Collection;
  */
 @Service
 public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Department> implements DepartmentService {
+
+    /**
+     * 可输入可选择控件使用
+     *
+     * @param department
+     * @return
+     */
+    @Override
+    public Map<String, Object> getCascaderAttach(Department department) {
+        Map<String, Object> result = new HashMap<>();
+        List<Map<String, String>> attachData = new ArrayList<>();
+        Collection<Department> departments = super.listByBean(department);
+        if (CollectionUtil.isNotEmpty(departments)) {
+            departments.stream().forEach(d -> {
+                Map<String, String> item = new HashMap<>();
+                item.put("id", d.getId());
+                item.put("parentId", d.getParentId());
+                item.put("treePosition", Objects.isNull(d.getTreePosition()) ? "" : d.getTreePosition());
+                attachData.add(item);
+            });
+        }
+        Collection<DepartmentVo> departmentVos = this.getDepartmentTree(department);
+        List<CascaderResult> cascaderData = CascaderUtil.getResult("Id", "Name","TreePosition", department.getId(), departmentVos);
+        result.put("attachData", attachData);
+        result.put("cascaderData", cascaderData);
+        return result;
+    }
 
     /**
      * 根据Department对象属性检索系统部门信息的tree对象
