@@ -2,13 +2,15 @@ package com.deyatech.admin.feign.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.deyatech.admin.entity.*;
 import com.deyatech.admin.entity.Dictionary;
+import com.deyatech.admin.entity.*;
 import com.deyatech.admin.feign.AdminFeign;
 import com.deyatech.admin.service.*;
 import com.deyatech.admin.util.MetaUtils;
-import com.deyatech.admin.vo.*;
+import com.deyatech.admin.vo.DictionaryVo;
+import com.deyatech.admin.vo.HolidayVo;
+import com.deyatech.admin.vo.MetadataCollectionVo;
+import com.deyatech.admin.vo.UserVo;
 import com.deyatech.common.entity.EnumsResult;
 import com.deyatech.common.entity.RestResult;
 import com.deyatech.common.enums.EnableEnum;
@@ -360,5 +362,19 @@ public class AdminFeignImpl implements AdminFeign {
     public RestResult<Boolean> checkMetadataCollectionById(String id) {
         int count = metadataCollectionService.count(id);
         return RestResult.ok(count > 0 ? true : false);
+    }
+
+    /**
+     * 获取字典项信息
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public RestResult<DictionaryVo> getDictionaryById(@RequestParam("id") String id) {
+        if (StrUtil.isEmpty(id))
+            return RestResult.ok(null);
+        Dictionary dictionary = dictionaryService.getById(id);
+        return RestResult.ok(dictionaryService.setVoProperties(dictionary));
     }
 }
