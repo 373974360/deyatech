@@ -1,5 +1,7 @@
 package com.deyatech.admin.controller;
 
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -7,7 +9,9 @@ import com.deyatech.admin.entity.Dictionary;
 import com.deyatech.admin.service.DictionaryService;
 import com.deyatech.admin.vo.DictionaryVo;
 import com.deyatech.common.base.BaseController;
+import com.deyatech.common.entity.CascaderResult;
 import com.deyatech.common.entity.RestResult;
+import com.deyatech.common.utils.CascaderUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -47,6 +51,11 @@ public class DictionaryController extends BaseController {
         if(!dictionaryService.validataByCodeAndIndexId(dictionary)){
             return RestResult.error("已存在相同的字典项目，请重新提交！");
         }
+        if (StrUtil.isEmpty(dictionary.getParentId())) {
+            dictionary.setParentId("0");
+            dictionary.setTreePosition("&");
+        }
+
         boolean result = dictionaryService.saveOrUpdate(dictionary);
         return RestResult.ok(result);
     }
@@ -62,6 +71,14 @@ public class DictionaryController extends BaseController {
     @ApiImplicitParam(name = "dictionaryList", value = "系统数据字典明细信息对象集合", required = true, allowMultiple = true, dataType = "Dictionary", paramType = "query")
     public RestResult<Boolean> saveOrUpdateBatch(Collection<Dictionary> dictionaryList) {
         log.info(String.format("批量保存或者更新系统数据字典明细信息: %s ", JSONUtil.toJsonStr(dictionaryList)));
+        if (CollectionUtil.isNotEmpty(dictionaryList)) {
+            dictionaryList.stream().forEach(d -> {
+                if (StrUtil.isEmpty(d.getParentId())) {
+                    d.setParentId("0");
+                    d.setTreePosition("&");
+                }
+            });
+        }
         boolean result = dictionaryService.saveOrUpdateBatch(dictionaryList);
         return RestResult.ok(result);
     }
@@ -158,5 +175,35 @@ public class DictionaryController extends BaseController {
         queryWrapper.eq("index_id", indexId);
         queryWrapper.select("ifnull(max(sort_no), 0) + 1 as sortNo");
         return RestResult.ok(dictionaryService.getMap(queryWrapper).get("sortNo"));
+    }
+
+    /**
+     * 获取的tree对象
+     *
+     * @param dictionary
+     * @return
+     */
+    @GetMapping("/getTree")
+    @ApiOperation(value="获取的tree对象", notes="获取的tree对象")
+    public RestResult<Collection<DictionaryVo>> getDictionaryTree(Dictionary dictionary) {
+        Collection<DictionaryVo> dictionaryTree = dictionaryService.getDictionaryTree(dictionary);
+        log.info(String.format("获取的tree对象: %s ",JSONUtil.toJsonStr(dictionaryTree)));
+        return RestResult.ok(dictionaryTree);
+    }
+
+    /**
+     * 获取的级联对象
+     *
+     * @param dictionary
+     * @return
+     */
+    @GetMapping("/getCascader")
+    @ApiOperation(value="获取的级联对象", notes="获取的级联对象")
+    @ApiImplicitParam(name = "dictionary", value = "dictionary", required = false, dataType = "Dictionary", paramType = "query")
+    public RestResult<List<CascaderResult>> getCascader(Dictionary dictionary) {
+        Collection<DictionaryVo> dictionaryVos = dictionaryService.getDictionaryTree(dictionary);
+        List<CascaderResult> cascaderResults = CascaderUtil.getResult("Id", "CodeText","TreePosition", dictionary.getId(), dictionaryVos);
+        log.info(String.format("获取的级联对象: %s ",JSONUtil.toJsonStr(cascaderResults)));
+        return RestResult.ok(cascaderResults);
     }
 }

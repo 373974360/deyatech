@@ -1,5 +1,6 @@
 package com.deyatech.admin.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.deyatech.admin.entity.Dictionary;
@@ -8,6 +9,7 @@ import com.deyatech.admin.service.DictionaryIndexService;
 import com.deyatech.admin.vo.DictionaryVo;
 import com.deyatech.admin.mapper.DictionaryMapper;
 import com.deyatech.admin.service.DictionaryService;
+import com.deyatech.common.Constants;
 import com.deyatech.common.base.BaseServiceImpl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
@@ -114,5 +116,44 @@ public class DictionaryServiceImpl extends BaseServiceImpl<DictionaryMapper, Dic
             }
         }
         return dictionaryVos;
+    }
+
+    /**
+     * 根据Dictionary对象属性检索的tree对象
+     *
+     * @param dictionary
+     * @return
+     */
+    @Override
+    public Collection<DictionaryVo> getDictionaryTree(Dictionary dictionary) {
+        dictionary.setSortSql("sortNo asc");
+        List<DictionaryVo> dictionaryVos = setVoProperties(super.listByBean(dictionary));
+        List<DictionaryVo> rootDictionarys = CollectionUtil.newArrayList();
+        if (CollectionUtil.isNotEmpty(dictionaryVos)) {
+            for (DictionaryVo dictionaryVo : dictionaryVos) {
+                dictionaryVo.setLabel(dictionaryVo.getCodeText());
+                if(StrUtil.isNotBlank(dictionaryVo.getTreePosition())){
+                    String[] split = dictionaryVo.getTreePosition().split(Constants.DEFAULT_TREE_POSITION_SPLIT);
+                    dictionaryVo.setLevel(split.length);
+                }else{
+                    dictionaryVo.setLevel(Constants.DEFAULT_ROOT_LEVEL);
+                }
+                if (ObjectUtil.equal(dictionaryVo.getParentId(), Constants.ZERO)) {
+                    rootDictionarys.add(dictionaryVo);
+                }
+                for (DictionaryVo childVo : dictionaryVos) {
+                    if (ObjectUtil.equal(childVo.getParentId(), dictionaryVo.getId())) {
+                        if (ObjectUtil.isNull(dictionaryVo.getChildren())) {
+                            List<DictionaryVo> children = CollectionUtil.newArrayList();
+                            children.add(childVo);
+                            dictionaryVo.setChildren(children);
+                        } else {
+                            dictionaryVo.getChildren().add(childVo);
+                        }
+                    }
+                }
+            }
+        }
+        return rootDictionarys;
     }
 }

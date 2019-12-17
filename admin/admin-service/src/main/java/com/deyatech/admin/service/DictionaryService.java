@@ -48,4 +48,12 @@ public interface DictionaryService extends BaseService<Dictionary> {
      * @return
      */
     List<DictionaryVo> setVoProperties(Collection dictionarys);
+
+    /**
+     * 根据Dictionary对象属性检索的tree对象
+     *
+     * @param dictionary
+     * @return
+     */
+    Collection<DictionaryVo> getDictionaryTree(Dictionary dictionary);
 }

@@ -268,4 +268,13 @@ public interface AdminFeign {
      */
     @RequestMapping(value = "/metadataCollection/checkMetadataCollectionById")
     RestResult<Boolean> checkMetadataCollectionById(@RequestParam("id") String id);
+
+    /**
+     * 获取字典项信息
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/dictionary/getDictionaryById")
+    RestResult<DictionaryVo> getDictionaryById(@RequestParam("id") String id);
 }
