@@ -48,6 +48,7 @@
        </dataType>
         <dataType id="image" name="图片">
             <dataShow mustValidate="false" ref="imageElement"></dataShow>
+            <dataShow mustValidate="false" ref="imageArrayElement"></dataShow>
         </dataType>
     </dataTypes>
     <!-- 定义控件展示类型,扩展规则:(1)根据AbstractHtmlElement编写扩展类.(2)定义dataShow，id为扩展类的beanId-->
@@ -104,6 +105,10 @@
         </dataShow>
         <dataShow id="imageElement" name="图片上传">
             <dataLength>length_100</dataLength>
+            <controlLength>cl_whole</controlLength>
+        </dataShow>
+        <dataShow id="imageArrayElement" name="组图上传">
+            <dataLength>length_4</dataLength>
             <controlLength>cl_whole</controlLength>
         </dataShow>
         <dataShow id="inputDepartmentCascader" name="可输入可选择部门级联器">
