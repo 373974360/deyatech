@@ -220,4 +220,7 @@ public interface Constants {
     String VARIABLE_DEPARTMENT = "department";
 
     String WORKFLOW_RANG_KEY_SPLIT = ":";
+
+    String VARIABLE_STASH = "stash";
+    String VARIABLE_STASH_TYPE_AUTO_PASS = "auto_pass";
 }

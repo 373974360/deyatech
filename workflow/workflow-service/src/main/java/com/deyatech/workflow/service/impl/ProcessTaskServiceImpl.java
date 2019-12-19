@@ -390,7 +390,7 @@ public class ProcessTaskServiceImpl implements ProcessTaskService {
             }
             RestResult<UserVo> userResult = adminFeign.getUserByUserId(processTaskDto.getCandidateUser());
             if (userResult.isOk() && ObjectUtil.isNotNull(userResult.getData())) {
-                query.taskVariableValueLike(Constants.VARIABLE_DEPARTMENT, userResult.getData().getDepartmentId());
+                query.taskVariableValueLike(Constants.VARIABLE_DEPARTMENT, "%" + userResult.getData().getDepartmentId() + "%");
             }
             query.endOr();
         }

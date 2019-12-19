@@ -2,14 +2,18 @@ package com.deyatech.workflow.feign.impl;
 
 import com.deyatech.common.entity.RestResult;
 import com.deyatech.common.enums.ProcessInstanceStatusEnum;
+import com.deyatech.workflow.entity.BusinessStash;
 import com.deyatech.workflow.entity.IProcessDefinition;
 import com.deyatech.workflow.feign.WorkflowFeign;
+import com.deyatech.workflow.service.BusinessStashService;
 import com.deyatech.workflow.service.ProcessDefinitionService;
 import com.deyatech.workflow.service.ProcessInstanceService;
 import com.deyatech.workflow.vo.ProcessInstanceVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,6 +29,8 @@ public class WorkflowFeignImpl implements WorkflowFeign {
     private ProcessInstanceService processInstanceService;
     @Autowired
     private ProcessDefinitionService processDefinitionService;
+    @Autowired
+    private BusinessStashService businessStashService;
 
     @Override
     public RestResult<ProcessInstanceStatusEnum> startInstance(ProcessInstanceVo processInstanceVo) {
@@ -35,6 +41,16 @@ public class WorkflowFeignImpl implements WorkflowFeign {
     @Override
     public RestResult<IProcessDefinition> getActDefinitionIdAndKey(String oldActDefinitionId) {
         return RestResult.ok(processDefinitionService.getActDefinitionIdAndKey(oldActDefinitionId));
+    }
+
+    @Override
+    public RestResult<Collection<BusinessStash>> getBusinessStashList(BusinessStash businessStash) {
+        return RestResult.ok(businessStashService.getBusinessStashList(businessStash));
+    }
+
+    @Override
+    public RestResult<Boolean> removeBusinessStashByIds(List<String> ids) {
+        return RestResult.ok(businessStashService.removeBusinessStashByIds(ids));
     }
 
 }
