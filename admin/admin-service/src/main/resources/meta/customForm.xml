@@ -45,6 +45,7 @@
        </dataType>
        <dataType id="file" name="附件">
            <dataShow mustValidate="false" ref="fileElement"></dataShow>
+           <dataShow mustValidate="false" ref="fileInputElement"></dataShow>
        </dataType>
         <dataType id="image" name="图片">
             <dataShow mustValidate="false" ref="imageElement"></dataShow>
@@ -101,6 +102,10 @@
         </dataShow>
         <dataShow id="fileElement" name="附件上传">
             <dataLength>length_100</dataLength>
+            <controlLength>cl_whole</controlLength>
+        </dataShow>
+        <dataShow id="fileInputElement" name="带输入框附件上传">
+            <dataLength>length_3</dataLength>
             <controlLength>cl_whole</controlLength>
         </dataShow>
         <dataShow id="imageElement" name="图片上传">
