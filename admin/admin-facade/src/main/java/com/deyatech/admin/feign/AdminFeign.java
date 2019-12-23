@@ -1,10 +1,10 @@
 package com.deyatech.admin.feign;
 
-import com.deyatech.admin.entity.Department;
-import com.deyatech.admin.entity.Holiday;
-import com.deyatech.admin.entity.Role;
-import com.deyatech.admin.entity.User;
-import com.deyatech.admin.vo.*;
+import com.deyatech.admin.entity.*;
+import com.deyatech.admin.vo.DictionaryVo;
+import com.deyatech.admin.vo.HolidayVo;
+import com.deyatech.admin.vo.MetadataCollectionVo;
+import com.deyatech.admin.vo.UserVo;
 import com.deyatech.common.entity.EnumsResult;
 import com.deyatech.common.entity.RestResult;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -277,4 +277,13 @@ public interface AdminFeign {
      */
     @RequestMapping(value = "/dictionary/getDictionaryById")
     RestResult<DictionaryVo> getDictionaryById(@RequestParam("id") String id);
+
+    /**
+     * 获取字典项信息
+     *
+     * @param indexId
+     * @return
+     */
+    @RequestMapping(value = "/dictionary/getDictionaryByIndexId")
+    RestResult<List<Dictionary>> getDictionaryByIndexId(@RequestParam("indexId") String indexId);
 }
