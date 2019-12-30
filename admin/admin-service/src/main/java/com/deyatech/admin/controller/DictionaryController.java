@@ -136,7 +136,7 @@ public class DictionaryController extends BaseController {
      * @param dictionary
      * @return
      */
-    @GetMapping("/listByDictionary")
+    @GetMapping({"/listByDictionary","/aliasListByDictionary"})
     @ApiOperation(value="根据Dictionary对象属性检索所有系统数据字典明细信息", notes="根据Dictionary对象属性检索所有系统数据字典明细信息信息")
     @ApiImplicitParam(name = "dictionary", value = "系统数据字典明细信息对象", required = false, dataType = "Dictionary", paramType = "query")
     public RestResult<Collection<DictionaryVo>> listByDictionary(Dictionary dictionary) {
