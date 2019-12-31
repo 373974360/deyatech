@@ -30,20 +30,7 @@ public class ProcessTaskController extends BaseController {
      */
     @GetMapping("/getCurrentTaskList")
     public RestResult<IPage<ProcessTaskVo>> getCurrentTaskList(ProcessTaskVo processTaskVo) {
-        // 设置查询条件
-        if (StrUtil.isNotEmpty(processTaskVo.getTitleOrAuthor())) {
-            Map variables = CollectionUtil.newHashMap();
-            variables.put("LIKE_title", processTaskVo.getTitleOrAuthor());
-            variables.put("LIKE_author", processTaskVo.getTitleOrAuthor());
-            processTaskVo.setVariables(variables);
-        }
-        // 设置人员
-        processTaskVo.setCandidateUser(UserContextHelper.getUserId());
-        IPage<Task> taskPage = processTaskService.getTaskList(processTaskVo);
-        IPage<ProcessTaskVo> result = new Page<>();
-        result.setTotal(taskPage.getTotal());
-        result.setRecords(processTaskService.mapToDto(taskPage.getRecords()));
-        return RestResult.ok(result);
+        return RestResult.ok(processTaskService.queryTaskList(processTaskVo));
     }
 
     @PostMapping("/setTaskVariables")

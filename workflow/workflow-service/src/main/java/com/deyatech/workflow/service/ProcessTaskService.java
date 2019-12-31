@@ -23,6 +23,7 @@ public interface ProcessTaskService {
      * @return
      */
     IPage<Task> getTaskList(ProcessTaskVo processTaskVo);
+    IPage<ProcessTaskVo> queryTaskList(ProcessTaskVo processTaskVo);
 
     Task findByActTaskIdAndUserId(String actTaskId, String userId);
 
