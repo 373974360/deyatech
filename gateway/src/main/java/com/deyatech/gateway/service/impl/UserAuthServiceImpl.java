@@ -2,6 +2,7 @@ package com.deyatech.gateway.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.http.HttpStatus;
+import com.deyatech.admin.entity.Department;
 import com.deyatech.admin.entity.User;
 import com.deyatech.admin.feign.AdminFeign;
 import com.deyatech.admin.vo.UserVo;
@@ -17,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 /**
  * <p>
@@ -55,6 +58,10 @@ public class UserAuthServiceImpl extends BaseAuthServiceImpl implements UserAuth
         if (result != null && result.isOk()) {
             UserVo userVo = result.getData();
             if (ObjectUtil.isNotNull(userVo)) {
+                Department department = adminFeign.getDepartmentById(userVo.getDepartmentId()).getData();
+                if (Objects.nonNull(department)) {
+                    userVo.setDepartmentName(department.getName());
+                }
                 if (encoder.matches(password, userVo.getPassword())) {
                     JwtInfo jwtInfo = new JwtInfo(userVo.getId(), userVo.getAccount(), userVo.getName(), null);
                     String token = JwtUtil.generateToken(jwtInfo, jwtConfig.getPriKeyPath(), jwtConfig.getXpire());
