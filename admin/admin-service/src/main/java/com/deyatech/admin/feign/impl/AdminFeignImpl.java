@@ -1,6 +1,7 @@
 package com.deyatech.admin.feign.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.deyatech.admin.entity.Dictionary;
@@ -386,5 +387,45 @@ public class AdminFeignImpl implements AdminFeign {
         QueryWrapper<Dictionary> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("index_id", indexId);
         return RestResult.ok(dictionaryService.list(queryWrapper));
+    }
+
+    @Override
+    public RestResult insertUser(User user) {
+        boolean result = userService.saveOrEdit(user);
+        return RestResult.ok(result);
+    }
+
+    @Override
+    public RestResult removeUser(User user) {
+        boolean result = userService.removeByBean(user);
+        if (result) {
+            RoleUser roleUser = new RoleUser();
+            roleUser.setUserId(user.getId());
+            roleUserService.removeByBean(roleUser);
+        }
+        return RestResult.ok(result);
+    }
+
+    @Override
+    public RestResult<Boolean> insertDepartment(Department department) {
+        Department dept = departmentService.getById(department.getParentId());
+        if(ObjectUtil.isNotNull(dept)){
+            if(StrUtil.isNotBlank(dept.getTreePosition())){
+                department.setTreePosition(dept.getTreePosition()+"&"+department.getId());
+            }else{
+                department.setTreePosition("&"+department.getId());
+            }
+        }
+        if(StrUtil.isBlank(department.getParentId())){
+            department.setParentId("0");
+        }
+        boolean result = departmentService.saveOrUpdate(department);
+        return RestResult.ok(result);
+    }
+
+    @Override
+    public RestResult<Boolean> removeDepartment(Department department) {
+        boolean result = departmentService.removeByBean(department);
+        return RestResult.ok(result);
     }
 }
