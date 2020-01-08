@@ -286,4 +286,36 @@ public interface AdminFeign {
      */
     @RequestMapping(value = "/dictionary/getDictionaryByIndexId")
     RestResult<List<Dictionary>> getDictionaryByIndexId(@RequestParam("indexId") String indexId);
+
+
+
+    /**
+     * 新增用户
+     * @return
+     */
+    @PostMapping("/user/insertUser")
+    RestResult<Boolean> insertUser(@RequestBody User user);
+
+    /**
+     * 移除用户
+     * @return
+     */
+    @PostMapping("/user/removeUser")
+    RestResult<Boolean> removeUser(@RequestBody User user);
+
+
+
+    /**
+     * 新增机构
+     * @return
+     */
+    @PostMapping("/user/insertDepartment")
+    RestResult<Boolean> insertDepartment(@RequestBody Department department);
+
+    /**
+     * 移除机构
+     * @return
+     */
+    @PostMapping("/user/removeDepartment")
+    RestResult<Boolean> removeDepartment(@RequestBody Department department);
 }
