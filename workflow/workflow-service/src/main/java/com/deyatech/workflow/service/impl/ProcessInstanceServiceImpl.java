@@ -5,6 +5,7 @@ import cn.hutool.http.HttpStatus;
 import com.deyatech.common.Constants;
 import com.deyatech.common.enums.ProcessInstanceStatusEnum;
 import com.deyatech.common.exception.BusinessException;
+import com.deyatech.workflow.constant.ProcessConstant;
 import com.deyatech.workflow.service.ProcessInstanceService;
 import com.deyatech.workflow.vo.ProcessInstanceVo;
 import org.activiti.engine.HistoryService;
@@ -40,11 +41,11 @@ public class ProcessInstanceServiceImpl implements ProcessInstanceService {
 
     @Override
     public ProcessInstanceStatusEnum startInstance(ProcessInstanceVo processInstanceVo) {
-        String id = processInstanceVo.getActDefinitionId();
-        if (StrUtil.isBlank(id)) {
+        String processDefinitionId = processInstanceVo.getActDefinitionId();
+        if (StrUtil.isBlank(processDefinitionId)) {
             throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "请选择流程");
         }
-        long count = repositoryService.createProcessDefinitionQuery().processDefinitionId(id).count();
+        long count = repositoryService.createProcessDefinitionQuery().processDefinitionId(processDefinitionId).count();
         if (count == 0) {
             throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "未找到流程");
         }
@@ -53,11 +54,11 @@ public class ProcessInstanceServiceImpl implements ProcessInstanceService {
         if (variables == null) {
             variables = new HashMap<>();
         }
-        variables.put(Constants.VARIABLE_USER_ID, processInstanceVo.getUserId());
-        variables.put(Constants.VARIABLE_SOURCE, processInstanceVo.getSource());
+        variables.put(ProcessConstant.VARIABLE_USER_ID, processInstanceVo.getUserId());
+        variables.put(ProcessConstant.VARIABLE_SOURCE, processInstanceVo.getSource());
 
         identityService.setAuthenticatedUserId(processInstanceVo.getUserId());
-        ProcessInstance processInstance = runtimeService.startProcessInstanceById(id, processInstanceVo.getBusinessId(), variables);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinitionId, processInstanceVo.getBusinessId(), variables);
         if (processInstance.isEnded()) {
             return ProcessInstanceStatusEnum.FINISH;
         }

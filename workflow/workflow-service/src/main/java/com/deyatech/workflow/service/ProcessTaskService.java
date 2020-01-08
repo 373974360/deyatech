@@ -23,7 +23,6 @@ public interface ProcessTaskService {
      * @return
      */
     IPage<Task> getTaskList(ProcessTaskVo processTaskVo);
-    IPage<ProcessTaskVo> queryTaskList(ProcessTaskVo processTaskVo);
 
     Task findByActTaskIdAndUserId(String actTaskId, String userId);
 
@@ -38,13 +37,13 @@ public interface ProcessTaskService {
 
     void setVariables(String actTaskId, Map<String, Object> variables);
 
-    ProcessInstanceStatusEnum completeTask(String actTaskId, String userId, Map<String, Object> variables);
+    ProcessInstanceStatusEnum rollBack(String actTaskId);
 
-    ProcessInstanceStatusEnum rollBack(String actTaskId, String userId);
+    ProcessInstanceStatusEnum completeTask(String actTaskId, Map<String, Object> variables);
 
-    ProcessInstanceStatusEnum rejectTask(String actTaskId, String userId);
+    ProcessInstanceStatusEnum rejectTask(String actTaskId, String reason);
 
-    ProcessInstanceStatusEnum cancelTask(String actTaskId, String userId);
+    ProcessInstanceStatusEnum cancelTask(String actTaskId, String reason);
 
     List<ProcessTaskVo> mapToDto(List<Task> taskList);
 }

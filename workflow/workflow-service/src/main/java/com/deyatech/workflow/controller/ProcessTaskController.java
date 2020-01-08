@@ -30,7 +30,21 @@ public class ProcessTaskController extends BaseController {
      */
     @GetMapping("/getCurrentTaskList")
     public RestResult<IPage<ProcessTaskVo>> getCurrentTaskList(ProcessTaskVo processTaskVo) {
-        return RestResult.ok(processTaskService.queryTaskList(processTaskVo));
+
+        // 设置查询条件
+        if (StrUtil.isNotEmpty(processTaskVo.getTitleOrAuthor())) {
+            Map variables = CollectionUtil.newHashMap();
+            variables.put("LIKE_title", processTaskVo.getTitleOrAuthor());
+            variables.put("LIKE_author", processTaskVo.getTitleOrAuthor());
+            processTaskVo.setVariables(variables);
+        }
+        // 设置人员
+        processTaskVo.setCandidateUser(UserContextHelper.getUserId());
+        IPage<Task> taskPage = processTaskService.getTaskList(processTaskVo);
+        IPage<ProcessTaskVo> result = new Page<>();
+        result.setTotal(taskPage.getTotal());
+        result.setRecords(processTaskService.mapToDto(taskPage.getRecords()));
+        return RestResult.ok(result);
     }
 
     @PostMapping("/setTaskVariables")
@@ -41,25 +55,25 @@ public class ProcessTaskController extends BaseController {
 
     @PostMapping("/completeTask")
     public RestResult<ProcessInstanceStatusEnum> completeTask(String taskId) {
-        ProcessInstanceStatusEnum status = processTaskService.completeTask(taskId, UserContextHelper.getUserId(), CollectionUtil.newHashMap());
+        ProcessInstanceStatusEnum status = processTaskService.completeTask(taskId, CollectionUtil.newHashMap());
         return RestResult.ok(status);
     }
 
     @PostMapping("/rejectTask")
-    public RestResult<ProcessInstanceStatusEnum> rejectTask(String taskId) {
-        ProcessInstanceStatusEnum status = processTaskService.rejectTask(taskId, UserContextHelper.getUserId());
+    public RestResult<ProcessInstanceStatusEnum> rejectTask(String taskId, String reason) {
+        ProcessInstanceStatusEnum status = processTaskService.rejectTask(taskId, reason);
         return RestResult.ok(status);
     }
 
     @PostMapping("/cancelTask")
-    public RestResult<ProcessInstanceStatusEnum> cancelTask(String taskId) {
-        ProcessInstanceStatusEnum status = processTaskService.cancelTask(taskId, UserContextHelper.getUserId());
+    public RestResult<ProcessInstanceStatusEnum> cancelTask(String taskId, String reason) {
+        ProcessInstanceStatusEnum status = processTaskService.cancelTask(taskId, reason);
         return RestResult.ok(status);
     }
 
     @PostMapping("/rollBackTask")
     public RestResult<ProcessInstanceStatusEnum> rollBackTask(String taskId) {
-        ProcessInstanceStatusEnum status = processTaskService.rollBack(taskId, UserContextHelper.getUserId());
+        ProcessInstanceStatusEnum status = processTaskService.rollBack(taskId);
         return RestResult.ok(status);
     }
 

@@ -209,18 +209,4 @@ public interface Constants {
      * 模板存放文件夹名
      * */
     String TEMPLATE_DIR_NAME = "/template";
-
-    /**
-     * 工作流相关常量
-     */
-    String VARIABLE_USER_ID = "userId";
-
-    String VARIABLE_SOURCE = "source";
-
-    String VARIABLE_DEPARTMENT = "department";
-
-    String WORKFLOW_RANG_KEY_SPLIT = ":";
-
-    String VARIABLE_STASH = "stash";
-    String VARIABLE_STASH_TYPE_AUTO_PASS = "auto_pass";
 }
