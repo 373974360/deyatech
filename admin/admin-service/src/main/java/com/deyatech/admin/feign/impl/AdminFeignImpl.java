@@ -409,15 +409,17 @@ public class AdminFeignImpl implements AdminFeign {
     @Override
     public RestResult<Boolean> insertDepartment(Department department) {
         Department dept = departmentService.getById(department.getParentId());
+        if(StrUtil.isBlank(department.getParentId())){
+            department.setParentId("0");
+        }
         if(ObjectUtil.isNotNull(dept)){
             if(StrUtil.isNotBlank(dept.getTreePosition())){
                 department.setTreePosition(dept.getTreePosition()+"&"+department.getId());
             }else{
                 department.setTreePosition("&"+department.getId());
             }
-        }
-        if(StrUtil.isBlank(department.getParentId())){
-            department.setParentId("0");
+        }else if(!department.getParentId().equals("0")){
+            department.setTreePosition("&"+department.getParentId());
         }
         boolean result = departmentService.saveOrUpdate(department);
         return RestResult.ok(result);
