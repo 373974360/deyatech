@@ -1,8 +1,8 @@
 package com.deyatech.workflow.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpStatus;
-import com.deyatech.common.Constants;
 import com.deyatech.common.enums.ProcessInstanceStatusEnum;
 import com.deyatech.common.exception.BusinessException;
 import com.deyatech.workflow.constant.ProcessConstant;
@@ -13,10 +13,12 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,6 +40,9 @@ public class ProcessInstanceServiceImpl implements ProcessInstanceService {
 
     @Autowired
     private HistoryService historyService;
+
+    @Autowired
+    RabbitTemplate rabbitTemplate;
 
     @Override
     public ProcessInstanceStatusEnum startInstance(ProcessInstanceVo processInstanceVo) {
@@ -63,5 +68,21 @@ public class ProcessInstanceServiceImpl implements ProcessInstanceService {
             return ProcessInstanceStatusEnum.FINISH;
         }
         return ProcessInstanceStatusEnum.IN_PROGRESS;
+    }
+
+    /**
+     * 删除流程实例
+     *
+     * @param businessId
+     * @param reason
+     * @return
+     */
+    @Override
+    public ProcessInstanceStatusEnum deleteInstanceByBusinessId(String businessId, String reason) {
+        List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(businessId).list();
+        if (CollectionUtil.isNotEmpty(processInstances)) {
+            processInstances.stream().forEach(pi -> runtimeService.deleteProcessInstance(pi.getProcessInstanceId(), reason));
+        }
+        return ProcessInstanceStatusEnum.DELETE;
     }
 }

@@ -29,7 +29,6 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
-import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
@@ -39,7 +38,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Struct;
 import java.util.*;
 
 @Slf4j
@@ -240,7 +238,13 @@ public class ProcessTaskServiceImpl implements ProcessTaskService {
             throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "执行失败");
         }
     }
-
+    /**
+     * 通过
+     *
+     * @param actTaskId
+     * @param variables
+     * @return
+     */
     @Override
     public ProcessInstanceStatusEnum completeTask(String actTaskId, Map<String, Object> variables) {
         TaskQuery taskQuery = taskService.createTaskQuery().taskId(actTaskId).includeProcessVariables().includeTaskLocalVariables();
@@ -257,7 +261,13 @@ public class ProcessTaskServiceImpl implements ProcessTaskService {
         }
         return ProcessInstanceStatusEnum.IN_PROGRESS;
     }
-
+    /**
+     * 驳回
+     *
+     * @param actTaskId
+     * @param reason
+     * @return
+     */
     @Override
     public ProcessInstanceStatusEnum rejectTask(String actTaskId, String reason) {
         TaskQuery taskQuery = taskService.createTaskQuery().taskId(actTaskId).includeProcessVariables().includeTaskLocalVariables();
@@ -268,17 +278,6 @@ public class ProcessTaskServiceImpl implements ProcessTaskService {
         runtimeService.deleteProcessInstance(task.getProcessInstanceId(), reason);
         rabbitTemplate.convertAndSend(ProcessConstant.EXCHANGE_PROCESS, ProcessConstant.ROUTING_KEY_PROCESS_REJECT, param);
         return ProcessInstanceStatusEnum.FINISH;
-    }
-
-    @Override
-    public ProcessInstanceStatusEnum cancelTask(String actTaskId, String reason) {
-        TaskQuery taskQuery = taskService.createTaskQuery().taskId(actTaskId).includeProcessVariables().includeTaskLocalVariables();
-        Task task = taskQuery.singleResult();
-        if (Objects.isNull(task)) throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "任务不存");
-        Map<String, Object> param = checkRight(task, reason);
-        runtimeService.deleteProcessInstance(task.getProcessInstanceId(), reason);
-        rabbitTemplate.convertAndSend(ProcessConstant.EXCHANGE_PROCESS, ProcessConstant.ROUTING_KEY_PROCESS_CANCEL, param);
-        return ProcessInstanceStatusEnum.CANCEL;
     }
 
     /**

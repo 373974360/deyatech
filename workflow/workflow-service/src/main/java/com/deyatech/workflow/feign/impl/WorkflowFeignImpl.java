@@ -6,9 +6,12 @@ import com.deyatech.workflow.entity.IProcessDefinition;
 import com.deyatech.workflow.feign.WorkflowFeign;
 import com.deyatech.workflow.service.ProcessDefinitionService;
 import com.deyatech.workflow.service.ProcessInstanceService;
+import com.deyatech.workflow.service.ProcessTaskService;
 import com.deyatech.workflow.vo.ProcessInstanceVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 /**
  * <p>
@@ -33,5 +36,10 @@ public class WorkflowFeignImpl implements WorkflowFeign {
     @Override
     public RestResult<IProcessDefinition> getActDefinitionIdAndKey(String oldActDefinitionId) {
         return RestResult.ok(processDefinitionService.getActDefinitionIdAndKey(oldActDefinitionId));
+    }
+
+    @Override
+    public RestResult<ProcessInstanceStatusEnum> deleteInstanceByBusinessId(String businessId, String reason) {
+        return RestResult.ok(processInstanceService.deleteInstanceByBusinessId(businessId, reason));
     }
 }

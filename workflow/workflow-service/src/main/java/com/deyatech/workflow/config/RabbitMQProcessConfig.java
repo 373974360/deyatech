@@ -46,10 +46,10 @@ public class RabbitMQProcessConfig {
     public Queue queueProcessReject() {
         return new Queue(ProcessConstant.QUEUE_PROCESS_REJECT);
     }
-    @Bean
-    public Queue queueProcessCancel() {
-        return new Queue(ProcessConstant.QUEUE_PROCESS_CANCEL);
-    }
+//    @Bean
+//    public Queue queueProcessCancel() {
+//        return new Queue(ProcessConstant.QUEUE_PROCESS_DELETE);
+//    }
 
     /**
      * 绑定
@@ -68,10 +68,10 @@ public class RabbitMQProcessConfig {
     public Binding bindingProcessReject() {
         return BindingBuilder.bind(queueProcessReject()).to(topicExchangeProcess()).with(ProcessConstant.ROUTING_KEY_PROCESS_REJECT);
     }
-    @Bean
-    public Binding bindingProcessCancel() {
-        return BindingBuilder.bind(queueProcessCancel()).to(topicExchangeProcess()).with(ProcessConstant.ROUTING_KEY_PROCESS_CANCEL);
-    }
+//    @Bean
+//    public Binding bindingProcessCancel() {
+//        return BindingBuilder.bind(queueProcessCancel()).to(topicExchangeProcess()).with(ProcessConstant.ROUTING_KEY_PROCESS_DELETE);
+//    }
 
     /**
      * 流程处理监听

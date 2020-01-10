@@ -65,12 +65,6 @@ public class ProcessTaskController extends BaseController {
         return RestResult.ok(status);
     }
 
-    @PostMapping("/cancelTask")
-    public RestResult<ProcessInstanceStatusEnum> cancelTask(String taskId, String reason) {
-        ProcessInstanceStatusEnum status = processTaskService.cancelTask(taskId, reason);
-        return RestResult.ok(status);
-    }
-
     @PostMapping("/rollBackTask")
     public RestResult<ProcessInstanceStatusEnum> rollBackTask(String taskId) {
         ProcessInstanceStatusEnum status = processTaskService.rollBack(taskId);

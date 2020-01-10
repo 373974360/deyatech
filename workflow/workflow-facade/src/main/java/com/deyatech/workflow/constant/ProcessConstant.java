@@ -26,7 +26,7 @@ public class ProcessConstant {
     // 拒绝
     public static final String QUEUE_PROCESS_REJECT = "queue.process.reject";
     public static final String ROUTING_KEY_PROCESS_REJECT = "routing.key.process.reject";
-    // 取消
-    public static final String QUEUE_PROCESS_CANCEL = "queue.process.cancel";
-    public static final String ROUTING_KEY_PROCESS_CANCEL = "routing.key.process.cancel";
+    // 删除
+//    public static final String QUEUE_PROCESS_DELETE = "queue.process.delete";
+//    public static final String ROUTING_KEY_PROCESS_DELETE = "routing.key.process.delete";
 }
