@@ -7,8 +7,14 @@ package com.deyatech.common.utils.baidumap.model.response;
  */
 public class GeocodeReverseResponse {
 
+    /**
+     * 返回结果状态
+     */
     private Integer status;
 
+    /**
+     * 返回结果
+     */
     private GeocodeReverseResult result;
 
     public Integer getStatus() {

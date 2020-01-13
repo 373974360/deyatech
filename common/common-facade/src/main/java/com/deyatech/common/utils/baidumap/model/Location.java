@@ -7,8 +7,14 @@ package com.deyatech.common.utils.baidumap.model;
  */
 public class Location {
 
+    /**
+     * 纬度
+     */
     private Double lat;
 
+    /**
+     * 经度
+     */
     private Double lng;
 
     public Double getLat() {

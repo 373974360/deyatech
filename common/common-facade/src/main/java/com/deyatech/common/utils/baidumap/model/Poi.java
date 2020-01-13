@@ -7,26 +7,59 @@ package com.deyatech.common.utils.baidumap.model;
  */
 public class Poi {
 
+    /**
+     * 地址信息
+     */
     private String addr;
 
+    /**
+     * 数据来源（已废弃）
+     */
     private String cp;
 
+    /**
+     * 相对当前坐标点的方向
+     */
     private String direction;
 
+    /**
+     * 相对当前坐标点的距离
+     */
     private Integer distance;
 
+    /**
+     * 名称
+     */
     private String name;
 
+    /**
+     * 类型
+     */
     private String tag;
 
+    /**
+     * 坐标
+     */
     private Point point;
 
+    /**
+     * 电话
+     */
     private Integer tel;
 
+    /**
+     * 唯一标识
+     */
     private String uid;
 
+    /**
+     * 邮编
+     */
     private Integer zip;
 
+    /**
+     * 主点poi
+     */
     private Poi parent_poi;
 
     public String getAddr() {

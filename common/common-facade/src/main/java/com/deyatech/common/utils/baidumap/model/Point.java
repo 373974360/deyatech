@@ -2,7 +2,7 @@ package com.deyatech.common.utils.baidumap.model;
 
 /**
  * @author doukang
- * @description TODO
+ * @description 坐标
  * @date 2019/5/6 09:29
  */
 public class Point {

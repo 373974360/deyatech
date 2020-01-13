@@ -24,9 +24,15 @@ public class BaiduMapUtils {
 
     private static final String HOST = "http://api.map.baidu.com";
 
-    private static final String PATH = "/geocoder/v2/";
+//    private static final String PATH = "/geocoder/v2/";
 
-    private static final String APP_KEY = "end6xXHXkwfNkxqhIZ18pTGiBQjAAFtv";
+    private static final String PATH_GEOCODE = "/geocoding/v3/";
+
+    private static final String PATH_REVERSE_GEOCODE = "/reverse_geocoding/v3/";
+
+//    private static final String APP_KEY_2 = "end6xXHXkwfNkxqhIZ18pTGiBQjAAFtv";
+
+    private static final String APP_KEY_3 = "Gdk4qfec7oGONxBQvszHfEeFK3M9Xxal";
 
     private static final String OUTPUT = "json";
 
@@ -41,12 +47,12 @@ public class BaiduMapUtils {
     public static GeocodeResult geocode(String address) {
         Map<String, String> headers = new HashMap<>();
         Map<String, String> params = new HashMap<>();
-        params.put("ak", APP_KEY);
+        params.put("ak", APP_KEY_3);
         params.put("output", OUTPUT);
         params.put("address", address);
         Response response = null;
         try {
-            response = HttpUtils.doGet(HOST, PATH, headers, params);
+            response = HttpUtils.doGet(HOST, PATH_GEOCODE, headers, params);
         } catch (Exception e) {
             logger.error("HTTP请求失败：" + e);
             return null;
@@ -69,14 +75,14 @@ public class BaiduMapUtils {
     public static GeocodeReverseResult geocodeReverse(Double lat, Double lng) {
         Map<String, String> headers = new HashMap<>();
         Map<String, String> params = new HashMap<>();
-        params.put("ak", APP_KEY);
+        params.put("ak", APP_KEY_3);
         params.put("output", OUTPUT);
         params.put("location", lat + "," + lng);
         params.put("latest_admin", "1");
 //        params.put("pois", "1");
         Response response = null;
         try {
-            response = HttpUtils.doGet(HOST, PATH, headers, params);
+            response = HttpUtils.doGet(HOST, PATH_REVERSE_GEOCODE, headers, params);
         } catch (Exception e) {
             logger.error("HTTP请求失败：" + e);
             return null;
@@ -90,9 +96,9 @@ public class BaiduMapUtils {
     }
 
     public static void main(String[] args) {
-            GeocodeResult geocodeResult = geocode("安徽省合肥市经开区繁华大道与翡翠路交口经典华城");
-            GeocodeReverseResult geocodeReverseResult = geocodeReverse(34.233456, 108.89648);
-            System.out.println(JSONUtil.toJsonStr(geocodeResult));
-            System.out.println(JSONUtil.toJsonStr(geocodeReverseResult));
+        GeocodeResult geocodeResult = geocode("合肥市经开区繁华大道与翡翠路交口经典华城");
+        GeocodeReverseResult geocodeReverseResult = geocodeReverse(31.78708944306621, 117.21777100671065);
+        System.out.println(JSONUtil.toJsonStr(geocodeResult));
+        System.out.println(JSONUtil.toJsonStr(geocodeReverseResult));
     }
 }
