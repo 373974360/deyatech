@@ -91,6 +91,11 @@
         ) as roleMenusCount
         from admin_role role
         where role.enable_ = 1
+        <if test="role != null">
+            <if test="role.name != null and role.name != ''">
+                and role.name_ like concat('%',#{role.name},'%')
+            </if>
+        </if>
     </select>
 
 

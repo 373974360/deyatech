@@ -1,15 +1,18 @@
 package com.deyatech.admin.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.deyatech.admin.entity.MetadataCollectionMetadata;
 import com.deyatech.admin.mapper.MetadataCollectionMetadataMapper;
 import com.deyatech.admin.service.MetadataCollectionMetadataService;
 import com.deyatech.admin.vo.MetadataCollectionMetadataVo;
 import com.deyatech.common.base.BaseServiceImpl;
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollectionUtil;
 import org.springframework.stereotype.Service;
-import java.util.List;
+
 import java.util.Collection;
+import java.util.List;
 
 /**
  * <p>
@@ -52,5 +55,20 @@ public class MetadataCollectionMetadataServiceImpl extends BaseServiceImpl<Metad
             }
         }
         return metadataCollectionMetadataVos;
+    }
+
+    /**
+     * 统计元数据使用件数
+     *
+     * @param metadataId
+     * @return
+     */
+    @Override
+    public int count(String metadataId) {
+        QueryWrapper<MetadataCollectionMetadata> queryWrapper = new QueryWrapper<>();
+        if (StrUtil.isNotEmpty(metadataId)) {
+            queryWrapper.eq("metadata_id", metadataId);
+        }
+        return super.count(queryWrapper);
     }
 }

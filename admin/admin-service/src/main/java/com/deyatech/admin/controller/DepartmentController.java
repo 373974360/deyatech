@@ -194,9 +194,24 @@ public class DepartmentController extends BaseController {
      */
     @RequestMapping("/getNextSortNo")
     @ApiOperation(value = "下一个排序号", notes = "下一个排序号")
-    public RestResult<Integer> getNextSortNo() {
+    public RestResult<Integer> getNextSortNo(String id) {
         QueryWrapper queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("parent_id",id);
         queryWrapper.select("ifnull(max(sort_no), 0) + 1 as sortNo");
         return RestResult.ok(departmentService.getMap(queryWrapper).get("sortNo"));
+    }
+
+    /**
+     * 可输入可选择控件使用
+     *
+     * @param department
+     * @return
+     */
+    @GetMapping("/getCascaderAttach")
+    @ApiOperation(value="可输入可选择控件使用", notes="可输入可选择控件使用")
+    @ApiImplicitParam(name = "department", value = "department", required = false, dataType = "Department", paramType = "query")
+    public RestResult<List<CascaderResult>> getCascaderAttach(Department department) {
+        log.info(String.format("获取系统部门信息的级联对象: %s ",JSONUtil.toJsonStr(department)));
+        return RestResult.ok(departmentService.getCascaderAttach(department));
     }
 }

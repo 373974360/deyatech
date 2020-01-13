@@ -3,26 +3,32 @@ package com.deyatech.workflow.listener;
 import cn.hutool.core.collection.CollectionUtil;
 import com.deyatech.admin.feign.AdminFeign;
 import com.deyatech.admin.vo.UserVo;
-import com.deyatech.common.Constants;
 import com.deyatech.common.entity.RestResult;
 import com.deyatech.common.enums.CandidateTypeEnum;
 import com.deyatech.common.enums.EnableEnum;
+import com.deyatech.workflow.constant.ProcessConstant;
 import com.deyatech.workflow.entity.ProcessTaskSetting;
 import com.deyatech.workflow.service.ProcessTaskSettingService;
 import com.deyatech.workflow.util.WorkFlowUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
+@Slf4j
 public class TaskOnCreateListener implements ActivitiEventListener {
 
     @Lazy
@@ -33,6 +39,9 @@ public class TaskOnCreateListener implements ActivitiEventListener {
     @Autowired
     private AdminFeign adminFeign;
 
+    @Autowired
+    RabbitTemplate rabbitTemplate;
+
     @Override
     public void onEvent(ActivitiEvent activitiEvent) {
         //判断创建的是用户任务
@@ -40,11 +49,9 @@ public class TaskOnCreateListener implements ActivitiEventListener {
                 && ((ActivitiEntityEvent) activitiEvent).getEntity() instanceof TaskEntity) {
             TaskEntity task = (TaskEntity) ((ActivitiEntityEvent) activitiEvent).getEntity();
             TaskService taskService = activitiEvent.getEngineServices().getTaskService();
-
+            RuntimeService runtimeService = activitiEvent.getEngineServices().getRuntimeService();
             Map<String, Object> variables = taskService.getVariables(task.getId());
-
-            String source = variables.get(Constants.VARIABLE_SOURCE).toString();
-
+            String source = variables.get(ProcessConstant.VARIABLE_SOURCE).toString();
             ProcessTaskSetting taskSetting = processTaskSettingService.get(task.getProcessDefinitionId(),
                     task.getTaskDefinitionKey(), source);
 
@@ -62,7 +69,7 @@ public class TaskOnCreateListener implements ActivitiEventListener {
                 }
             } else if (CandidateTypeEnum.DEPARTMENT.getCode().equals(taskSetting.getCandidateType())
                     && StringUtils.isNotBlank(taskSetting.getCandidateDepartments())) {
-                taskService.setVariableLocal(task.getId(), Constants.VARIABLE_DEPARTMENT, taskSetting.getCandidateDepartments());
+                taskService.setVariableLocal(task.getId(), ProcessConstant.VARIABLE_DEPARTMENT, taskSetting.getCandidateDepartments());
             }
 
             if (taskSetting.getAutoPass()) {
@@ -104,7 +111,14 @@ public class TaskOnCreateListener implements ActivitiEventListener {
                     public void run() {
                         try {
                             Thread.sleep(10000);
+                            log.info("流程日志->自动跳过任务结点：" + task.getId());
                             taskService.complete(task.getId());
+                            ProcessInstance pi = runtimeService.createProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).singleResult();
+                            if (Objects.isNull(pi)) {
+                                log.info("流程日志->自动完成任务结点：" + task.getId());
+                                // 自动完成
+                                rabbitTemplate.convertAndSend(ProcessConstant.QUEUE_PROCESS_FINISH, ProcessConstant.ROUTING_KEY_PROCESS_FINISH);
+                            }
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }

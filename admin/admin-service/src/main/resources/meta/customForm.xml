@@ -15,13 +15,16 @@
            <dataShow mustValidate="false" ref="radioElement"></dataShow>
            <dataShow mustValidate="false" ref="checkboxElement"></dataShow>
            <dataShow ref="inputReadOnlyElement"></dataShow>
+           <dataShow ref="inputDepartmentCascader"></dataShow>
        </dataType>
        <dataType id="text" name="大文本">
            <dataShow mustValidate="false" ref="textareaElement"></dataShow>
            <dataShow mustValidate="false" ref="richTextElement"></dataShow>
        </dataType>
        <dataType id="int" name="整型">
-           <dataShow mustValidate="false" ref="switchElement"></dataShow>
+           <dataShow mustValidate="false" ref="switchElement">
+               <validate>positiveInteger</validate>
+           </dataShow>
            <dataShow mustValidate="true" ref="inputElement">
               <validate>int,positiveInteger</validate>
            </dataShow>
@@ -32,38 +35,49 @@
            </dataShow>
        </dataType>
        <dataType id="date" name="日期型">
-           <dataShow mustValidate="true" ref="dateElement"></dataShow>
-           <dataShow mustValidate="true" ref="datetimeElement"></dataShow>
+           <dataShow mustValidate="true" ref="dateElement">
+               <validate>lessThanNow</validate>
+           </dataShow>
+           <dataShow mustValidate="true" ref="datetimeElement">
+               <validate>lessThanNow</validate>
+           </dataShow>
            <dataShow mustValidate="true" ref="timeElement"></dataShow>
        </dataType>
        <dataType id="file" name="附件">
            <dataShow mustValidate="false" ref="fileElement"></dataShow>
+           <dataShow mustValidate="false" ref="fileInputElement"></dataShow>
        </dataType>
         <dataType id="image" name="图片">
             <dataShow mustValidate="false" ref="imageElement"></dataShow>
+            <dataShow mustValidate="false" ref="imageArrayElement"></dataShow>
         </dataType>
     </dataTypes>
     <!-- 定义控件展示类型,扩展规则:(1)根据AbstractHtmlElement编写扩展类.(2)定义dataShow，id为扩展类的beanId-->
     <dataShows>
         <dataShow id="inputElement" name="文本框">
+            <dataLength>length_100</dataLength>
             <controlLength>cl_half</controlLength>
         </dataShow>
         <dataShow id="inputReadOnlyElement" name="只读文本框">
             <ds>dataItem</ds>
-            <dataLength>length_1</dataLength>
+            <dataLength>length_100</dataLength>
             <controlLength>cl_half</controlLength>
         </dataShow>
         <dataShow id="selectElement" name="下拉框">
             <ds>dataItem</ds>
+            <dataLength>length_1</dataLength>
             <controlLength>cl_half</controlLength>
         </dataShow>
         <dataShow id="radioElement" name="单选框">
             <ds>dataItem</ds>
+            <dataLength>length_1</dataLength>
         </dataShow>
         <dataShow id="checkboxElement" name="复选框">
             <ds>dataItem</ds>
+            <dataLength>length_1</dataLength>
         </dataShow>
         <dataShow id="switchElement" name="开关">
+            <dataLength>length_1</dataLength>
             <controlLength>cl_half</controlLength>
         </dataShow>
         <dataShow id="textareaElement" name="大文本框">
@@ -75,26 +89,44 @@
             <controlLength>cl_whole</controlLength>
         </dataShow>
         <dataShow id="dateElement" name="yyyy-MM-dd">
+            <dataLength>length_1</dataLength>
             <controlLength>cl_half</controlLength>
         </dataShow>
         <dataShow id="datetimeElement" name="yyyy-MM-dd HH:mm:ss">
+            <dataLength>length_1</dataLength>
             <controlLength>cl_half</controlLength>
         </dataShow>
         <dataShow id="timeElement" name="HH:mm:ss">
+            <dataLength>length_1</dataLength>
             <controlLength>cl_half</controlLength>
         </dataShow>
         <dataShow id="fileElement" name="附件上传">
+            <dataLength>length_100</dataLength>
+            <controlLength>cl_whole</controlLength>
+        </dataShow>
+        <dataShow id="fileInputElement" name="带输入框附件上传">
+            <dataLength>length_3</dataLength>
             <controlLength>cl_whole</controlLength>
         </dataShow>
         <dataShow id="imageElement" name="图片上传">
+            <dataLength>length_100</dataLength>
             <controlLength>cl_whole</controlLength>
+        </dataShow>
+        <dataShow id="imageArrayElement" name="组图上传">
+            <dataLength>length_4</dataLength>
+            <controlLength>cl_whole</controlLength>
+        </dataShow>
+        <dataShow id="inputDepartmentCascader" name="可输入可选择部门级联器">
+            <dataLength>length_3</dataLength>
+            <controlLength>cl_half</controlLength>
         </dataShow>
     </dataShows>
     <!-- 扩展规则，根据dataShow的id，添加字符长度 -->
     <dataLengths>
         <dataLength id="length_1" name="32字节">32</dataLength>
         <dataLength id="length_3" name="1000字节">1000</dataLength>
-        <dataLength id="length_4" name="4000字节">4000</dataLength>
+        <dataLength id="length_4" name="5000字节">5000</dataLength>
+        <dataLength id="length_100" name="100字节">100</dataLength>
     </dataLengths>
     <controlLengths>
         <controlLength id="cl_half" name="半行">1</controlLength>
@@ -108,7 +140,8 @@
         <validate id="positiveInteger" name="正整数">custom[positiveInteger]</validate>
         <validate id="english" name="英文">custom[onlyLetterSp]</validate>
         <validate id="float" name="浮点数">custom[number]</validate>
-        <validate id="url" name="连接">custom[url]</validate>
+        <validate id="url" name="链接">custom[url]</validate>
+        <validate id="lessThanNow" name="小于当前时间">custom[url]</validate>
     </validates>
     <!-- 扩展规则:基于AbstractDataSource编写扩展类；定义ds，id不能重复，bean为扩展类的beanId -->
     <dataSource>

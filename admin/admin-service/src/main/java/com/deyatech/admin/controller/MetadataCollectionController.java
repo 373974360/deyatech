@@ -1,24 +1,31 @@
 package com.deyatech.admin.controller;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
-import com.deyatech.admin.entity.MetadataCollection;
-import com.deyatech.admin.service.MetadataCollectionService;
-import com.deyatech.admin.vo.MetadataCollectionMetadataVo;
-import com.deyatech.admin.vo.MetadataCollectionVo;
-import com.deyatech.common.entity.RestResult;
-import io.swagger.annotations.ApiImplicitParams;
-import lombok.extern.slf4j.Slf4j;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import java.util.Collection;
-import java.util.List;
-import org.springframework.web.bind.annotation.RestController;
+import com.deyatech.admin.entity.Metadata;
+import com.deyatech.admin.entity.MetadataCollection;
+import com.deyatech.admin.service.MetadataCollectionMetadataService;
+import com.deyatech.admin.service.MetadataCollectionService;
+import com.deyatech.admin.service.MetadataService;
+import com.deyatech.admin.util.MetaUtils;
+import com.deyatech.admin.vo.MetadataCollectionMetadataVo;
+import com.deyatech.admin.vo.MetadataCollectionVo;
 import com.deyatech.common.base.BaseController;
+import com.deyatech.common.entity.RestResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -35,6 +42,8 @@ public class MetadataCollectionController extends BaseController {
 
     @Autowired
     MetadataCollectionService metadataCollectionService;
+    @Autowired
+    private MetadataService metadataService;
 
     /**
      * 单个保存或者更新
@@ -46,12 +55,50 @@ public class MetadataCollectionController extends BaseController {
     @ApiOperation(value="单个保存或者更新", notes="根据对象保存或者更新信息")
     @ApiImplicitParam(name = "metadataCollection", value = "对象", required = true, dataType = "MetadataCollection", paramType = "query")
     public RestResult saveOrUpdate(MetadataCollectionVo metadataCollectionVo, String metadataCollectionMetadataJson) {
+        log.info(String.format("保存或者更新: %s ", JSONUtil.toJsonStr(metadataCollectionVo)));
         if (StrUtil.isNotBlank(metadataCollectionMetadataJson)) {
             List<MetadataCollectionMetadataVo> metadataVoList =
                     JSONUtil.toList(JSONUtil.parseArray(metadataCollectionMetadataJson), MetadataCollectionMetadataVo.class);
             metadataCollectionVo.setMetadataList(metadataVoList);
         }
-        log.info(String.format("保存或者更新: %s ", JSONUtil.toJsonStr(metadataCollectionVo)));
+        // 编辑时检查元数据有没有变更
+        if (StrUtil.isNotEmpty(metadataCollectionVo.getId())) {
+            StringBuilder errorMsg = new StringBuilder();
+            List<MetadataCollectionMetadataVo> metadataVoList = metadataCollectionVo.getMetadataList();
+            if (CollectionUtil.isNotEmpty(metadataVoList)) {
+                for (MetadataCollectionMetadataVo metadataVo : metadataVoList) {
+                    // 数据库中
+                    Metadata db = metadataService.setVoProperties(metadataService.getById(metadataVo.getMetadataId()));
+                    String msg = "";
+                    // 类型不相等
+                    if (!metadataVo.getDataType().equals(db.getDataType())) {
+                        msg = ",类型改变";
+                    }
+                    // 控件不等
+                    if (!metadataVo.getControlType().equals(db.getControlType())) {
+                        msg += ",控件改变";
+                    }
+                    int len1 = Integer.parseInt(metadataVo.getDataLength());
+                    int len2 = Integer.parseInt(db.getDataLength());
+                    // 长度不等
+                    if (len1 < len2) {
+                        msg += ",长度变小";
+                    }
+                    if (StrUtil.isNotEmpty(msg)) {
+                        errorMsg.append("【");
+                        errorMsg.append(db.getName());
+                        errorMsg.append(db.getBriefName());
+                        errorMsg.append("】");
+                        errorMsg.append(msg.substring(1));
+                    }
+                }
+            }
+            long count = MetaUtils.countTotal(MetaUtils.getTableName(metadataCollectionVo));
+            if (errorMsg.length() > 0 && count > 0) {
+                errorMsg.append("不能保存。");
+                return RestResult.error(errorMsg.toString());
+            }
+        }
         MetadataCollection collection = metadataCollectionService.save(metadataCollectionVo);
         return RestResult.ok(metadataCollectionService.setVoProperties(collection));
     }
@@ -82,7 +129,19 @@ public class MetadataCollectionController extends BaseController {
     @ApiImplicitParam(name = "metadataCollection", value = "对象", required = true, dataType = "MetadataCollection", paramType = "query")
     public RestResult<Boolean> removeByMetadataCollection(MetadataCollection metadataCollection) {
         log.info(String.format("根据MetadataCollection对象属性逻辑删除: %s ", metadataCollection));
+        MetadataCollection mc = metadataCollectionService.getByBean(metadataCollection);
+        MetadataCollectionVo mcvo = metadataCollectionService.setVoProperties(mc);
+        if (Objects.nonNull(mc)) {
+            long count = MetaUtils.countTotal(MetaUtils.getTableName(mcvo));
+            if (count > 0) {
+                return RestResult.error(MetaUtils.getTableName(mcvo) + "表有数据不能删除");
+            }
+        }
         boolean result = metadataCollectionService.removeByBean(metadataCollection);
+        if (result && Objects.nonNull(mc)) {
+            // 删除数据库表
+            MetaUtils.dropTable(MetaUtils.getTableName(mcvo));
+        }
         return RestResult.ok(result);
     }
 
@@ -98,7 +157,31 @@ public class MetadataCollectionController extends BaseController {
     @ApiImplicitParam(name = "ids", value = "对象ID集合", required = true, allowMultiple = true, dataType = "Serializable", paramType = "query")
     public RestResult<Boolean> removeByIds(@RequestParam("ids[]") List<String> ids) {
         log.info(String.format("根据id批量删除: %s ", JSONUtil.toJsonStr(ids)));
+        if (CollectionUtil.isNotEmpty(ids)) {
+            for (String id :ids) {
+                MetadataCollection mc = metadataCollectionService.getById(id);
+                MetadataCollectionVo mcvo = metadataCollectionService.setVoProperties(mc);
+                long count = MetaUtils.countTotal(MetaUtils.getTableName(mcvo));
+                if (count > 0) {
+                    return RestResult.error(MetaUtils.getTableName(mcvo) + "表有数据不能删除");
+                }
+            }
+        }
+        List<MetadataCollection> list = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(ids)) {
+            for (String id : ids) {
+                list.add(metadataCollectionService.getById(id));
+            }
+        }
         boolean result = metadataCollectionService.removeByIds(ids);
+        if (result) {
+            for (MetadataCollection mc : list) {
+                metadataCollectionService.setMainVersionByEnName(mc.getEnName());
+                MetadataCollectionVo mcvo = metadataCollectionService.setVoProperties(mc);
+                // 删除数据库表
+                MetaUtils.dropTable(MetaUtils.getTableName(mcvo));
+            }
+        }
         return RestResult.ok(result);
     }
 

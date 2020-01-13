@@ -22,7 +22,6 @@ import java.util.List;
 @Accessors(chain = true)
 @ApiModel(value = "元数据集元数据关联扩展对象", description = "元数据集元数据关联扩展对象", parent = MetadataCollectionMetadata.class)
 public class MetadataCollectionMetadataVo extends MetadataCollectionMetadata {
-
     /**
      * 字段名
      */

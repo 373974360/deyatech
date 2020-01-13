@@ -27,4 +27,6 @@ public class MetadataCollectionVo extends MetadataCollection {
      * 元数据集关联的元数据
      */
     List<MetadataCollectionMetadataVo> metadataList;
+    List<MetadataCollectionMetadataVo> oldMetadataList;
+    private boolean beUsed;
 }

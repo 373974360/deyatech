@@ -37,13 +37,25 @@ public interface ProcessTaskService {
 
     void setVariables(String actTaskId, Map<String, Object> variables);
 
-    ProcessInstanceStatusEnum completeTask(String actTaskId, String userId, Map<String, Object> variables);
+    ProcessInstanceStatusEnum rollBack(String actTaskId);
 
-    ProcessInstanceStatusEnum rollBack(String actTaskId, String userId);
+    /**
+     * 通过
+     *
+     * @param actTaskId
+     * @param variables
+     * @return
+     */
+    ProcessInstanceStatusEnum completeTask(String actTaskId, Map<String, Object> variables);
 
-    ProcessInstanceStatusEnum rejectTask(String actTaskId, String userId);
-
-    ProcessInstanceStatusEnum cancelTask(String actTaskId, String userId);
+    /**
+     * 驳回
+     *
+     * @param actTaskId
+     * @param reason
+     * @return
+     */
+    ProcessInstanceStatusEnum rejectTask(String actTaskId, String reason);
 
     List<ProcessTaskVo> mapToDto(List<Task> taskList);
 }

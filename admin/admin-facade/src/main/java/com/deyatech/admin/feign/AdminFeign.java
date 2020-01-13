@@ -1,8 +1,6 @@
 package com.deyatech.admin.feign;
 
-import com.deyatech.admin.entity.Department;
-import com.deyatech.admin.entity.Holiday;
-import com.deyatech.admin.entity.User;
+import com.deyatech.admin.entity.*;
 import com.deyatech.admin.vo.DictionaryVo;
 import com.deyatech.admin.vo.HolidayVo;
 import com.deyatech.admin.vo.MetadataCollectionVo;
@@ -251,4 +249,73 @@ public interface AdminFeign {
      */
     @RequestMapping(value = "/dictionary/getDictionaryListByIndexId")
     RestResult<List<DictionaryVo>> getDictionaryListByIndexId(@RequestParam("indexId") String indexId);
+
+    /**
+     * 根据条件查询角色列表
+     *
+     * @param role
+     * @return
+     */
+    @RequestMapping(value = "/role/getRoleList")
+    RestResult<List<Role>> getRoleList(@RequestBody Role role);
+
+    /**
+     * 检查元数据集是否存在
+     * true 存在， false 不存在
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/metadataCollection/checkMetadataCollectionById")
+    RestResult<Boolean> checkMetadataCollectionById(@RequestParam("id") String id);
+
+    /**
+     * 获取字典项信息
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/dictionary/getDictionaryById")
+    RestResult<DictionaryVo> getDictionaryById(@RequestParam("id") String id);
+
+    /**
+     * 获取字典项信息
+     *
+     * @param indexId
+     * @return
+     */
+    @RequestMapping(value = "/dictionary/getDictionaryByIndexId")
+    RestResult<List<Dictionary>> getDictionaryByIndexId(@RequestParam("indexId") String indexId);
+
+
+
+    /**
+     * 新增用户
+     * @return
+     */
+    @PostMapping("/user/insertUser")
+    RestResult<Boolean> insertUser(@RequestBody User user);
+
+    /**
+     * 移除用户
+     * @return
+     */
+    @PostMapping("/user/removeUser")
+    RestResult<Boolean> removeUser(@RequestBody User user);
+
+
+
+    /**
+     * 新增机构
+     * @return
+     */
+    @PostMapping("/user/insertDepartment")
+    RestResult<Boolean> insertDepartment(@RequestBody Department department);
+
+    /**
+     * 移除机构
+     * @return
+     */
+    @PostMapping("/user/removeDepartment")
+    RestResult<Boolean> removeDepartment(@RequestBody Department department);
 }

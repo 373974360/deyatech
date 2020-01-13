@@ -1,10 +1,11 @@
 package com.deyatech.admin.feign.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.deyatech.admin.entity.*;
 import com.deyatech.admin.entity.Dictionary;
+import com.deyatech.admin.entity.*;
 import com.deyatech.admin.feign.AdminFeign;
 import com.deyatech.admin.service.*;
 import com.deyatech.admin.util.MetaUtils;
@@ -60,6 +61,8 @@ public class AdminFeignImpl implements AdminFeign {
 
     @Autowired
     DepartmentService departmentService;
+    @Autowired
+    RoleService roleService;
 
     @Override
     public RestResult<String[]> getAllPermissionsByUserId(@RequestParam("userId") String userId) {
@@ -344,5 +347,87 @@ public class AdminFeignImpl implements AdminFeign {
         dictionary.setIndexId(indexId);
         dictionary.setSortSql("sort_no asc");
         return RestResult.ok(dictionaryService.setVoProperties(dictionaryService.listByBean(dictionary)));
+    }
+
+    /**
+     * 根据条件查询角色列表
+     *
+     * @param role
+     * @return
+     */
+    @Override
+    public RestResult<List<Role>> getRoleList(Role role) {
+        return RestResult.ok(roleService.listByBean(role));
+    }
+
+    @Override
+    public RestResult<Boolean> checkMetadataCollectionById(String id) {
+        int count = metadataCollectionService.count(id);
+        return RestResult.ok(count > 0 ? true : false);
+    }
+
+    /**
+     * 获取字典项信息
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public RestResult<DictionaryVo> getDictionaryById(@RequestParam("id") String id) {
+        if (StrUtil.isEmpty(id))
+            return RestResult.ok(null);
+        Dictionary dictionary = dictionaryService.getById(id);
+        return RestResult.ok(dictionaryService.setVoProperties(dictionary));
+    }
+
+    @Override
+    public RestResult<List<Dictionary>> getDictionaryByIndexId(String indexId) {
+        if (StrUtil.isEmpty(indexId))
+            return RestResult.ok(null);
+        QueryWrapper<Dictionary> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("index_id", indexId);
+        return RestResult.ok(dictionaryService.list(queryWrapper));
+    }
+
+    @Override
+    public RestResult insertUser(User user) {
+        boolean result = userService.saveOrEdit(user);
+        return RestResult.ok(result);
+    }
+
+    @Override
+    public RestResult removeUser(User user) {
+        boolean result = userService.removeByBean(user);
+        if (result) {
+            RoleUser roleUser = new RoleUser();
+            roleUser.setUserId(user.getId());
+            roleUserService.removeByBean(roleUser);
+        }
+        return RestResult.ok(result);
+    }
+
+    @Override
+    public RestResult<Boolean> insertDepartment(Department department) {
+        Department dept = departmentService.getById(department.getParentId());
+        if(StrUtil.isBlank(department.getParentId())){
+            department.setParentId("0");
+        }
+        if(ObjectUtil.isNotNull(dept)){
+            if(StrUtil.isNotBlank(dept.getTreePosition())){
+                department.setTreePosition(dept.getTreePosition()+"&"+department.getId());
+            }else{
+                department.setTreePosition("&"+department.getId());
+            }
+        }else if(!department.getParentId().equals("0")){
+            department.setTreePosition("&"+department.getParentId());
+        }
+        boolean result = departmentService.saveOrUpdate(department);
+        return RestResult.ok(result);
+    }
+
+    @Override
+    public RestResult<Boolean> removeDepartment(Department department) {
+        boolean result = departmentService.removeByBean(department);
+        return RestResult.ok(result);
     }
 }

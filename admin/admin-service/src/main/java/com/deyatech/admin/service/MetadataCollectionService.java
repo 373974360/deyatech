@@ -56,6 +56,13 @@ public interface MetadataCollectionService extends BaseService<MetadataCollectio
     void setMainVersion(String id);
 
     /**
+     * 设置主版本
+     *
+     * @param enName
+     */
+    void setMainVersionByEnName(String enName);
+
+    /**
      * 检查中文名称是否存在
      *
      * @param enName
@@ -83,4 +90,11 @@ public interface MetadataCollectionService extends BaseService<MetadataCollectio
      * @return
      */
     boolean checkVersionExist(String id, String enName, String version);
+
+    /**
+     * 统计件数
+     * @param id
+     * @return
+     */
+    int count(String id);
 }

@@ -15,7 +15,7 @@ import java.util.List;
  * @description TODO
  * @date 2019/8/20 11:04
  */
-@Component
+//@Component
 public class InitMetadataTable implements ApplicationRunner {
 
     @Autowired
@@ -23,7 +23,7 @@ public class InitMetadataTable implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        List<MetadataCollectionVo> metadataCollectionVoList = metadataCollectionService.findAllData(null);
-        MetaUtils.initMetadataTable(metadataCollectionVoList);
+//        List<MetadataCollectionVo> metadataCollectionVoList = metadataCollectionService.findAllData(null);
+//        MetaUtils.initMetadataTable(metadataCollectionVoList);
     }
 }

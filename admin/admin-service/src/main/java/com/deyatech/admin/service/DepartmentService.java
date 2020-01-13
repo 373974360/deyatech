@@ -5,6 +5,7 @@ import com.deyatech.admin.vo.DepartmentVo;
 import com.deyatech.common.base.BaseService;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -55,4 +56,12 @@ public interface DepartmentService extends BaseService<Department> {
      * @return
      */
     List<String> getAllChildrenDepartmentIds(String departmentId);
+
+    /**
+     * 可输入可选择控件使用
+     *
+     * @param department
+     * @return
+     */
+    Map<String, Object> getCascaderAttach(Department department);
 }

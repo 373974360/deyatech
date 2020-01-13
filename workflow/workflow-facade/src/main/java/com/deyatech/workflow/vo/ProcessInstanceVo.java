@@ -20,6 +20,7 @@ import java.util.Map;
 public class ProcessInstanceVo extends BaseEntity {
 
     private String actDefinitionKey;
+    private String actDefinitionId;
 
     private String businessId;
 

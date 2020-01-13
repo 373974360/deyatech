@@ -30,6 +30,7 @@ public class ProcessTaskController extends BaseController {
      */
     @GetMapping("/getCurrentTaskList")
     public RestResult<IPage<ProcessTaskVo>> getCurrentTaskList(ProcessTaskVo processTaskVo) {
+
         // 设置查询条件
         if (StrUtil.isNotEmpty(processTaskVo.getTitleOrAuthor())) {
             Map variables = CollectionUtil.newHashMap();
@@ -54,25 +55,19 @@ public class ProcessTaskController extends BaseController {
 
     @PostMapping("/completeTask")
     public RestResult<ProcessInstanceStatusEnum> completeTask(String taskId) {
-        ProcessInstanceStatusEnum status = processTaskService.completeTask(taskId, UserContextHelper.getUserId(), CollectionUtil.newHashMap());
+        ProcessInstanceStatusEnum status = processTaskService.completeTask(taskId, CollectionUtil.newHashMap());
         return RestResult.ok(status);
     }
 
     @PostMapping("/rejectTask")
-    public RestResult<ProcessInstanceStatusEnum> rejectTask(String taskId) {
-        ProcessInstanceStatusEnum status = processTaskService.rejectTask(taskId, UserContextHelper.getUserId());
-        return RestResult.ok(status);
-    }
-
-    @PostMapping("/cancelTask")
-    public RestResult<ProcessInstanceStatusEnum> cancelTask(String taskId) {
-        ProcessInstanceStatusEnum status = processTaskService.cancelTask(taskId, UserContextHelper.getUserId());
+    public RestResult<ProcessInstanceStatusEnum> rejectTask(String taskId, String reason) {
+        ProcessInstanceStatusEnum status = processTaskService.rejectTask(taskId, reason);
         return RestResult.ok(status);
     }
 
     @PostMapping("/rollBackTask")
     public RestResult<ProcessInstanceStatusEnum> rollBackTask(String taskId) {
-        ProcessInstanceStatusEnum status = processTaskService.rollBack(taskId, UserContextHelper.getUserId());
+        ProcessInstanceStatusEnum status = processTaskService.rollBack(taskId);
         return RestResult.ok(status);
     }
 

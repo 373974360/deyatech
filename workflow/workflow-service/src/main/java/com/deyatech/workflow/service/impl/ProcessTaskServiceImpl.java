@@ -9,14 +9,16 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.deyatech.admin.feign.AdminFeign;
 import com.deyatech.admin.vo.UserVo;
-import com.deyatech.common.Constants;
+import com.deyatech.common.context.UserContextHelper;
 import com.deyatech.common.entity.RestResult;
 import com.deyatech.common.enums.CandidateTypeEnum;
 import com.deyatech.common.enums.ProcessInstanceStatusEnum;
 import com.deyatech.common.exception.BusinessException;
+import com.deyatech.workflow.constant.ProcessConstant;
 import com.deyatech.workflow.service.ProcessTaskService;
 import com.deyatech.workflow.util.WorkFlowUtils;
 import com.deyatech.workflow.vo.ProcessTaskVo;
+import lombok.extern.slf4j.Slf4j;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
@@ -32,11 +34,13 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+@Slf4j
 @Service
 public class ProcessTaskServiceImpl implements ProcessTaskService {
 
@@ -54,6 +58,9 @@ public class ProcessTaskServiceImpl implements ProcessTaskService {
 
     @Autowired
     private AdminFeign adminFeign;
+
+    @Autowired
+    RabbitTemplate rabbitTemplate;
 
     /**
      * 查询所有代办任务
@@ -167,34 +174,16 @@ public class ProcessTaskServiceImpl implements ProcessTaskService {
     }
 
     @Override
-    public ProcessInstanceStatusEnum completeTask(String actTaskId, String userId, Map<String, Object> variables) {
-        Task task = findByActTaskIdAndUserId(actTaskId, userId);
-
-        if (task == null) {
-            throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "任务不存在或没有权限处理");
-        }
-
-        taskService.setVariables(actTaskId, variables);
-
-        taskService.claim(actTaskId, userId);
-        taskService.complete(actTaskId);
-
-        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
-                .processInstanceId(task.getProcessInstanceId()).singleResult();
-        if (processInstance == null) {
-            return ProcessInstanceStatusEnum.FINISH;
-        }
-        return ProcessInstanceStatusEnum.IN_PROGRESS;
-    }
-
-    @Override
-    public ProcessInstanceStatusEnum rollBack(String actTaskId, String userId) {
+    public ProcessInstanceStatusEnum rollBack(String actTaskId) {
+        String userId = UserContextHelper.getUserId();
         try {
-            // 取得当前任务
-            Task currTask = findByActTaskIdAndUserId(actTaskId, userId);
-            if (currTask == null) {
-                throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "任务不存在或没有权限处理");
+            TaskQuery taskQuery = taskService.createTaskQuery().taskId(actTaskId).includeProcessVariables().includeTaskLocalVariables();
+            Task currTask = taskQuery.singleResult();
+            if (Objects.isNull(currTask)) {
+                throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "任务不存");
             }
+            checkRight(currTask, null);
+
             // 并行任务不能驳回
             List<Execution> executionList = runtimeService.createExecutionQuery()
                     .processInstanceId(currTask.getProcessInstanceId()).list();
@@ -249,30 +238,126 @@ public class ProcessTaskServiceImpl implements ProcessTaskService {
             throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "执行失败");
         }
     }
-
+    /**
+     * 通过
+     *
+     * @param actTaskId
+     * @param variables
+     * @return
+     */
     @Override
-    public ProcessInstanceStatusEnum rejectTask(String actTaskId, String userId) {
-        Task task = findByActTaskIdAndUserId(actTaskId, userId);
-
-        if (task == null) {
-            throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "任务不存在或没有权限处理");
+    public ProcessInstanceStatusEnum completeTask(String actTaskId, Map<String, Object> variables) {
+        TaskQuery taskQuery = taskService.createTaskQuery().taskId(actTaskId).includeProcessVariables().includeTaskLocalVariables();
+        Task task = taskQuery.singleResult();
+        if (Objects.isNull(task)) throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "任务不存");
+        Map<String, Object> param = checkRight(task, null);
+        taskService.setVariables(actTaskId, variables);
+        taskService.claim(actTaskId, UserContextHelper.getUserId());
+        taskService.complete(actTaskId);
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).singleResult();
+        if (processInstance == null) {
+            rabbitTemplate.convertAndSend(ProcessConstant.EXCHANGE_PROCESS, ProcessConstant.ROUTING_KEY_PROCESS_FINISH, param);
+            return ProcessInstanceStatusEnum.FINISH;
         }
-
-        taskService.claim(actTaskId, userId);
-        runtimeService.deleteProcessInstance(task.getProcessInstanceId(), "审批不通过");
+        return ProcessInstanceStatusEnum.IN_PROGRESS;
+    }
+    /**
+     * 驳回
+     *
+     * @param actTaskId
+     * @param reason
+     * @return
+     */
+    @Override
+    public ProcessInstanceStatusEnum rejectTask(String actTaskId, String reason) {
+        TaskQuery taskQuery = taskService.createTaskQuery().taskId(actTaskId).includeProcessVariables().includeTaskLocalVariables();
+        Task task = taskQuery.singleResult();
+        if (Objects.isNull(task)) throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "任务不存");
+        Map<String, Object> param = checkRight(task, reason);
+        taskService.claim(actTaskId, UserContextHelper.getUserId());
+        runtimeService.deleteProcessInstance(task.getProcessInstanceId(), reason);
+        rabbitTemplate.convertAndSend(ProcessConstant.EXCHANGE_PROCESS, ProcessConstant.ROUTING_KEY_PROCESS_REJECT, param);
         return ProcessInstanceStatusEnum.FINISH;
     }
 
-    @Override
-    public ProcessInstanceStatusEnum cancelTask(String actTaskId, String userId) {
-        Task task = findByActTaskIdAndAuth(actTaskId, userId);
-
-        if (task == null) {
-            throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "任务不存在或没有权限处理");
+    /**
+     * 检查
+     * @param task
+     * @return
+     */
+    private Map<String, Object> checkRight(Task task, String reason) {
+        String userId = UserContextHelper.getUserId();
+        boolean hasRight = false;
+        if (Objects.nonNull(task)) {
+            // 候选角色
+            List<String> candidateGroupIds = new ArrayList<>();
+            List<IdentityLink> identityLinkList = taskService.getIdentityLinksForTask(task.getId());
+            if (CollectionUtil.isNotEmpty(identityLinkList)) {
+                for (IdentityLink identityLink : identityLinkList) {
+                    if ("candidate".equals(identityLink.getType())) {
+                        // 候选人
+                        if (StrUtil.isNotEmpty(identityLink.getUserId())) {
+                            // 用户是候选人，则权限
+                            if (userId.equals(identityLink.getUserId())) {
+                                hasRight = true;
+                                break;
+                            }
+                        }
+                        // 候选组
+                        if (StrUtil.isNotEmpty(identityLink.getGroupId())) {
+                            candidateGroupIds.add(identityLink.getGroupId());
+                        }
+                    }
+                }
+            }
+            if (!hasRight) {
+                // 用户角色
+                List<String> roleIdList = adminFeign.getRoleIdsByUserId(userId).getData();
+                if (CollectionUtil.isNotEmpty(roleIdList) && CollectionUtil.isNotEmpty(candidateGroupIds)) {
+                    for (String roleId : roleIdList) {
+                        // 用户角色是候选角色，则权限
+                        if (candidateGroupIds.contains(roleId)) {
+                            hasRight = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (!hasRight) {
+                // 用户部门
+                UserVo userVo = adminFeign.getUserByUserId(userId).getData();
+                if (Objects.nonNull(userVo)) {
+                    String departmentId = userVo.getDepartmentId();
+                    Map<String, Object> taskLocalVariables = task.getTaskLocalVariables();
+                    String variableDepartment = (String) taskLocalVariables.get(ProcessConstant.VARIABLE_DEPARTMENT);
+                    // 候选部门
+                    List<String> candidateDepartmentIds = new ArrayList<>();
+                    if (StrUtil.isNotEmpty(variableDepartment)) {
+                        // 候选部门
+                        candidateDepartmentIds = Arrays.asList(variableDepartment.split(","));
+                    }
+                    // 用户部门是候选部门，则权限
+                    if (candidateDepartmentIds.contains(departmentId)) {
+                        hasRight = true;
+                    }
+                }
+            }
+        }
+        if (!hasRight) {
+            throw new BusinessException(HttpStatus.HTTP_INTERNAL_ERROR, "没有权限处理");
         }
 
-        runtimeService.deleteProcessInstance(task.getProcessInstanceId(), "取消");
-        return ProcessInstanceStatusEnum.CANCEL;
+        Map<String, Object> param = task.getProcessVariables();
+        if (Objects.isNull(param)) {
+            param = new HashMap<>();
+        }
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).singleResult();
+        // 返回业务ID
+        param.put(ProcessConstant.BUSINESS_ID, processInstance.getBusinessKey());
+        if (StrUtil.isNotEmpty(reason)) {
+            param.put(ProcessConstant.REASON, reason);
+        }
+        return param;
     }
 
     @Override
@@ -329,7 +414,7 @@ public class ProcessTaskServiceImpl implements ProcessTaskService {
             for (Task task : taskList) {
                 ProcessDefinition definition = repositoryService.getProcessDefinition(task.getProcessDefinitionId());
                 Map<String, Object> variables = task.getProcessVariables();
-                String source = variables.get(Constants.VARIABLE_SOURCE).toString();
+                String source = variables.get(ProcessConstant.VARIABLE_SOURCE).toString();
                 String uniqueKey = source + ":" + definition.getKey() + ":" + task.getTaskDefinitionKey();
 
                 List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(task.getId());
@@ -348,7 +433,7 @@ public class ProcessTaskServiceImpl implements ProcessTaskService {
                         }
                     }
                 }
-                String departmentIds = (String) taskService.getVariableLocal(task.getId(), Constants.VARIABLE_DEPARTMENT);
+                String departmentIds = (String) taskService.getVariableLocal(task.getId(), ProcessConstant.VARIABLE_DEPARTMENT);
                 if (StrUtil.isNotEmpty(departmentIds)) {
                     List<String> candidateGroups = Arrays.asList(departmentIds.split(","));
                     for (String candidateGroup : candidateGroups) {
@@ -376,7 +461,7 @@ public class ProcessTaskServiceImpl implements ProcessTaskService {
         }
 
         if (StringUtils.isNotBlank(processTaskDto.getSource())) {
-            query.processVariableValueEquals(Constants.VARIABLE_SOURCE, processTaskDto.getSource());
+            query.processVariableValueEquals(ProcessConstant.VARIABLE_SOURCE, processTaskDto.getSource());
         }
 
         if (StringUtils.isNotBlank(processTaskDto.getCandidateUser())) {
@@ -390,7 +475,7 @@ public class ProcessTaskServiceImpl implements ProcessTaskService {
             }
             RestResult<UserVo> userResult = adminFeign.getUserByUserId(processTaskDto.getCandidateUser());
             if (userResult.isOk() && ObjectUtil.isNotNull(userResult.getData())) {
-                query.taskVariableValueLike(Constants.VARIABLE_DEPARTMENT, userResult.getData().getDepartmentId());
+                query.taskVariableValueLike(ProcessConstant.VARIABLE_DEPARTMENT, "%" + userResult.getData().getDepartmentId() + "%");
             }
             query.endOr();
         }

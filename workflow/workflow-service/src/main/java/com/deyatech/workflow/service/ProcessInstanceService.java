@@ -3,6 +3,8 @@ package com.deyatech.workflow.service;
 import com.deyatech.common.enums.ProcessInstanceStatusEnum;
 import com.deyatech.workflow.vo.ProcessInstanceVo;
 
+import java.util.Map;
+
 /**
  * @author doukang
  * @description TODO
@@ -17,4 +19,13 @@ public interface ProcessInstanceService {
      * @return
      */
     ProcessInstanceStatusEnum startInstance(ProcessInstanceVo processInstanceVo);
+
+    /**
+     * 删除流程实例
+     *
+     * @param businessId
+     * @param reason
+     * @return
+     */
+    ProcessInstanceStatusEnum deleteInstanceByBusinessId(String businessId, String reason);
 }

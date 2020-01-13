@@ -26,4 +26,5 @@ public class MetadataVo extends Metadata {
      * 复合类型元数据关联的基本类型元数据
      */
     private List<MetadataVo> relationList;
+    private boolean beUsed;
 }

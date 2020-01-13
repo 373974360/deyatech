@@ -1,5 +1,6 @@
 package com.deyatech.admin.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.deyatech.common.base.BaseEntity;
@@ -44,4 +45,11 @@ public class Dictionary extends BaseEntity {
     @TableField("editable_")
     private Integer editable;
 
+    @ApiModelProperty(value = "上级字典编号", dataType = "String")
+    @TableField("parent_id")
+    private String parentId;
+
+    @ApiModelProperty(value = "树结构中的索引位置", dataType = "String")
+    @TableField(value="tree_position")
+    private String treePosition;
 }

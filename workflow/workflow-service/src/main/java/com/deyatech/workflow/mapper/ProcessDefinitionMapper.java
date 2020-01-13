@@ -6,6 +6,8 @@ import com.deyatech.common.base.BaseMapper;
 import com.deyatech.workflow.vo.ProcessDefinitionVo;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Map;
+
 /**
  * <p>
  * 流程定义 Mapper 接口
@@ -20,7 +22,14 @@ public interface ProcessDefinitionMapper extends BaseMapper<IProcessDefinition> 
 
     IProcessDefinition getLastVersionByActDefinitionKey(@Param("actDefinitionKey") String actDefinitionKey, @Param("version") int version);
 
-    void enableByActDefinitionKey(@Param("actDefinitionKey") String actDefinitionKey);
+    void enableByActDefinitionId(@Param("actDefinitionId") String actDefinitionId);
 
-    void disableByActDefinitionKey(@Param("actDefinitionKey") String actDefinitionKey);
+    void disableByActDefinitionId(@Param("actDefinitionId") String actDefinitionId);
+
+    /**
+     * 根据旧ID查新对象
+     *
+     * @return
+     */
+    IProcessDefinition getActDefinitionByOldId(String oldActDefinitionId);
 }

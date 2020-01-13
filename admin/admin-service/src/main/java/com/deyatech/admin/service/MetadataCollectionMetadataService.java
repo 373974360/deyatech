@@ -3,6 +3,7 @@ package com.deyatech.admin.service;
 import com.deyatech.admin.entity.MetadataCollectionMetadata;
 import com.deyatech.admin.vo.MetadataCollectionMetadataVo;
 import com.deyatech.common.base.BaseService;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -31,4 +32,12 @@ public interface MetadataCollectionMetadataService extends BaseService<MetadataC
      * @return
      */
     List<MetadataCollectionMetadataVo> setVoProperties(Collection metadataCollectionMetadatas);
+
+    /**
+     * 统计元数据使用件数
+     *
+     * @param metadataId
+     * @return
+     */
+    int count(String metadataId);
 }
