@@ -9,25 +9,48 @@ import java.util.List;
 
 /**
  * @author doukang
- * @description 逆地理编码出参
+ * @description 逆地理编码返回结果
  * @date 2019/5/5 14:58
  */
 public class GeocodeReverseResult {
 
+    /**
+     * 经纬度坐标
+     */
     private Location location;
 
+    /**
+     * 结构化地址信息
+     */
     private String formatted_address;
 
+    /**
+     * 坐标所在商圈信息，多个商圈','隔开
+     */
     private String business;
 
+    /**
+     * 结构化地址对象
+     */
     private AddressComponent addressComponent;
 
+    /**
+     * 附近地点（美食、酒店、景点等等）
+     */
     private List<Poi> pois;
+
+    private List roads;
 
     private List<PoiRegion> poiRegions;
 
+    /**
+     * 当前位置结合附近地点的语义化描述
+     */
     private String sematic_description;
 
+    /**
+     * 百度定义的城市id
+     */
     private Integer cityCode;
 
     public Location getLocation() {
@@ -68,6 +91,14 @@ public class GeocodeReverseResult {
 
     public void setPois(List<Poi> pois) {
         this.pois = pois;
+    }
+
+    public List getRoads() {
+        return roads;
+    }
+
+    public void setRoads(List roads) {
+        this.roads = roads;
     }
 
     public List<PoiRegion> getPoiRegions() {

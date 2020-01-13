@@ -2,37 +2,84 @@ package com.deyatech.common.utils.baidumap.model;
 
 /**
  * @author doukang
- * @description 地址
+ * @description 结构化地址对象
  * @date 2019/5/5 15:03
  */
 public class AddressComponent {
 
+    /**
+     * 国家
+     */
     private String country;
 
+    /**
+     * 省名
+     */
     private String province;
 
+    /**
+     * 城市名
+     */
     private String city;
 
+    /**
+     * 区县名
+     */
     private String district;
 
+    /**
+     * 乡镇名
+     */
     private String town;
 
+    /**
+     * 乡镇id
+     */
+    private String town_code;
+
+    /**
+     * 街道名
+     */
     private String street;
 
+    /**
+     * 街道门牌号
+     */
     private String street_number;
 
+    /**
+     * 行政区划代码
+     */
     private Integer adcode;
 
+    /**
+     * 国家代码
+     */
     private Integer country_code;
 
+    /**
+     * 国际代码
+     */
     private String country_code_iso;
 
+    /**
+     * 国际代码2
+     */
     private String country_code_iso2;
 
+    /**
+     * 城市级别
+     */
     private Integer city_level;
 
+    /**
+     * 相对当前坐标点的方向
+     */
     private String direction;
 
+    /**
+     * 相对当前坐标点的距离
+     */
     private String distance;
 
     public String getCountry() {
@@ -73,6 +120,14 @@ public class AddressComponent {
 
     public void setTown(String town) {
         this.town = town;
+    }
+
+    public String getTown_code() {
+        return town_code;
+    }
+
+    public void setTown_code(String town_code) {
+        this.town_code = town_code;
     }
 
     public String getStreet() {
