@@ -156,6 +156,11 @@ public class AdminFeignImpl implements AdminFeign {
     }
 
     @Override
+    public RestResult workIntervalDayAfter(Date startTime, Date endTime) {
+        return RestResult.ok(holidayService.workIntervalDayAfter(startTime, endTime));
+    }
+
+    @Override
     public RestResult<DictionaryVo> getDictionary(String key, String code) {
         Dictionary dictionary = new Dictionary();
         dictionary.setIndexId(key);

@@ -115,6 +115,16 @@ public interface AdminFeign {
     RestResult<Date> workHourAfter(@RequestParam("startTime") Date startTime, @RequestParam("limitHour") Integer limitHour);
 
     /**
+     * 获取两个日期之间的工作日天数
+     *
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @RequestMapping("/holiday/workIntervalDayAfter")
+    RestResult workIntervalDayAfter(@RequestParam("startTime") Date startTime,@RequestParam("endTime") Date endTime);
+
+    /**
      * 获取字典项信息
      *
      * @param key
