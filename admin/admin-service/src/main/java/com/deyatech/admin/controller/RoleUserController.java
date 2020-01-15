@@ -160,4 +160,36 @@ public class RoleUserController extends BaseController {
         roleUserService.setRoleUsers(roleId, userIds);
         return RestResult.ok();
     }
+
+    /**
+     * 取得用户角色
+     *
+     * @param userIds
+     * @return
+     */
+    @RequestMapping("/getUsersRoles")
+    @ApiOperation(value="取得用户角色", notes="取得用户角色")
+    @ApiImplicitParam(name = "userIds", value = "用户id", required = true, dataType = "List", paramType = "query")
+    public RestResult getUsersRoles(@RequestParam("userIds[]") List<String> userIds) {
+        return RestResult.ok(roleUserService.getUsersRoles(userIds));
+    }
+
+    /**
+     * 设置用户角色
+     *
+     * @param userIds
+     * @param roleIds
+     * @return
+     */
+    @RequestMapping("/setUsersRoles")
+    @ApiOperation(value="设置用户角色", notes="设置用户角色")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userIds", value = "用户id", required = true, dataType = "List", paramType = "query"),
+            @ApiImplicitParam(name = "roleIds", value = "角色id", required = true, dataType = "List", paramType = "query")
+    })
+    public RestResult setUsersRoles(@RequestParam("userIds[]") List<String> userIds,
+                                    @RequestParam(value = "roleIds[]", required = false) List<String> roleIds) {
+        roleUserService.setUsersRoles(userIds, roleIds);
+        return RestResult.ok();
+    }
 }

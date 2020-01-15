@@ -47,4 +47,20 @@ public interface RoleUserService extends BaseService<RoleUser> {
      * @return
      */
     IPage<RoleUserVo> pageByRoleUserVo(RoleUserVo roleUserVo);
+
+    /**
+     * 设置用户角色
+     *
+     * @param userIds
+     * @param roleIds
+     */
+    void setUsersRoles(List<String> userIds, List<String> roleIds);
+
+    /**
+     * 取得用户角色
+     *
+     * @param userIds
+     * @return
+     */
+    List<String> getUsersRoles(List<String> userIds);
 }
