@@ -1,10 +1,7 @@
 package com.deyatech.admin.feign;
 
 import com.deyatech.admin.entity.*;
-import com.deyatech.admin.vo.DictionaryVo;
-import com.deyatech.admin.vo.HolidayVo;
-import com.deyatech.admin.vo.MetadataCollectionVo;
-import com.deyatech.admin.vo.UserVo;
+import com.deyatech.admin.vo.*;
 import com.deyatech.common.entity.CascaderResult;
 import com.deyatech.common.entity.EnumsResult;
 import com.deyatech.common.entity.RestResult;
@@ -179,6 +176,15 @@ public interface AdminFeign {
      */
     @RequestMapping(value = "/roleUser/getRoleIdsByUserId", method = RequestMethod.GET)
     RestResult<List<String>> getRoleIdsByUserId(@RequestParam("userId") String userId);
+
+    /**
+     * 根据用户id查询角色id
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping(value = "/roleUser/getRolesByUserId", method = RequestMethod.GET)
+    RestResult<List<Role>> getRolesByUserId(@RequestParam("userId") String userId);
 
     /**
      * 根据部门id查询用户id
