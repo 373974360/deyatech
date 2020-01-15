@@ -214,20 +214,4 @@ public class DepartmentController extends BaseController {
         log.info(String.format("获取系统部门信息的级联对象: %s ",JSONUtil.toJsonStr(department)));
         return RestResult.ok(departmentService.getCascaderAttach(department));
     }
-
-    /**
-     * 获取系统部门信息的级联对象
-     *
-     * @param department
-     * @return
-     */
-    @GetMapping("/getAppealCascader")
-    @ApiOperation(value="获取系统部门信息的级联对象", notes="获取系统部门信息的级联对象")
-    @ApiImplicitParam(name = "department", value = "department", required = false, dataType = "Department", paramType = "query")
-    public RestResult<List<CascaderResult>> getAppealCascader(Department department) {
-        Collection<DepartmentVo> departmentVos = departmentService.getAppealDepartmentTree(department);
-        List<CascaderResult> cascaderResults = CascaderUtil.getResult("Id", "Name","TreePosition", department.getId(), departmentVos);
-        log.info(String.format("获取系统部门信息的级联对象: %s ",JSONUtil.toJsonStr(cascaderResults)));
-        return RestResult.ok(cascaderResults);
-    }
 }

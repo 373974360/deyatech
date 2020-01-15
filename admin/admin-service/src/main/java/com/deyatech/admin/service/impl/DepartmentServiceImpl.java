@@ -96,29 +96,25 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
     }
 
     /**
-     * 根据Department对象属性检索系统部门信息的tree对象
+     * 根据parentId获取组织机构树
      *
-     * @param department
+     * @param parentId
      * @return
      */
     @Override
-    public Collection<DepartmentVo> getAppealDepartmentTree(Department department) {
-        String parentId = "0";
-        if(StrUtil.isNotBlank(department.getParentId())){
-            parentId = department.getParentId();
-        }
+    public Collection<DepartmentVo> getDepartmentTreeByParentId(String parentId,Integer layer) {
         QueryWrapper<Department> queryWrapper = new QueryWrapper<>();
-        if(parentId.equals("0")){
-            queryWrapper.eq("parent_id",parentId);
-        }else{
+        if(StrUtil.isNotBlank(parentId)){
             queryWrapper.eq("id_",parentId);
+        }else{
+            queryWrapper.eq("parent_id",0);
         }
         List<DepartmentVo> departmentVos = setVoProperties(super.list(queryWrapper));
         List<DepartmentVo> rootDepartments = CollectionUtil.newArrayList();
         if (CollectionUtil.isNotEmpty(departmentVos)) {
             for (DepartmentVo departmentVo : departmentVos) {
                 departmentVo.setLabel(departmentVo.getName());
-                departmentVo.setChildren(getAppealDepartmentTree(departmentVo.getId(),0));
+                departmentVo.setChildren(getAppealDepartmentTree(departmentVo.getId(),0,layer));
                 if(StrUtil.isNotBlank(departmentVo.getTreePosition())){
                     String[] split = departmentVo.getTreePosition().split(Constants.DEFAULT_TREE_POSITION_SPLIT);
                     departmentVo.setLevel(split.length);
@@ -131,9 +127,9 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
         return rootDepartments;
     }
 
-    public List<DepartmentVo> getAppealDepartmentTree(String parentId,Integer index) {
+    public List<DepartmentVo> getAppealDepartmentTree(String parentId,Integer index,Integer layer) {
         List<DepartmentVo> rootDepartments = CollectionUtil.newArrayList();
-        if(index == 2){
+        if(index.equals(layer)){
             return null;
         }
         QueryWrapper<Department> queryWrapper = new QueryWrapper<>();
@@ -148,7 +144,7 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
                 }else{
                     departmentVo.setLevel(Constants.DEFAULT_ROOT_LEVEL);
                 }
-                departmentVo.setChildren(getAppealDepartmentTree(departmentVo.getId(),index+1));
+                departmentVo.setChildren(getAppealDepartmentTree(departmentVo.getId(),index+1,layer));
                 rootDepartments.add(departmentVo);
             }
         }

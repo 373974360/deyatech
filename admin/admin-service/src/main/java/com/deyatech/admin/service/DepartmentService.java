@@ -26,12 +26,12 @@ public interface DepartmentService extends BaseService<Department> {
     Collection<DepartmentVo> getDepartmentTree(Department department);
 
     /**
-     * 根据Department对象属性检索系统部门信息的tree对象
+     * 根据parentId获取组织机构树
      *
-     * @param department
+     * @param parentId
      * @return
      */
-    Collection<DepartmentVo> getAppealDepartmentTree(Department department);
+    Collection<DepartmentVo> getDepartmentTreeByParentId(String parentId,Integer layer);
 
     /**
      * 单个将对象转换为vo系统部门信息

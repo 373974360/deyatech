@@ -5,6 +5,7 @@ import com.deyatech.admin.vo.DictionaryVo;
 import com.deyatech.admin.vo.HolidayVo;
 import com.deyatech.admin.vo.MetadataCollectionVo;
 import com.deyatech.admin.vo.UserVo;
+import com.deyatech.common.entity.CascaderResult;
 import com.deyatech.common.entity.EnumsResult;
 import com.deyatech.common.entity.RestResult;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -250,6 +251,13 @@ public interface AdminFeign {
      */
     @RequestMapping(value = "/department/getAllDepartments")
     RestResult<List<Department>> getAllDepartments();
+
+    /**
+     * 根据parentId获取组织机构树
+     * @return
+     */
+    @RequestMapping(value = "/department/getDepartmentTreeByParentId")
+    RestResult<List<CascaderResult>> getDepartmentTreeByParentId(@RequestParam("parentId") String parentId,@RequestParam("layer") Integer layer);
 
     /**
      * 获取字典数据
