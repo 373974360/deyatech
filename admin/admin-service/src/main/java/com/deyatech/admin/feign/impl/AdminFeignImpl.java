@@ -86,7 +86,11 @@ public class AdminFeignImpl implements AdminFeign {
     @Override
     public RestResult<UserVo> getByUser(@RequestBody User user) {
         User byBean = userService.getByBean(user);
-        return RestResult.ok(userService.setVoProperties(byBean));
+        if(ObjectUtil.isNotNull(byBean)){
+            return RestResult.ok(userService.setVoProperties(byBean));
+        }else{
+            return RestResult.ok(null);
+        }
     }
 
     @Override
