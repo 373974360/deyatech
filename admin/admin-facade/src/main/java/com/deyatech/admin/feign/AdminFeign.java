@@ -1,10 +1,8 @@
 package com.deyatech.admin.feign;
 
 import com.deyatech.admin.entity.*;
-import com.deyatech.admin.vo.DictionaryVo;
-import com.deyatech.admin.vo.HolidayVo;
-import com.deyatech.admin.vo.MetadataCollectionVo;
-import com.deyatech.admin.vo.UserVo;
+import com.deyatech.admin.vo.*;
+import com.deyatech.common.entity.CascaderResult;
 import com.deyatech.common.entity.EnumsResult;
 import com.deyatech.common.entity.RestResult;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -115,6 +113,16 @@ public interface AdminFeign {
     RestResult<Date> workHourAfter(@RequestParam("startTime") Date startTime, @RequestParam("limitHour") Integer limitHour);
 
     /**
+     * 获取两个日期之间的工作日天数
+     *
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @RequestMapping("/holiday/workIntervalDayAfter")
+    RestResult workIntervalDayAfter(@RequestParam("startTime") Date startTime,@RequestParam("endTime") Date endTime);
+
+    /**
      * 获取字典项信息
      *
      * @param key
@@ -168,6 +176,15 @@ public interface AdminFeign {
      */
     @RequestMapping(value = "/roleUser/getRoleIdsByUserId", method = RequestMethod.GET)
     RestResult<List<String>> getRoleIdsByUserId(@RequestParam("userId") String userId);
+
+    /**
+     * 根据用户id查询角色id
+     *
+     * @param userId
+     * @return
+     */
+    @RequestMapping(value = "/roleUser/getRolesByUserId", method = RequestMethod.GET)
+    RestResult<List<Role>> getRolesByUserId(@RequestParam("userId") String userId);
 
     /**
      * 根据部门id查询用户id
@@ -240,6 +257,13 @@ public interface AdminFeign {
      */
     @RequestMapping(value = "/department/getAllDepartments")
     RestResult<List<Department>> getAllDepartments();
+
+    /**
+     * 根据parentId获取组织机构树
+     * @return
+     */
+    @RequestMapping(value = "/department/getDepartmentTreeByParentId")
+    RestResult<List<CascaderResult>> getDepartmentTreeByParentId(@RequestParam("parentId") String parentId,@RequestParam("layer") Integer layer);
 
     /**
      * 获取字典数据

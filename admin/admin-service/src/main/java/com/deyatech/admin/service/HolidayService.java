@@ -52,6 +52,15 @@ public interface HolidayService extends BaseService<Holiday> {
     Date workDayAfter(Date startTime, Integer defaultLimit);
 
     /**
+     * 获取两个日期之间的工作日天数
+     *
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    int workIntervalDayAfter(Date startTime, Date endTime);
+
+    /**
      * 计算某个日期几个工作日之后的时间
      *
      * @param startTime

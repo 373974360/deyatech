@@ -14,7 +14,10 @@ public enum AppealProcessStatusEnum implements IEnums<Integer>  {
     P5(5,"判重"),
     P6(6,"置为无效"),
     P7(7,"延期"),
-    P8(8,"不予受理");
+    P8(8,"不予受理"),
+    P9(9,"督办"),
+    P10(10,"不予延期"),
+    P11(11,"同意延期");
 
     private Integer code;
     private String value;

@@ -96,6 +96,62 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
     }
 
     /**
+     * 根据parentId获取组织机构树
+     *
+     * @param parentId
+     * @return
+     */
+    @Override
+    public Collection<DepartmentVo> getDepartmentTreeByParentId(String parentId,Integer layer) {
+        QueryWrapper<Department> queryWrapper = new QueryWrapper<>();
+        if(StrUtil.isNotBlank(parentId)){
+            queryWrapper.eq("id_",parentId);
+        }else{
+            queryWrapper.eq("parent_id",0);
+        }
+        List<DepartmentVo> departmentVos = setVoProperties(super.list(queryWrapper));
+        List<DepartmentVo> rootDepartments = CollectionUtil.newArrayList();
+        if (CollectionUtil.isNotEmpty(departmentVos)) {
+            for (DepartmentVo departmentVo : departmentVos) {
+                departmentVo.setLabel(departmentVo.getName());
+                departmentVo.setChildren(getAppealDepartmentTree(departmentVo.getId(),0,layer));
+                if(StrUtil.isNotBlank(departmentVo.getTreePosition())){
+                    String[] split = departmentVo.getTreePosition().split(Constants.DEFAULT_TREE_POSITION_SPLIT);
+                    departmentVo.setLevel(split.length);
+                }else{
+                    departmentVo.setLevel(Constants.DEFAULT_ROOT_LEVEL);
+                }
+                rootDepartments.add(departmentVo);
+            }
+        }
+        return rootDepartments;
+    }
+
+    public List<DepartmentVo> getAppealDepartmentTree(String parentId,Integer index,Integer layer) {
+        List<DepartmentVo> rootDepartments = CollectionUtil.newArrayList();
+        if(index.equals(layer)){
+            return null;
+        }
+        QueryWrapper<Department> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("parent_id",parentId);
+        List<DepartmentVo> departmentVos = setVoProperties(super.list(queryWrapper));
+        if (CollectionUtil.isNotEmpty(departmentVos)) {
+            for (DepartmentVo departmentVo : departmentVos) {
+                departmentVo.setLabel(departmentVo.getName());
+                if(StrUtil.isNotBlank(departmentVo.getTreePosition())){
+                    String[] split = departmentVo.getTreePosition().split(Constants.DEFAULT_TREE_POSITION_SPLIT);
+                    departmentVo.setLevel(split.length);
+                }else{
+                    departmentVo.setLevel(Constants.DEFAULT_ROOT_LEVEL);
+                }
+                departmentVo.setChildren(getAppealDepartmentTree(departmentVo.getId(),index+1,layer));
+                rootDepartments.add(departmentVo);
+            }
+        }
+        return rootDepartments;
+    }
+
+    /**
      * 单个将对象转换为vo系统部门信息
      *
      * @param department

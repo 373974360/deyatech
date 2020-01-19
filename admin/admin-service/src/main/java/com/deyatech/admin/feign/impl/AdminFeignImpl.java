@@ -9,13 +9,12 @@ import com.deyatech.admin.entity.*;
 import com.deyatech.admin.feign.AdminFeign;
 import com.deyatech.admin.service.*;
 import com.deyatech.admin.util.MetaUtils;
-import com.deyatech.admin.vo.DictionaryVo;
-import com.deyatech.admin.vo.HolidayVo;
-import com.deyatech.admin.vo.MetadataCollectionVo;
-import com.deyatech.admin.vo.UserVo;
+import com.deyatech.admin.vo.*;
+import com.deyatech.common.entity.CascaderResult;
 import com.deyatech.common.entity.EnumsResult;
 import com.deyatech.common.entity.RestResult;
 import com.deyatech.common.enums.EnableEnum;
+import com.deyatech.common.utils.CascaderUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -87,7 +86,11 @@ public class AdminFeignImpl implements AdminFeign {
     @Override
     public RestResult<UserVo> getByUser(@RequestBody User user) {
         User byBean = userService.getByBean(user);
-        return RestResult.ok(userService.setVoProperties(byBean));
+        if(ObjectUtil.isNotNull(byBean)){
+            return RestResult.ok(userService.setVoProperties(byBean));
+        }else{
+            return RestResult.ok(null);
+        }
     }
 
     @Override
@@ -153,6 +156,11 @@ public class AdminFeignImpl implements AdminFeign {
     @Override
     public RestResult<Date> workHourAfter(@RequestParam("startTime") Date startTime, @RequestParam("limitHour") Integer limitHour) {
         return RestResult.ok(holidayService.workHourAfter(startTime, limitHour));
+    }
+
+    @Override
+    public RestResult workIntervalDayAfter(Date startTime, Date endTime) {
+        return RestResult.ok(holidayService.workIntervalDayAfter(startTime, endTime));
     }
 
     @Override
@@ -223,6 +231,22 @@ public class AdminFeignImpl implements AdminFeign {
             }
         }
         return RestResult.ok(roleIds);
+    }
+
+
+
+    @Override
+    public RestResult<List<Role>> getRolesByUserId(String userId) {
+        List<Role> roles = new ArrayList<>();
+        RoleUser bean = new RoleUser();
+        bean.setUserId(userId);
+        Collection<RoleUser> list = roleUserService.listByBean(bean);
+        if (CollectionUtil.isNotEmpty(list)) {
+            for (RoleUser ru : list) {
+                roles.add(roleService.getById(ru.getRoleId()));
+            }
+        }
+        return RestResult.ok(roles);
     }
 
     @Override
@@ -333,6 +357,13 @@ public class AdminFeignImpl implements AdminFeign {
      */
     public RestResult<List<Department>> getAllDepartments() {
         return RestResult.ok(departmentService.list());
+    }
+
+    @Override
+    public RestResult<List<CascaderResult>> getDepartmentTreeByParentId(String parentId,Integer layer) {
+        Collection<DepartmentVo> departmentVos = departmentService.getDepartmentTreeByParentId(parentId,layer);
+        List<CascaderResult> cascaderResults = CascaderUtil.getResult("Id", "Name","TreePosition", null, departmentVos);
+        return RestResult.ok(cascaderResults);
     }
 
     /**

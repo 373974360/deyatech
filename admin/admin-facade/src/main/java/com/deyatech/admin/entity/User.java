@@ -56,4 +56,7 @@ public class User extends BaseEntity {
     @TableField("password_")
     private String password;
 
+    @ApiModelProperty(value = "管理员(1:是;2:否)", dataType = "Integer", example = "1")
+    @TableField("admin_")
+    private Integer admin;
 }

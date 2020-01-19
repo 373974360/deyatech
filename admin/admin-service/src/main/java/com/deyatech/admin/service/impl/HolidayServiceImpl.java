@@ -1,5 +1,6 @@
 package com.deyatech.admin.service.impl;
 
+import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ArrayUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -13,10 +14,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * <p>
@@ -107,6 +105,32 @@ public class HolidayServiceImpl extends BaseServiceImpl<HolidayMapper, Holiday> 
             i = hasHolidays - lastHoliday;
         }
         return after;
+    }
+
+    /**
+     * 获取两个日期之间的工作日天数
+     *
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    @Override
+    public int workIntervalDayAfter(Date startTime, Date endTime) {
+        //两个日期之间的节假日天数
+        int hasHolidays = hasHolidays(startTime, endTime);
+        //两个日期之间相差的天数
+        long days = DateUtil.between(startTime, endTime, DateUnit.DAY);
+
+        Calendar s = Calendar.getInstance();
+        Calendar e = Calendar.getInstance();
+        s.setTime(startTime);
+        e.setTime(endTime);
+        int result = s.compareTo(e);
+        if (result >= 0){
+            return 0-((int)days-hasHolidays);
+        }else{
+            return (int)days-hasHolidays;
+        }
     }
 
     /**
