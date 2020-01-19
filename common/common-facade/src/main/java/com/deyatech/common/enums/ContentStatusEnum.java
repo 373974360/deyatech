@@ -11,6 +11,10 @@ public enum ContentStatusEnum implements IEnums<Integer> {
      */
     PUBLISH(2,"已发布"),
     /**
+     * 定时发布
+     */
+    TIMING(6,"定时发布"),
+    /**
      * 待审
      */
     VERIFY(3,"待审"),
