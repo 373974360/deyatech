@@ -12,7 +12,8 @@ public enum EvaluationChannelEnum implements IEnums<String> {
 //    ZWDT_TABLET_PC("4","政务大厅平板电脑"),
 //    ZWDT_OTHER_TERMINAL("5","政务大厅其他终端");
     HALL("3","实体大厅"),
-    MESSAGE("4","短信");
+    MESSAGE("4","短信"),
+    WECHAT("5", "微信");
 
     private String code;
     private String value;
