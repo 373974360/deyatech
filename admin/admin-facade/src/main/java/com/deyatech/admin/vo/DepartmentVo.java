@@ -24,6 +24,7 @@ import java.util.List;
 public class DepartmentVo extends Department {
     @ApiModelProperty(value = "树结构中显示的名称", dataType = "String")
     private String label;
+    private String value;
 
     @ApiModelProperty(value = "树结构中子节点对象集合", dataType = "List<DepartmentVo>")
     private List<DepartmentVo> children;
