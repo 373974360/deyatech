@@ -74,6 +74,10 @@ public class NoticeConfig {
      * 微警认证消息通知模板
      */
     private String wechatAuthTemplate;
+    /**
+     * 预叫提醒消息通知模板
+     */
+    private String wechatPreCallNumber;
 
 
 }
