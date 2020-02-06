@@ -342,4 +342,14 @@ public interface AdminFeign {
      */
     @PostMapping("/user/removeDepartment")
     RestResult<Boolean> removeDepartment(@RequestBody Department department);
+
+
+    /**
+     * 根据角色类型获取用户列表
+     * 角色类型(1:业务角色;2:管理角色 ;3:系统内置角色)
+     * @param type
+     * @return
+     */
+    @RequestMapping(value = "/user/getUserListByType")
+    RestResult<UserVo> getUserListByType(@RequestParam("type") Integer type);
 }

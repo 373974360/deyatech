@@ -461,4 +461,25 @@ public class AdminFeignImpl implements AdminFeign {
         boolean result = departmentService.removeByBean(department);
         return RestResult.ok(result);
     }
+
+    @Override
+    public RestResult<UserVo> getUserListByType(Integer type) {
+        Role role = new Role();
+        role.setType(type);
+        Collection<Role> roleList = roleService.listByBean(role);
+        List<User> userVoList = CollectionUtil.newArrayList();
+        if(CollectionUtil.isNotEmpty(roleList)){
+            for (Role role1:roleList){
+                RoleUser roleUser = new RoleUser();
+                roleUser.setRoleId(role1.getId());
+                Collection<RoleUser> roleUsers = roleUserService.listByBean(roleUser);
+                if(CollectionUtil.isNotEmpty(roleUsers)){
+                    for (RoleUser roleUser1:roleUsers){
+                        userVoList.add(userService.getById(roleUser1.getUserId()));
+                    }
+                }
+            }
+        }
+        return RestResult.ok(userService.setVoProperties(userVoList));
+    }
 }
