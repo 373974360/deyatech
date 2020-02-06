@@ -351,5 +351,5 @@ public interface AdminFeign {
      * @return
      */
     @RequestMapping(value = "/user/getUserListByType")
-    RestResult<UserVo> getUserListByType(@RequestParam("type") Integer type);
+    RestResult<List<UserVo>> getUserListByType(@RequestParam("type") Integer type);
 }

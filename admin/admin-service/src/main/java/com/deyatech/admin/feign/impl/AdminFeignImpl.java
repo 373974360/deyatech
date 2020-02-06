@@ -463,7 +463,7 @@ public class AdminFeignImpl implements AdminFeign {
     }
 
     @Override
-    public RestResult<UserVo> getUserListByType(Integer type) {
+    public RestResult<List<UserVo>> getUserListByType(Integer type) {
         Role role = new Role();
         role.setType(type);
         Collection<Role> roleList = roleService.listByBean(role);
@@ -475,7 +475,10 @@ public class AdminFeignImpl implements AdminFeign {
                 Collection<RoleUser> roleUsers = roleUserService.listByBean(roleUser);
                 if(CollectionUtil.isNotEmpty(roleUsers)){
                     for (RoleUser roleUser1:roleUsers){
-                        userVoList.add(userService.getById(roleUser1.getUserId()));
+                        User user = userService.getById(roleUser1.getUserId());
+                        if(ObjectUtil.isNotNull(user)){
+                            userVoList.add(user);
+                        }
                     }
                 }
             }
