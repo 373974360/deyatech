@@ -535,12 +535,14 @@
             reloadList(){
                 this.listLoading = true;
                 this.${lowerEntity}List = undefined;
-                this.total = undefined;
                 get${entity}List(this.listQuery).then(response => {
                     this.listLoading = false;
                     this.${lowerEntity}List = response.data.records;
                     this.total = response.data.total;
-                })
+                }).catch(()=>{
+                    this.listLoading = false;
+                    this.total = 0;
+                });
             },
             handleSizeChange(val){
                 this.listQuery.size = val;
